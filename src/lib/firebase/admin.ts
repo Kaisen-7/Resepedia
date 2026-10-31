@@ -13,8 +13,6 @@ if (typeof process !== 'undefined' && process.cwd) {
   } catch {}
 }
 
-let adminApp: App;
-
 const projectId =
   process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ||
   process.env.FIREBASE_PROJECT_ID ||
@@ -23,13 +21,27 @@ const projectId =
 const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
 let privateKey = process.env.FIREBASE_PRIVATE_KEY;
 if (privateKey) {
-  privateKey = privateKey.replace(/^"|"$/g, '').replace(/\\n/g, '\n');
+  privateKey = privateKey.trim();
+  if (
+    (privateKey.startsWith('"') && privateKey.endsWith('"')) ||
+    (privateKey.startsWith("'") && privateKey.endsWith("'"))
+  ) {
+    privateKey = privateKey.slice(1, -1);
+  }
+  privateKey = privateKey.replace(/\\n/g, '\n');
 }
 
 const serviceAccountFile = path.join(process.cwd(), 'firebase-service-account.json');
 
+export const hasAdminCredentials: boolean = Boolean(
+  (typeof fs !== 'undefined' && fs.existsSync && fs.existsSync(serviceAccountFile)) ||
+  (clientEmail && privateKey)
+);
+
+let adminApp: App;
+
 if (!getApps().length) {
-  if (fs.existsSync(serviceAccountFile)) {
+  if (typeof fs !== 'undefined' && fs.existsSync && fs.existsSync(serviceAccountFile)) {
     try {
       const sa = JSON.parse(fs.readFileSync(serviceAccountFile, 'utf-8'));
       adminApp = initializeApp({
@@ -40,15 +52,20 @@ if (!getApps().length) {
       adminApp = initializeApp({ projectId });
     }
   } else if (clientEmail && privateKey) {
-    adminApp = initializeApp({
-      credential: cert({
-        projectId,
-        clientEmail,
-        privateKey,
-      }),
-    });
+    try {
+      adminApp = initializeApp({
+        credential: cert({
+          projectId,
+          clientEmail,
+          privateKey,
+        }),
+      });
+    } catch (e) {
+      console.error('Failed to initialize Firebase Admin with cert:', e);
+      adminApp = initializeApp({ projectId });
+    }
   } else {
-    // Fallback for local build without credentials
+    // Fallback for build time or environments without credentials
     adminApp = initializeApp({
       projectId,
     });
