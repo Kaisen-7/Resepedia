@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-primary: #8c2d19;
+  --color-primary-container: #a53f2b;
+  --color-on-primary: #ffffff;
+  --color-primary-fixed: #fcece9;
+  --color-on-primary-fixed: #3d0a00;
+  
+  --color-secondary: #965a18;
+  --color-secondary-container: #b5732e;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #3c1e00;
+  
+  --color-tertiary: #5d6054;
+  --color-tertiary-container: #7a7d70;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #2b2d24;
+  
+  --color-surface: #f9f9f6;
+  --color-surface-container: #ededed;
+  --color-surface-container-low: #f4f4f1;
+  --color-surface-container-high: #e2e2dc;
+  --color-surface-container-lowest: #ffffff;
+  
+  --color-on-surface: #222222;
+  --color-on-surface-variant: #5a5a5a;
+  --color-outline: #8c8c84;
+  --color-outline-variant: #d3d3c9;
+
+  --radius-xl: 1.5rem;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  .dark {
+    --color-surface: #121210;
+    --color-surface-container: #1e1e1b;
+    --color-surface-container-low: #181816;
+    --color-surface-container-high: #292925;
+    --color-surface-container-lowest: #0c0c0b;
+    
+    --color-on-surface: #f5f5f0;
+    --color-on-surface-variant: #a2a29b;
+    --color-outline: #797972;
+    --color-outline-variant: #444440;
+  }
+
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-surface text-on-surface font-sans;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.markdown-content h2 {
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.markdown-content h3 {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.4rem;
+  color: var(--color-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.markdown-content p {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+  margin-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+  margin-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content strong {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* Skeleton shimmer animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-surface-container) 25%, var(--color-surface-container-high) 50%, var(--color-surface-container) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+  border-radius: 0.75rem;
+}
+
+/* Badge counter */
+.badge-counter {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9999px;
+  background: var(--color-secondary);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border: 2px solid var(--color-surface-container);
+}
+
+/* Difficulty badge colors */
+.diff-easy { background: #059669; color: white; }
+.diff-medium { background: #d97706; color: white; }
+.diff-hard { background: #dc2626; color: white; }
+
+/* Custom scrollbar for desktop */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-outline-variant);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-outline); }
+}
+
+/* Print styles */
+@media print {
+  body { background: white !important; color: black !important; }
+  header, nav, footer, button, .no-print,
+  [class*="fixed"]:not(.print-view), [class*="sticky"]:not(.print-view) { display: none !important; }
+  .print-view {
+    position: relative !important;
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    inset: auto !important;
+    background: white !important;
+    color: black !important;
+    padding-bottom: 0 !important;
+  }
+  main { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+  .print-only { display: block !important; }
+  img { max-height: 300px; object-fit: cover; }
+  * { box-shadow: none !important; border-radius: 0 !important; }
+}
+
+.print-only { display: none; }

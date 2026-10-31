@@ -1,0 +1,13 @@
+node_modules/
+build/
+dist/
+.next/
+_legacy_archive/
+coverage/
+.DS_Store
+*.log
+*.tsbuildinfo
+*service-account*.json
+.firebase/
+.env*
+!.env.example

@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  
+  /* Brand Tokens - Resepedia */
+  --color-primary: #E04F26;
+  --color-primary-container: #C83C15;
+  --color-on-primary: #ffffff;
+  --color-primary-fixed: #feece8;
+  --color-on-primary-fixed: #411004;
+  
+  --color-secondary: #2A6F4E;
+  --color-secondary-container: #1F543B;
+  --color-on-secondary: #ffffff;
+  --color-secondary-fixed: #e4f4ec;
+  
+  --color-accent: #F4A261;
+  --color-accent-light: #fbe3cf;
+  
+  --color-surface: #FAF8F5;
+  --color-surface-container: #F1ECE4;
+  --color-surface-container-low: #F6F3EE;
+  --color-surface-container-high: #E8E2D8;
+  --color-surface-container-lowest: #FFFFFF;
+  
+  --color-on-surface: #18181B;
+  --color-on-surface-variant: #52525B;
+  --color-outline: #A1A1AA;
+  --color-outline-variant: #E4E4E7;
+
+  --radius-xl: 1.5rem;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  .dark {
+    --color-primary: #FF6B42;
+    --color-primary-container: #D64A22;
+    --color-on-primary: #ffffff;
+    --color-primary-fixed: #3d1409;
+    --color-on-primary-fixed: #ffd3c7;
+    
+    --color-secondary: #40916C;
+    --color-secondary-container: #2D6A4F;
+    --color-on-secondary: #ffffff;
+    --color-secondary-fixed: #163625;
+    
+    --color-accent: #F6BD60;
+    
+    --color-surface: #121316;
+    --color-surface-container: #1C1E24;
+    --color-surface-container-low: #17181D;
+    --color-surface-container-high: #24272E;
+    --color-surface-container-lowest: #0D0E11;
+    
+    --color-on-surface: #F4F4F5;
+    --color-on-surface-variant: #A1A1AA;
+    --color-outline: #71717A;
+    --color-outline-variant: #27272A;
+  }
+
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-surface text-on-surface font-sans antialiased;
+  }
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom Markdown Content inside AI & Recipes */
+.markdown-content h2 {
+  font-weight: 800;
+  font-size: 1.15rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.markdown-content h3 {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.35rem;
+  color: var(--color-on-surface);
+}
+
+.markdown-content p {
+  margin-bottom: 0.6rem;
+  line-height: 1.6;
+}
+
+.markdown-content ul, .markdown-content ol {
+  margin-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content strong {
+  color: var(--color-primary);
+  font-weight: 700;
+}

@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // 1. Koleksi Users & Subkoleksi Shopping Items
+    match /users/{userId} {
+      // Profil publik dapat dibaca semua orang, tetapi hanya pemilik yang bisa membuat/mengubah
+      allow read: if true;
+      allow create, update: if isOwner(userId);
+      allow delete: if false;
+
+      // Subkoleksi Daftar Belanja: HANYA pemilik akun yang bisa baca & tulis
+      match /shopping_items/{itemId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // 2. Koleksi Recipes & Subkoleksi Comments
+    match /recipes/{recipeId} {
+      // Semua pengunjung dapat melihat katalog resep
+      allow read: if true;
+
+      // Pengguna login dapat membuat resep baru dengan authorId miliknya sendiri
+      allow create: if isAuthenticated() 
+                    && request.resource.data.authorId == request.auth.uid;
+
+      // Pemilik resep dapat mengedit penuh, ATAU pengguna login dapat mengupdate field rating saja
+      allow update: if isAuthenticated() && (
+                      resource.data.authorId == request.auth.uid ||
+                      request.resource.data.diff(resource.data).affectedKeys()
+                        .hasOnly(['rating', 'ratingCount'])
+                    );
+
+      // Hanya pembuat resep yang dapat menghapus resepnya (dan bukan resep default sistem)
+      allow delete: if isAuthenticated() 
+                    && resource.data.authorId == request.auth.uid
+                    && resource.data.isDefault == false;
+
+      // Subkoleksi Komentar pada Resep
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if isAuthenticated()
+                      && request.resource.data.authorId == request.auth.uid
+                      && request.resource.data.text.size() <= 500;
+        // Penulis bisa edit komentar, atau user lain bisa menambah helpfulCount (+1)
+        allow update: if isAuthenticated() && (
+                        resource.data.authorId == request.auth.uid ||
+                        request.resource.data.diff(resource.data).affectedKeys()
+                          .hasOnly(['helpfulCount'])
+                      );
+        allow delete: if isAuthenticated() 
+                      && resource.data.authorId == request.auth.uid;
+      }
+    }
+  }
+}

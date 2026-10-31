@@ -1,0 +1,8 @@
+{
+  "name": "Resepedia",
+  "description": "Ensiklopedi dan asisten koki cerdas untuk masakan autentik Nusantara.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
