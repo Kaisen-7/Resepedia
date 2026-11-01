@@ -321,13 +321,13 @@ export default function RecipeDetailClient({
       </div>
 
       {/* Featured Recipe Hero Image Banner */}
-      <div className="relative aspect-[16/9] sm:aspect-[21/9] rounded-3xl overflow-hidden shadow-lg bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60">
+      <div className="relative aspect-video sm:aspect-21/9 rounded-3xl overflow-hidden shadow-lg bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60">
         <img
           src={recipe.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}
           alt={recipe.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
 
         {/* CTA Bar inside image */}
         <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -384,7 +384,7 @@ export default function RecipeDetailClient({
           />
 
           {/* Ingredients Checklist */}
-          <ul className="space-y-2.5 pt-2 max-h-[480px] overflow-y-auto pr-1">
+          <ul className="space-y-2.5 pt-2 max-h-120 overflow-y-auto pr-1">
             {recipe.ingredients.map((ing, idx) => {
               const scaledDetail = scaleQuantity(ing.detail, multiplier);
               return (

@@ -121,7 +121,7 @@ export default function AIChatDrawer() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[999] flex justify-end">
+    <div className="fixed inset-0 z-999 flex justify-end">
       {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -151,7 +151,7 @@ export default function AIChatDrawer() {
                   Asisten Dapur Resepedia
                 </h3>
               </div>
-              <p className="text-xs text-zinc-500 truncate max-w-[240px]">
+              <p className="text-xs text-zinc-500 truncate max-w-60">
                 {currentRecipeContext
                   ? `Membahas: ${currentRecipeContext.title}`
                   : 'Konsultasi Racikan Rempah & Memasak'}

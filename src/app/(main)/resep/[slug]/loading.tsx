@@ -9,7 +9,7 @@ export default function RecipeLoading() {
         <div className="h-10 w-2/3 bg-zinc-200 dark:bg-zinc-800 rounded-2xl" />
         <div className="h-4 w-1/2 bg-zinc-200 dark:bg-zinc-800 rounded-lg" />
       </div>
-      <div className="aspect-[21/9] w-full bg-zinc-200 dark:bg-zinc-800 rounded-3xl" />
+      <div className="aspect-21/9 w-full bg-zinc-200 dark:bg-zinc-800 rounded-3xl" />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-5 h-96 bg-zinc-200 dark:bg-zinc-800 rounded-3xl" />
         <div className="lg:col-span-7 space-y-4">

@@ -67,7 +67,7 @@ export default function RecipeCard({
   return (
     <article className="group relative bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col h-full">
       {/* Recipe Image with 4:3 Aspect Ratio */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+      <div className="relative aspect-4/3 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
         <img
           src={recipe.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}
           alt={recipe.title}
@@ -76,7 +76,7 @@ export default function RecipeCard({
         />
 
         {/* Gradient Overlay for Contrast */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-black/20" />
 
         {/* Region & Spicy Tags */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">

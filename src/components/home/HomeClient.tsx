@@ -226,7 +226,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                       : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                   }`}
                 >
-                  {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 stroke-3" />}
                   <span>{ing}</span>
                 </button>
               );
