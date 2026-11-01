@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
+  ExternalLink,
   Clock,
   Flame,
   Users,
@@ -26,6 +27,7 @@ import {
 } from 'lucide-react';
 import { Recipe, Comment } from '@/types';
 import PortionScaler from './PortionScaler';
+import { getYouTubeEmbedInfo } from '@/lib/utils/youtube';
 import HandsFreeCookModal from './HandsFreeCookModal';
 import { scaleQuantity } from '@/lib/utils/fraction-scaler';
 import { toggleSaveRecipeAction } from '@/actions/bookmark.actions';

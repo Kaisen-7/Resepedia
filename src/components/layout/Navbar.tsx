@@ -81,18 +81,18 @@ export default function Navbar() {
           : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-20">
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white shadow-md shadow-primary/20 transition-transform group-hover:scale-105">
-              <ChefHat className="w-5 h-5" />
+          <Link href="/" className="flex items-center gap-2 group shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary flex items-center justify-center text-white shadow-md shadow-primary/20 transition-transform group-hover:scale-105">
+              <ChefHat className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <span className="font-display font-black text-xl sm:text-2xl tracking-tight text-on-surface">
+              <span className="font-display font-black text-lg sm:text-2xl tracking-tight text-on-surface">
                 Resepedia
               </span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-primary block -mt-1">
+              <span className="hidden sm:block text-[10px] uppercase font-bold tracking-widest text-primary -mt-1">
                 Katalog Nusantara
               </span>
             </div>
@@ -119,16 +119,16 @@ export default function Navbar() {
           </nav>
 
           {/* Right Action Icons */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
             {/* Search Trigger */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-2 px-3 py-2 rounded-full bg-surface-container-low dark:bg-zinc-800/80 text-on-surface-variant text-xs font-semibold hover:border-primary/50 transition-colors border border-transparent"
+              className="p-2 sm:px-3 sm:py-2 rounded-full bg-surface-container-low dark:bg-zinc-800/80 text-on-surface-variant text-xs font-semibold hover:border-primary/50 transition-colors border border-transparent shrink-0"
               title="Cari Resep"
             >
               <Search className="w-4 h-4 text-zinc-400" />
-              <span className="hidden lg:inline text-zinc-400">Cari resep...</span>
-              <kbd className="hidden lg:inline px-1.5 py-0.5 text-[10px] font-mono bg-zinc-200 dark:bg-zinc-700 rounded text-zinc-600 dark:text-zinc-300">
+              <span className="hidden lg:inline text-zinc-400 ml-1.5">Cari resep...</span>
+              <kbd className="hidden lg:inline ml-1 px-1.5 py-0.5 text-[10px] font-mono bg-zinc-200 dark:bg-zinc-700 rounded text-zinc-600 dark:text-zinc-300">
                 ⌘K
               </kbd>
             </button>
@@ -136,26 +136,27 @@ export default function Navbar() {
             {/* Asisten Dapur Button */}
             <button
               onClick={() => openAI()}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold transition-all active:scale-95 border border-primary/20"
-              title="Konsultasi racikan bumbu dan panduan masak"
+              className="flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-2 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold transition-all active:scale-95 border border-primary/20 shrink-0"
+              title="Konsultasi Asisten Dapur"
             >
-              <ChefHat className="w-3.5 h-3.5" />
+              <ChefHat className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
               <span className="hidden sm:inline">Asisten Dapur</span>
             </button>
 
-            {/* Add Recipe Button */}
+            {/* Add Recipe Button (Always visible on mobile & desktop) */}
             <Link
               href="/resep/tambah"
-              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-container text-xs font-bold shadow-sm transition-transform active:scale-95"
+              className="flex items-center gap-1 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary text-white hover:bg-primary-container text-xs font-bold shadow-sm transition-transform active:scale-95 shrink-0"
+              title="Tulis Resep Masakan"
             >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Tulis Resep</span>
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="hidden sm:inline">Tulis Resep</span>
             </Link>
 
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
-              className="p-2.5 rounded-full hover:bg-surface-container-high dark:hover:bg-zinc-800 text-on-surface-variant transition-colors"
+              className="p-2 sm:p-2.5 rounded-full hover:bg-surface-container-high dark:hover:bg-zinc-800 text-on-surface-variant transition-colors shrink-0"
               title="Ganti Tema"
             >
               {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
@@ -164,17 +165,17 @@ export default function Navbar() {
             {/* Profile / Auth Avatar */}
             <Link
               href="/profil"
-              className="p-1 rounded-full border border-zinc-200 dark:border-zinc-700 hover:border-primary transition-colors"
+              className="p-0.5 sm:p-1 rounded-full border border-zinc-200 dark:border-zinc-700 hover:border-primary transition-colors shrink-0"
               title="Profil Pengguna"
             >
               {user?.photoURL ? (
                 <img
                   src={user.photoURL}
                   alt={user.displayName || 'Profile'}
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-300">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-300">
                   <User className="w-4 h-4" />
                 </div>
               )}

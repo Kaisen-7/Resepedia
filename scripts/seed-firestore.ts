@@ -57,7 +57,7 @@ export const SEED_RECIPES: Array<
     region: 'Sumatra',
     spicy: true,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/Xq4-yG7vO88',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/fEpt5JX7nQc',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-cooking-fresh-vegetables-in-a-pan-4315-large.mp4',
     nutrition: { protein: '28g', fat: '32g', carbs: '12g' },
     variations: [
@@ -96,7 +96,7 @@ export const SEED_RECIPES: Array<
     region: 'Jawa',
     spicy: false,
     servings: '2 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/MpsJByJ59o8',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/6Dh3EwMo4-A',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-serving-food-on-a-plate-at-a-buffet-4309-large.mp4',
     nutrition: { protein: '14g', fat: '18g', carbs: '26g' },
     variations: [
@@ -133,7 +133,7 @@ export const SEED_RECIPES: Array<
     region: 'Jawa',
     spicy: true,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/U7hA6N6X00k',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/e5-WcIiO_rQ',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-putting-raw-meat-on-a-hot-grill-4304-large.mp4',
     nutrition: { protein: '24g', fat: '16g', carbs: '18g' },
     variations: [
@@ -169,7 +169,7 @@ export const SEED_RECIPES: Array<
     region: 'Bali',
     spicy: true,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/5K9I_R6x7O0',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/x2i2A2rwXmY',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-chef-cutting-vegetables-on-a-wooden-board-4301-large.mp4',
     nutrition: { protein: '24g', fat: '12g', carbs: '8g' },
     variations: [
@@ -204,7 +204,7 @@ export const SEED_RECIPES: Array<
     region: 'Papua',
     spicy: true,
     servings: '2 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/fA-m_4zP0B0',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/158wvOi62Eo',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-stirring-a-stew-in-a-pot-4306-large.mp4',
     nutrition: { protein: '20g', fat: '6g', carbs: '45g' },
     variations: [
@@ -239,7 +239,7 @@ export const SEED_RECIPES: Array<
     region: 'Sulawesi',
     spicy: true,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/fP9_L_OqH8Q',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/6XSW5iqUuUU',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-frying-food-in-a-pan-4307-large.mp4',
     nutrition: { protein: '35g', fat: '38g', carbs: '15g' },
     variations: [
@@ -274,7 +274,7 @@ export const SEED_RECIPES: Array<
     region: 'Kalimantan',
     spicy: false,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/z4uX-Bnt-X0',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/ljKgmrjmqk4',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-chef-cutting-vegetables-on-a-wooden-board-4301-large.mp4',
     nutrition: { protein: '22g', fat: '14g', carbs: '30g' },
     variations: [
@@ -310,7 +310,7 @@ export const SEED_RECIPES: Array<
     region: 'Sumatra',
     spicy: true,
     servings: '2 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/U3B9_H6xKxw',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/q9X1-i4h8kw',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-frying-food-in-a-pan-4307-large.mp4',
     nutrition: { protein: '26g', fat: '22g', carbs: '48g' },
     variations: [
@@ -346,7 +346,7 @@ export const SEED_RECIPES: Array<
     region: 'Jawa',
     spicy: false,
     servings: '2 Servings',
-    youtubeUrl: null,
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/pR4W0nRrbCQ',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-pouring-milk-into-a-glass-of-ice-4318-large.mp4',
     nutrition: { protein: '2g', fat: '12g', carbs: '35g' },
     variations: [
@@ -381,7 +381,7 @@ export const SEED_RECIPES: Array<
     region: 'Sumatra',
     spicy: false,
     servings: '1 Serving',
-    youtubeUrl: null,
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/pR4W0nRrbCQ',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-pouring-tea-into-a-cup-4316-large.mp4',
     nutrition: { protein: '3g', fat: '5g', carbs: '22g' },
     variations: [
@@ -415,7 +415,7 @@ export const SEED_RECIPES: Array<
     region: 'Jawa',
     spicy: true,
     servings: '2 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/8o4k3D0y55k',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/q9X1-i4h8kw',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-cooking-fresh-vegetables-in-a-pan-4315-large.mp4',
     nutrition: { protein: '12g', fat: '18g', carbs: '52g' },
     variations: [
@@ -451,7 +451,7 @@ export const SEED_RECIPES: Array<
     region: 'Bali',
     spicy: true,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/qg9bNf5Wn14',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/8L2FdhuVbQM',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-cooking-fresh-vegetables-in-a-pan-4315-large.mp4',
     nutrition: { protein: '34g', fat: '28g', carbs: '10g' },
     variations: [
@@ -486,7 +486,7 @@ export const SEED_RECIPES: Array<
     region: 'Jawa',
     spicy: false,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/E-9pZqHhK8k',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/ljKgmrjmqk4',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-serving-food-on-a-plate-at-a-buffet-4309-large.mp4',
     nutrition: { protein: '22g', fat: '14g', carbs: '28g' },
     variations: [
@@ -521,7 +521,7 @@ export const SEED_RECIPES: Array<
     region: 'Sumatra',
     spicy: true,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/kRj53_p1o9Y',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/E6nx40lpCQQ',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-frying-food-in-a-pan-4307-large.mp4',
     nutrition: { protein: '18g', fat: '10g', carbs: '54g' },
     variations: [
@@ -558,7 +558,7 @@ export const SEED_RECIPES: Array<
     region: 'Jawa',
     spicy: false,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/k6aI1eWdZ00',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/gqcRtvIFArA',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-stirring-a-stew-in-a-pot-4306-large.mp4',
     nutrition: { protein: '28g', fat: '20g', carbs: '32g' },
     variations: [
@@ -593,7 +593,7 @@ export const SEED_RECIPES: Array<
     region: 'Jawa',
     spicy: false,
     servings: '6 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/Pj13iHhWz9I',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/6NRCul0jlAw',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-pouring-milk-into-a-glass-of-ice-4318-large.mp4',
     nutrition: { protein: '8g', fat: '22g', carbs: '64g' },
     variations: [
@@ -628,7 +628,7 @@ export const SEED_RECIPES: Array<
     region: 'Jawa',
     spicy: false,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/5aY1GZ818-w',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/vLtyXxyUSjQ',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-frying-food-in-a-pan-4307-large.mp4',
     nutrition: { protein: '28g', fat: '24g', carbs: '12g' },
     variations: [
@@ -663,7 +663,7 @@ export const SEED_RECIPES: Array<
     region: 'Jawa',
     spicy: false,
     servings: '2 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/p1o1c-4t52M',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/pR4W0nRrbCQ',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-pouring-milk-into-a-glass-of-ice-4318-large.mp4',
     nutrition: { protein: '3g', fat: '12g', carbs: '38g' },
     variations: [
@@ -698,7 +698,7 @@ export const SEED_RECIPES: Array<
     region: 'Jawa',
     spicy: true,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/5k4y5j-vW00',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/-rkMW2dLCsU',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-cooking-fresh-vegetables-in-a-pan-4315-large.mp4',
     nutrition: { protein: '16g', fat: '18g', carbs: '20g' },
     variations: [
@@ -733,7 +733,7 @@ export const SEED_RECIPES: Array<
     region: 'Bali',
     spicy: true,
     servings: '4 Servings',
-    youtubeUrl: 'https://www.youtube.com/embed/59J6u1uWp-w',
+    youtubeUrl: 'https://www.youtube-nocookie.com/embed/8L2FdhuVbQM',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-putting-raw-meat-on-a-hot-grill-4304-large.mp4',
     nutrition: { protein: '32g', fat: '22g', carbs: '8g' },
     variations: [

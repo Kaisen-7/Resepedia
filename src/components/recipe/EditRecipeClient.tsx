@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Recipe } from '@/types';
 import { updateRecipeAction, deleteRecipeAction } from '@/actions/recipe.actions';
+import { extractYouTubeVideoId } from '@/lib/utils/youtube';
 import { uploadRecipeImage } from '@/lib/firebase/service';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
@@ -164,7 +165,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
       region,
       spicy,
       servings,
-      youtubeUrl: youtubeUrl.trim() || null,
+      youtubeUrl: (() => { const id = extractYouTubeVideoId(youtubeUrl); return id ? ('https://www.youtube-nocookie.com/embed/' + id) : (youtubeUrl.trim() || null); })(),
       nutrition,
       variations: variations.filter((v) => v.title.trim()),
       ingredients: validIngredients,
