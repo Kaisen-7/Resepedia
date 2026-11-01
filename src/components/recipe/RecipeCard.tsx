@@ -66,20 +66,26 @@ export default function RecipeCard({
 
   return (
     <article className="group relative bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col h-full">
-      {/* Recipe Image with 4:3 Aspect Ratio */}
+      {/* Recipe Image with 4:3 Aspect Ratio (Clickable to Recipe Detail) */}
       <div className="relative aspect-4/3 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-        <img
-          src={recipe.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}
-          alt={recipe.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-        />
+        <Link
+          href={recipeUrl}
+          className="block w-full h-full relative focus:outline-none"
+          title={`Lihat detail resep ${recipe.title}`}
+        >
+          <img
+            src={recipe.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}
+            alt={recipe.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
+            loading="lazy"
+          />
 
-        {/* Gradient Overlay for Contrast */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-black/20" />
+          {/* Gradient Overlay for Contrast */}
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+        </Link>
 
         {/* Region & Spicy Tags */}
-        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
+        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10 pointer-events-none">
           <span className="px-2.5 py-1 text-[11px] font-black uppercase tracking-wider rounded-full bg-white/95 dark:bg-zinc-900/95 text-zinc-900 dark:text-zinc-100 shadow-sm">
             {recipe.region || 'Nusantara'}
           </span>
@@ -91,7 +97,7 @@ export default function RecipeCard({
         </div>
 
         {/* Action Buttons Top Right: Edit (if owner) and Bookmark */}
-        <div className="absolute top-3 right-3 flex items-center gap-1.5 z-10">
+        <div className="absolute top-3 right-3 flex items-center gap-1.5 z-20">
           {isOwner && (
             <Link
               href={editUrl}
@@ -118,7 +124,7 @@ export default function RecipeCard({
         </div>
 
         {/* Difficulty Badge on Image Bottom */}
-        <div className="absolute bottom-3 left-3 z-10">
+        <div className="absolute bottom-3 left-3 z-10 pointer-events-none">
           <span
             className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border backdrop-blur-md ${getDifficultyBadge(
               recipe.difficulty

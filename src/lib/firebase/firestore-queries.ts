@@ -56,8 +56,8 @@ async function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Pro
 }
 
 export async function getRecipes(): Promise<RecipeDocument[]> {
-  if (!hasAdminCredentials) {
-    console.warn('[Resepedia] Admin credentials not configured. Serving fallback recipes.');
+  if (!hasAdminCredentials || !adminDb) {
+    console.warn('[Resepedia] Admin credentials not configured or Firestore unavailable. Serving fallback recipes.');
     return FALLBACK_RECIPES;
   }
 
@@ -86,7 +86,7 @@ export async function getRecipes(): Promise<RecipeDocument[]> {
 }
 
 export async function getRecipeBySlugOrId(slugOrId: string): Promise<RecipeDocument | null> {
-  if (!hasAdminCredentials) {
+  if (!hasAdminCredentials || !adminDb) {
     return getFallbackRecipeBySlugOrId(slugOrId);
   }
 
@@ -120,7 +120,7 @@ export async function getRecipeBySlugOrId(slugOrId: string): Promise<RecipeDocum
 }
 
 export async function getComments(recipeId: string): Promise<Comment[]> {
-  if (!hasAdminCredentials) {
+  if (!hasAdminCredentials || !adminDb) {
     return [];
   }
 

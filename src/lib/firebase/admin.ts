@@ -60,8 +60,16 @@ if (hasAdminCredentials) {
   }
 }
 
-export const adminDb: Firestore = (hasAdminCredentials && adminApp)
-  ? getFirestore(adminApp)
-  : (null as unknown as Firestore);
+let adminDbInstance: Firestore | null = null;
+if (hasAdminCredentials && adminApp) {
+  try {
+    adminDbInstance = getFirestore(adminApp);
+  } catch (err) {
+    console.error('[Resepedia Admin] Failed to get Firestore instance:', err);
+    adminDbInstance = null;
+  }
+}
+
+export const adminDb: Firestore = adminDbInstance as Firestore;
 
 export default adminApp;
