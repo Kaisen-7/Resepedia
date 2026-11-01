@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Search,
@@ -16,6 +16,9 @@ import {
 import { Recipe } from '@/types';
 import RecipeCard from '@/components/recipe/RecipeCard';
 import { useAI } from '@/contexts/AIContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { getMyLocalRecipes } from '@/lib/utils/recipe-storage';
 
 interface HomeClientProps {
   initialRecipes: Recipe[];
@@ -24,6 +27,23 @@ interface HomeClientProps {
 
 export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClientProps) {
   const { openAI } = useAI();
+  const { t, language } = useLanguage();
+  const { user } = useAuth();
+  const [localMyRecipes, setLocalMyRecipes] = useState<Recipe[]>([]);
+
+  useEffect(() => {
+    setLocalMyRecipes(getMyLocalRecipes(user?.uid));
+    const handleUpdated = () => setLocalMyRecipes(getMyLocalRecipes(user?.uid));
+    window.addEventListener('my-recipes-updated', handleUpdated);
+    return () => window.removeEventListener('my-recipes-updated', handleUpdated);
+  }, [user]);
+
+  const allCombinedRecipes = useMemo(() => {
+    const map = new Map<string, Recipe>();
+    initialRecipes.forEach((r) => map.set(r.id, r));
+    localMyRecipes.forEach((r) => map.set(r.id, r));
+    return Array.from(map.values());
+  }, [initialRecipes, localMyRecipes]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('All');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -32,6 +52,12 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
   // Time of day greeting
   const getGreeting = () => {
     const hour = new Date().getHours();
+    if (language === 'en') {
+      if (hour < 11) return { title: 'What Are You Cooking for Breakfast Today?', time: 'morning' };
+      if (hour < 15) return { title: 'Delicious Lunch Inspiration Today', time: 'afternoon' };
+      if (hour < 18) return { title: 'Snacks & Afternoon Bites', time: 'afternoon' };
+      return { title: 'Comforting Recipes for Dinner', time: 'evening' };
+    }
     if (hour < 11) return { title: 'Mau Masak Sarapan Apa Pagi Ini?', time: 'pagi' };
     if (hour < 15) return { title: 'Inspirasi Masakan Lezat Siang Ini', time: 'siang' };
     if (hour < 18) return { title: 'Ide Camilan & Santapan Sore Hari', time: 'sore' };
@@ -41,21 +67,21 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
   const greeting = getGreeting();
 
   const regions = [
-    { name: 'All', label: 'Semua Daerah', badge: 'Seluruh Nusantara' },
-    { name: 'Sumatra', label: 'Sumatra', badge: 'Rendang & Gulai' },
-    { name: 'Jawa', label: 'Jawa', badge: 'Rawon, Gudeg & Soto' },
-    { name: 'Bali', label: 'Bali & NTB', badge: 'Betutu & Sambal Matah' },
-    { name: 'Sulawesi', label: 'Sulawesi', badge: 'Coto & Woku' },
-    { name: 'Kalimantan', label: 'Kalimantan', badge: 'Soto Banjar' },
-    { name: 'Papua', label: 'Papua & Maluku', badge: 'Kuah Kuning' },
+    { name: 'All', label: t('Semua Daerah'), badge: language === 'en' ? 'Whole Archipelago' : 'Seluruh Nusantara' },
+    { name: 'Sumatra', label: 'Sumatra', badge: language === 'en' ? 'Rendang & Curry' : 'Rendang & Gulai' },
+    { name: 'Jawa', label: language === 'en' ? 'Java' : 'Jawa', badge: language === 'en' ? 'Rawon, Gudeg & Soto' : 'Rawon, Gudeg & Soto' },
+    { name: 'Bali', label: 'Bali & NTB', badge: language === 'en' ? 'Betutu & Sambal Matah' : 'Betutu & Sambal Matah' },
+    { name: 'Sulawesi', label: 'Sulawesi', badge: language === 'en' ? 'Coto & Woku' : 'Coto & Woku' },
+    { name: 'Kalimantan', label: 'Kalimantan', badge: language === 'en' ? 'Soto Banjar' : 'Soto Banjar' },
+    { name: 'Papua', label: 'Papua & Maluku', badge: language === 'en' ? 'Yellow Broth' : 'Kuah Kuning' },
   ];
 
   const categories = [
-    { id: 'All', label: 'Semua Hidangan' },
-    { id: 'Main Course', label: 'Makanan Utama' },
-    { id: 'Appetizer', label: 'Camilan & Pembuka' },
-    { id: 'Dessert', label: 'Hidangan Penutup' },
-    { id: 'Drink', label: 'Minuman Tradisional' },
+    { id: 'All', label: t('Semua Hidangan') },
+    { id: 'Main Course', label: t('Makanan Utama') },
+    { id: 'Appetizer', label: t('Camilan & Pembuka') },
+    { id: 'Dessert', label: t('Hidangan Penutup') },
+    { id: 'Drink', label: t('Minuman Tradisional') },
   ];
 
   const popularIngredients = [
@@ -81,7 +107,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
 
   // Filter recipes based on search, region, category, and fridge ingredients
   const filteredRecipes = useMemo(() => {
-    return initialRecipes.filter((recipe) => {
+    return allCombinedRecipes.filter((recipe) => {
       // Search query
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();

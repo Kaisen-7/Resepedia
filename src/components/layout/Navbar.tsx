@@ -19,12 +19,14 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAI } from '@/contexts/AIContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, signInWithGoogle, isGuest } = useAuth();
   const { openAI } = useAI();
+  const { t, language } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -58,10 +60,10 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { name: 'Beranda', href: '/' },
-    { name: 'Eksplorasi', href: '/eksplorasi' },
-    { name: 'Koleksi', href: '/koleksi' },
-    { name: 'Daftar Belanja', href: '/belanja' },
+    { name: t('Beranda'), href: '/' },
+    { name: t('Eksplorasi'), href: '/eksplorasi' },
+    { name: t('Koleksi'), href: '/koleksi' },
+    { name: t('Daftar Belanja'), href: '/belanja' },
   ];
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -127,7 +129,7 @@ export default function Navbar() {
               title="Cari Resep"
             >
               <Search className="w-4 h-4 text-zinc-400" />
-              <span className="hidden lg:inline text-zinc-400 ml-1.5">Cari resep...</span>
+              <span className="hidden lg:inline text-zinc-400 ml-1.5">{t('Cari resep...')}</span>
               <kbd className="hidden lg:inline ml-1 px-1.5 py-0.5 text-[10px] font-mono bg-zinc-200 dark:bg-zinc-700 rounded text-zinc-600 dark:text-zinc-300">
                 ⌘K
               </kbd>
@@ -140,7 +142,7 @@ export default function Navbar() {
               title="Konsultasi Asisten Dapur"
             >
               <ChefHat className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-              <span className="hidden sm:inline">Asisten Dapur</span>
+              <span className="hidden sm:inline">{t('Asisten Dapur')}</span>
             </button>
 
             {/* Add Recipe Button (Always visible on mobile & desktop) */}
@@ -150,7 +152,7 @@ export default function Navbar() {
               title="Tulis Resep Masakan"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span className="hidden sm:inline">Tulis Resep</span>
+              <span className="hidden sm:inline">{t('Tulis Resep')}</span>
             </Link>
 
             {/* Dark Mode Toggle */}

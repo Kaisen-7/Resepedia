@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Recipe } from '@/types';
 import { createRecipeAction } from '@/actions/recipe.actions';
+import { saveMyLocalRecipe } from '@/lib/utils/recipe-storage';
 import { extractYouTubeVideoId } from '@/lib/utils/youtube';
 import { uploadRecipeImage } from '@/lib/firebase/service';
 import { useAuth } from '@/contexts/AuthContext';
@@ -137,6 +138,7 @@ export default function AddRecipeClient() {
 
     const res = await createRecipeAction(newRecipeData, user?.uid);
     if (res.success && res.recipe) {
+      saveMyLocalRecipe(res.recipe, user?.uid);
       toast.success('Resep berhasil dipublikasikan!');
       router.push(`/resep/${res.recipe.slug || res.recipe.id}`);
     } else {

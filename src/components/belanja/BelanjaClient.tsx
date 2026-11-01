@@ -9,20 +9,21 @@ import {
   CheckCircle2,
   Circle,
   ListChecks,
-  ChevronLeft,
   ArrowRight,
   Wifi,
 } from 'lucide-react';
 import { ShoppingItem } from '@/types';
 import {
-  addShoppingItemAction,
-  toggleCheckShoppingItemAction,
-  deleteShoppingItemAction,
-  clearCheckedItemsAction,
-} from '@/actions/shopping.actions';
+  getLocalShoppingItems,
+  addShoppingItem,
+  toggleCheckShoppingItem,
+  deleteShoppingItem,
+  clearCheckedShoppingItems,
+} from '@/lib/utils/shopping-storage';
 import { subscribeShoppingItems } from '@/lib/firebase/service';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface BelanjaClientProps {
   initialItems: ShoppingItem[];
@@ -31,107 +32,95 @@ interface BelanjaClientProps {
 export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
   const { user } = useAuth();
   const toast = useToast();
+  const { t, language } = useLanguage();
   const [items, setItems] = useState<ShoppingItem[]>(initialItems);
   const [customName, setCustomName] = useState('');
   const [customDetail, setCustomDetail] = useState('');
   const [isRealtime, setIsRealtime] = useState(false);
 
-  // Real-time Firestore onSnapshot listener when user is logged in
+  // Load from local storage and sync with Firestore
   useEffect(() => {
+    const local = getLocalShoppingItems(user?.uid);
+    if (local.length > 0) {
+      setItems(local);
+    }
+
+    const handleShoppingUpdated = () => {
+      setItems(getLocalShoppingItems(user?.uid));
+    };
+
+    window.addEventListener('shopping-list-updated', handleShoppingUpdated);
+
+    let unsubscribeFirestore: (() => void) | null = null;
     if (user?.uid) {
       setIsRealtime(true);
-      const unsubscribe = subscribeShoppingItems(user.uid, (cloudItems) => {
-        setItems(cloudItems);
+      unsubscribeFirestore = subscribeShoppingItems(user.uid, (cloudItems) => {
+        if (cloudItems && cloudItems.length > 0) {
+          setItems(cloudItems);
+        }
       });
-      return () => unsubscribe();
     } else {
       setIsRealtime(false);
-      const saved = localStorage.getItem('guest_shopping_items');
-      if (saved) {
-        try {
-          setItems(JSON.parse(saved));
-        } catch {}
-      }
     }
+
+    return () => {
+      window.removeEventListener('shopping-list-updated', handleShoppingUpdated);
+      if (unsubscribeFirestore) unsubscribeFirestore();
+    };
   }, [user]);
 
-  const saveGuestItems = (newItems: ShoppingItem[]) => {
-    setItems(newItems);
-    localStorage.setItem('guest_shopping_items', JSON.stringify(newItems));
-  };
-
   const handleToggleCheck = async (item: ShoppingItem) => {
-    const updated = items.map((i) => (i.id === item.id ? { ...i, checked: !i.checked } : i));
-    setItems(updated);
-
-    if (user?.uid) {
-      await toggleCheckShoppingItemAction(item.id, item.checked, user.uid);
-    } else {
-      saveGuestItems(updated);
-    }
+    const nextChecked = !item.checked;
+    setItems((prev) =>
+      prev.map((i) => (i.id === item.id ? { ...i, checked: nextChecked } : i))
+    );
+    await toggleCheckShoppingItem(item.id, item.checked, user?.uid);
   };
 
   const handleDeleteItem = async (id: string) => {
-    const updated = items.filter((i) => i.id !== id);
-    setItems(updated);
-
-    if (user?.uid) {
-      await deleteShoppingItemAction(id, user.uid);
-    } else {
-      saveGuestItems(updated);
-    }
-    toast.info('Item dihapus dari daftar belanja');
+    setItems((prev) => prev.filter((i) => i.id !== id));
+    await deleteShoppingItem(id, user?.uid);
+    toast.info(
+      language === 'en'
+        ? 'Item removed from shopping list'
+        : 'Item dihapus dari daftar belanja'
+    );
   };
 
   const handleClearChecked = async () => {
-    const updated = items.filter((i) => !i.checked);
-    setItems(updated);
-
-    if (user?.uid) {
-      await clearCheckedItemsAction(user.uid);
-    } else {
-      saveGuestItems(updated);
-    }
-    toast.success('Bahan yang sudah dibeli berhasil dibersihkan');
+    setItems((prev) => prev.filter((i) => !i.checked));
+    await clearCheckedShoppingItems(user?.uid);
+    toast.success(
+      language === 'en'
+        ? 'Purchased items cleared'
+        : 'Bahan yang sudah dibeli berhasil dibersihkan'
+    );
   };
 
   const handleAddCustom = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customName.trim()) return;
 
-    if (user?.uid) {
-      const res = await addShoppingItemAction(
-        customName.trim(),
-        customDetail.trim(),
-        'Catatan Pribadi',
-        user.uid
-      );
-      if (res.success && res.item) {
-        setCustomName('');
-        setCustomDetail('');
-        toast.success(`Ditambahkan: ${customName}`);
-      }
-    } else {
-      const newItem: ShoppingItem = {
-        id: Math.random().toString(36).substring(2, 9),
-        name: customName.trim(),
-        detail: customDetail.trim(),
-        checked: false,
-        recipeTitle: 'Catatan Pribadi',
-        createdAt: Date.now(),
-      };
-      saveGuestItems([...items, newItem]);
-      setCustomName('');
-      setCustomDetail('');
-      toast.success(`Ditambahkan: ${newItem.name}`);
-    }
+    const newItem = await addShoppingItem(
+      customName.trim(),
+      customDetail.trim(),
+      t('Catatan Pribadi'),
+      user?.uid
+    );
+
+    setItems((prev) => [newItem, ...prev.filter((i) => i.id !== newItem.id)]);
+    setCustomName('');
+    setCustomDetail('');
+    toast.success(
+      language === 'en' ? `Added: ${newItem.name}` : `Ditambahkan: ${newItem.name}`
+    );
   };
 
   // Group items by recipeTitle
   const groups = useMemo(() => {
     const map: Record<string, ShoppingItem[]> = {};
     items.forEach((item) => {
-      const title = item.recipeTitle || 'Catatan Pribadi';
+      const title = item.recipeTitle || t('Catatan Pribadi');
       if (!map[title]) map[title] = [];
       map[title].push(item);
     });
@@ -141,7 +130,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
       const isComplete = total > 0 && checked === total;
       return { title, list, total, checked, isComplete };
     });
-  }, [items]);
+  }, [items, t]);
 
   const totalAllItems = items.length;
   const totalChecked = items.filter((i) => i.checked).length;
@@ -160,12 +149,12 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
             )}
           </div>
           <h1 className="font-display font-black text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
-            Daftar Belanja Pasar
+            {t('Daftar Belanja Pasar')}
           </h1>
           <p className="text-xs sm:text-sm text-zinc-500 mt-1">
             {totalAllItems > 0
-              ? `${totalChecked} dari ${totalAllItems} bahan telah dibeli`
-              : 'Daftar belanja Anda masih kosong.'}
+              ? `${totalChecked} / ${totalAllItems} ${t('bahan telah dibeli')}`
+              : t('Daftar belanja Anda masih kosong.')}
           </p>
         </div>
 
@@ -174,7 +163,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
             onClick={handleClearChecked}
             className="px-4 py-2 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 text-xs font-bold text-zinc-600 dark:text-zinc-300 transition-colors flex items-center gap-1.5 self-start sm:self-auto"
           >
-            <Trash2 className="w-4 h-4" /> Bersihkan yang Selesai ({totalChecked})
+            <Trash2 className="w-4 h-4" /> {t('Bersihkan yang Selesai')} ({totalChecked})
           </button>
         )}
       </div>
@@ -188,127 +177,106 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
           type="text"
           value={customName}
           onChange={(e) => setCustomName(e.target.value)}
-          placeholder="Nama bahan tambahan (misal: Minyak Goreng, Garam)..."
+          placeholder={t('Nama bahan tambahan (misal: Minyak Goreng, Garam)...')}
           className="w-full sm:flex-1 px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <input
           type="text"
           value={customDetail}
           onChange={(e) => setCustomDetail(e.target.value)}
-          placeholder="Takaran (1 liter, 2 ikat)..."
+          placeholder={t('Takaran (1 liter, 2 ikat)...')}
           className="w-full sm:w-48 px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <button
           type="submit"
-          disabled={!customName.trim()}
-          className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-primary text-white font-bold text-xs hover:bg-primary-container disabled:opacity-40 transition-transform active:scale-95 flex items-center justify-center gap-1.5 shrink-0"
+          className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-sm flex items-center justify-center gap-1.5 transition-transform active:scale-95 shrink-0"
         >
-          <Plus className="w-4 h-4" /> Tambah
+          <Plus className="w-4 h-4" /> {t('Tambah Bahan')}
         </button>
       </form>
 
-      {/* Grouped Shopping Lists */}
+      {/* Items List grouped by recipe */}
       {groups.length > 0 ? (
         <div className="space-y-6">
-          {groups.map((group, idx) => (
+          {groups.map((group, gIdx) => (
             <div
-              key={idx}
-              className={`rounded-3xl p-5 sm:p-6 border transition-all ${
-                group.isComplete
-                  ? 'bg-emerald-50/40 dark:bg-emerald-950/20 border-emerald-200/60 dark:border-emerald-800/40'
-                  : 'bg-white dark:bg-zinc-900 border-zinc-200/80 dark:border-zinc-800 shadow-sm'
-              }`}
+              key={gIdx}
+              className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800 mb-4">
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-bold ${
-                      group.isComplete
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-primary/10 text-primary'
-                    }`}
-                  >
-                    {group.isComplete ? '✓' : idx + 1}
-                  </div>
-                  <div>
-                    <h3 className="font-display font-bold text-base sm:text-lg text-zinc-900 dark:text-zinc-100">
-                      {group.title}
-                    </h3>
-                    <span className="text-[11px] text-zinc-500">
-                      {group.checked}/{group.total} bahan selesai
-                    </span>
-                  </div>
-                </div>
-
-                {group.isComplete && (
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 text-xs font-bold flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Siap Masak!
-                  </span>
-                )}
+              <div className="px-5 py-3.5 bg-zinc-50 dark:bg-zinc-800/60 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                <span className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">
+                  {group.title}
+                </span>
+                <span className="text-[11px] font-mono font-bold text-zinc-400">
+                  {group.checked}/{group.total}
+                </span>
               </div>
 
-              <ul className="space-y-2.5">
+              <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
                 {group.list.map((item) => (
-                  <li
+                  <div
                     key={item.id}
-                    className="flex items-center justify-between gap-3 p-2.5 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                    onClick={() => handleToggleCheck(item)}
+                    className="px-5 py-3.5 flex items-center justify-between gap-3 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer group"
                   >
-                    <button
-                      onClick={() => handleToggleCheck(item)}
-                      className="flex items-center gap-3 text-left flex-1"
-                    >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
                       {item.checked ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                       ) : (
-                        <Circle className="w-5 h-5 text-zinc-300 dark:text-zinc-600 shrink-0" />
+                        <Circle className="w-5 h-5 text-zinc-300 dark:text-zinc-600 shrink-0 group-hover:text-primary transition-colors" />
                       )}
-                      <div>
+                      <div className="min-w-0">
                         <span
-                          className={`text-sm font-semibold transition-all ${
+                          className={`text-sm block truncate transition-all ${
                             item.checked
-                              ? 'line-through text-zinc-400 dark:text-zinc-500'
-                              : 'text-zinc-900 dark:text-zinc-100'
+                              ? 'line-through text-zinc-400 dark:text-zinc-500 font-normal'
+                              : 'text-zinc-800 dark:text-zinc-200 font-semibold'
                           }`}
                         >
                           {item.name}
                         </span>
                         {item.detail && (
-                          <span className="text-xs text-zinc-400 block font-mono">
+                          <span className="text-xs text-zinc-400 block truncate">
                             {item.detail}
                           </span>
                         )}
                       </div>
-                    </button>
+                    </div>
 
                     <button
-                      onClick={() => handleDeleteItem(item.id)}
-                      className="p-1.5 text-zinc-400 hover:text-red-500 transition-colors rounded-lg"
-                      title="Hapus bahan"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteItem(item.id);
+                      }}
+                      className="p-1.5 rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                      title={language === 'en' ? 'Delete item' : 'Hapus bahan'}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           ))}
         </div>
       ) : (
         <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 p-8 space-y-4">
           <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
-            <ShoppingBag className="w-8 h-8" />
+            <ListChecks className="w-8 h-8" />
           </div>
           <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
-            Daftar Belanja Kosong
+            {t('Daftar belanja Anda masih kosong.')}
           </h3>
-          <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto leading-relaxed">
-            Pilih resep masakan yang ingin Anda buat, lalu tekan tombol <strong>"Masukkan ke Daftar Belanja"</strong> pada halaman resep.
+          <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
+            {language === 'en'
+              ? 'Add ingredients from recipe detail pages or type above to create your market shopping list.'
+              : 'Tambahkan bahan dari halaman detail resep atau ketik di atas untuk membuat catatan belanja pasar Anda.'}
           </p>
           <Link
             href="/eksplorasi"
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-sm"
           >
-            Eksplorasi Resep <ArrowRight className="w-3.5 h-3.5" />
+            {t('Jelajahi Resep Sekarang')} <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       )}

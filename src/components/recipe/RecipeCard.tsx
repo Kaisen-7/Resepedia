@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Clock, Star, Flame, Bookmark, ArrowUpRight, Edit3 } from 'lucide-react';
 import { Recipe } from '@/types';
-import { toggleSaveRecipeAction } from '@/actions/bookmark.actions';
 import { useToast } from '@/contexts/ToastContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -19,36 +19,35 @@ export default function RecipeCard({
   isSaved = false,
   canEdit = false,
 }: RecipeCardProps) {
-  const [saved, setSaved] = useState(isSaved);
   const [isSaving, setIsSaving] = useState(false);
   const toast = useToast();
-  const { user } = useAuth();
+  const { user, isRecipeSaved, toggleBookmark } = useAuth();
+  const { t, language } = useLanguage();
+
+  const saved = isRecipeSaved(recipe.id) || isSaved;
 
   const handleBookmark = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (isSaving) return;
 
-    if (!user) {
-      toast.error('Silakan masuk untuk menyimpan resep favorit');
-      return;
-    }
-
     setIsSaving(true);
-    const prevSaved = saved;
-    setSaved(!prevSaved);
-
-    const res = await toggleSaveRecipeAction(recipe.id, prevSaved, user.uid);
-    if (res.success) {
-      setSaved(res.isSaved);
+    try {
+      const isNowSaved = await toggleBookmark(recipe.id);
       toast.success(
-        res.isSaved ? 'Resep disimpan ke koleksi!' : 'Resep dihapus dari koleksi'
+        isNowSaved
+          ? language === 'en'
+            ? 'Recipe saved to collection!'
+            : 'Resep disimpan ke koleksi!'
+          : language === 'en'
+          ? 'Recipe removed from collection'
+          : 'Resep dihapus dari koleksi'
       );
-    } else {
-      setSaved(prevSaved);
-      toast.error(res.error || 'Gagal menyimpan resep');
+    } catch {
+      toast.error(language === 'en' ? 'Failed to save recipe' : 'Gagal menyimpan resep');
+    } finally {
+      setIsSaving(false);
     }
-    setIsSaving(false);
   };
 
   const getDifficultyBadge = (diff: string) => {
@@ -71,7 +70,7 @@ export default function RecipeCard({
         <Link
           href={recipeUrl}
           className="block w-full h-full relative focus:outline-none"
-          title={`Lihat detail resep ${recipe.title}`}
+          title={`${t('Lihat')} ${recipe.title}`}
         >
           <img
             src={recipe.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}
@@ -91,7 +90,7 @@ export default function RecipeCard({
           </span>
           {recipe.spicy && (
             <span className="px-2 py-1 rounded-full bg-red-600 text-white shadow-sm flex items-center gap-1 text-[11px] font-bold">
-              <Flame className="w-3 h-3 fill-white" /> Pedas
+              <Flame className="w-3 h-3 fill-white" /> {t('Pedas')}
             </span>
           )}
         </div>
@@ -103,7 +102,7 @@ export default function RecipeCard({
               href={editUrl}
               onClick={(e) => e.stopPropagation()}
               className="p-2.5 rounded-full bg-white/90 dark:bg-zinc-900/90 text-zinc-700 dark:text-zinc-200 hover:text-primary hover:bg-white dark:hover:bg-zinc-800 shadow-sm transition-transform active:scale-95"
-              title="Edit Resep Ini"
+              title={t('Edit Resep Ini')}
             >
               <Edit3 className="w-4 h-4" />
             </Link>
@@ -117,7 +116,7 @@ export default function RecipeCard({
                 ? 'bg-primary text-white shadow-primary/30'
                 : 'bg-white/90 dark:bg-zinc-900/90 text-zinc-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-800 hover:text-primary'
             }`}
-            title={saved ? 'Hapus dari simpanan' : 'Simpan resep'}
+            title={saved ? (language === 'en' ? 'Remove from saved' : 'Hapus dari simpanan') : (language === 'en' ? 'Save recipe' : 'Simpan resep')}
           >
             <Bookmark className={`w-4 h-4 ${saved ? 'fill-white' : ''}`} />
           </button>
@@ -168,7 +167,7 @@ export default function RecipeCard({
           ) : (
             <div className="flex items-center gap-1 text-[11px] font-medium text-zinc-400 dark:text-zinc-500">
               <Star className="w-3 h-3 text-zinc-300 dark:text-zinc-600" />
-              <span>Belum diulas</span>
+              <span>{language === 'en' ? 'No reviews' : 'Belum diulas'}</span>
             </div>
           )}
 
@@ -177,7 +176,7 @@ export default function RecipeCard({
             href={recipeUrl}
             className="flex items-center gap-0.5 text-primary font-bold text-xs hover:underline"
           >
-            Lihat <ArrowUpRight className="w-3.5 h-3.5" />
+            {t('Lihat')} <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>

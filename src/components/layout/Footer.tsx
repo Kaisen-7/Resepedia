@@ -1,8 +1,13 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { ChefHat, Heart, Globe, Shield } from 'lucide-react';
+import { ChefHat } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Footer() {
+  const { t, language } = useLanguage();
+
   return (
     <footer className="mt-20 border-t border-zinc-200/80 dark:border-zinc-800/80 bg-surface-container-low dark:bg-zinc-950 pb-24 md:pb-12 pt-14 text-on-surface-variant">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,18 +23,24 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm leading-relaxed max-w-md text-zinc-600 dark:text-zinc-400">
-              Ensiklopedi resep masakan Nusantara autentik, dilengkapi asisten konsultasi dapur interaktif, mode memasak bebas genggam, dan kalkulator takaran porsi.
+              {language === 'en'
+                ? 'Authentic Indonesian culinary recipe encyclopedia, equipped with an interactive AI kitchen assistant, hands-free cooking mode, and portion scaler.'
+                : 'Ensiklopedi resep masakan Nusantara autentik, dilengkapi asisten konsultasi dapur interaktif, mode memasak bebas genggam, dan kalkulator takaran porsi.'}
             </p>
             <div className="flex items-center gap-2 text-xs font-semibold text-primary">
               <ChefHat className="w-4 h-4" />
-              <span>Didukung Asisten Dapur Cerdas Gemini</span>
+              <span>
+                {language === 'en'
+                  ? 'Powered by Gemini AI Kitchen Assistant'
+                  : 'Didukung Asisten Dapur Cerdas Gemini'}
+              </span>
             </div>
           </div>
 
           {/* Navigasi Kuliner */}
           <div className="space-y-3">
             <h4 className="text-xs font-black uppercase tracking-wider text-on-surface">
-              Jelajah Wilayah
+              {language === 'en' ? 'Explore Regions' : 'Jelajah Wilayah'}
             </h4>
             <ul className="space-y-2 text-xs font-semibold">
               <li>
@@ -63,27 +74,27 @@ export default function Footer() {
           {/* Informasi & Kebijakan */}
           <div className="space-y-3">
             <h4 className="text-xs font-black uppercase tracking-wider text-on-surface">
-              Tentang & Bantuan
+              {language === 'en' ? 'About & Help' : 'Tentang & Bantuan'}
             </h4>
             <ul className="space-y-2 text-xs font-semibold">
               <li>
                 <Link href="/tentang" className="hover:text-primary transition-colors">
-                  Misi Pelestarian Budaya
+                  {language === 'en' ? 'Cultural Heritage Mission' : 'Misi Pelestarian Budaya'}
                 </Link>
               </li>
               <li>
                 <Link href="/profil" className="hover:text-primary transition-colors">
-                  Preferensi & Akun
+                  {t('Pengaturan & Preferensi')}
                 </Link>
               </li>
               <li>
                 <Link href="/resep/tambah" className="hover:text-primary transition-colors">
-                  Kontribusi Resep Baru
+                  {t('Tulis Resep Baru')}
                 </Link>
               </li>
               <li>
                 <Link href="/belanja" className="hover:text-primary transition-colors">
-                  Daftar Belanja Pasar
+                  {t('Daftar Belanja Pasar')}
                 </Link>
               </li>
             </ul>
@@ -91,9 +102,9 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-zinc-200/60 dark:border-zinc-800/60 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4">
-          <p>© {new Date().getFullYear()} Resepedia. Dibuat dengan cinta untuk kuliner Indonesia 🇮🇩</p>
+          <p>© {new Date().getFullYear()} Resepedia. {language === 'en' ? 'Crafted with love for Indonesian culinary heritage 🇮🇩' : 'Dibuat dengan cinta untuk kuliner Indonesia 🇮🇩'}</p>
           <p className="flex items-center gap-1.5">
-            Dikelola oleh komunitas koki rumahan nusantara
+            {language === 'en' ? 'Curated by home chefs across Indonesia' : 'Dikelola oleh komunitas koki rumahan nusantara'}
           </p>
         </div>
       </div>

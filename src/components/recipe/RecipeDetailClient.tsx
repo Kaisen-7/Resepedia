@@ -30,8 +30,8 @@ import PortionScaler from './PortionScaler';
 import { getYouTubeEmbedInfo } from '@/lib/utils/youtube';
 import HandsFreeCookModal from './HandsFreeCookModal';
 import { scaleQuantity } from '@/lib/utils/fraction-scaler';
-import { toggleSaveRecipeAction } from '@/actions/bookmark.actions';
-import { addShoppingItemAction } from '@/actions/shopping.actions';
+import { addShoppingItem } from '@/lib/utils/shopping-storage';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { createCommentAction, incrementCommentHelpfulAction } from '@/actions/comment.actions';
 import { useCookingTimer } from '@/contexts/TimerContext';
 import { useAI } from '@/contexts/AIContext';
@@ -51,9 +51,10 @@ export default function RecipeDetailClient({
 }: RecipeDetailClientProps) {
   const router = useRouter();
   const toast = useToast();
-  const { user } = useAuth();
+  const { user, isRecipeSaved, toggleBookmark } = useAuth();
   const { startTimer } = useCookingTimer();
   const { openAI } = useAI();
+  const { t, language } = useLanguage();
 
   const [recipeState, setRecipeState] = useState<{
     rating: number;
@@ -64,7 +65,8 @@ export default function RecipeDetailClient({
   });
 
   const [multiplier, setMultiplier] = useState(1);
-  const [isSaved, setIsSaved] = useState(isSavedInitial);
+  const [isSavedLocal, setIsSavedLocal] = useState(isSavedInitial);
+  const isSaved = isRecipeSaved(recipe.id) || isSavedLocal;
   const [isSaving, setIsSaving] = useState(false);
   const [isZenModeOpen, setIsZenModeOpen] = useState(false);
   const [comments, setComments] = useState<Comment[]>(initialComments);
@@ -82,24 +84,24 @@ export default function RecipeDetailClient({
   // Bookmark toggle
   const handleToggleSave = async () => {
     if (isSaving) return;
-    if (!user) {
-      toast.error('Silakan masuk untuk menyimpan resep favorit');
-      return;
-    }
-
     setIsSaving(true);
-    const prev = isSaved;
-    setIsSaved(!prev);
-
-    const res = await toggleSaveRecipeAction(recipe.id, prev, user.uid);
-    if (res.success) {
-      setIsSaved(res.isSaved);
-      toast.success(res.isSaved ? 'Resep disimpan ke koleksi!' : 'Resep dihapus dari koleksi');
-    } else {
-      setIsSaved(prev);
-      toast.error(res.error || 'Gagal menyimpan resep');
+    try {
+      const isNowSaved = await toggleBookmark(recipe.id);
+      setIsSavedLocal(isNowSaved);
+      toast.success(
+        isNowSaved
+          ? language === 'en'
+            ? 'Recipe saved to collection!'
+            : 'Resep disimpan ke koleksi!'
+          : language === 'en'
+          ? 'Recipe removed from collection'
+          : 'Resep dihapus dari koleksi'
+      );
+    } catch {
+      toast.error(language === 'en' ? 'Failed to save recipe' : 'Gagal menyimpan resep');
+    } finally {
+      setIsSaving(false);
     }
-    setIsSaving(false);
   };
 
   // Add all ingredients to shopping list
@@ -107,20 +109,20 @@ export default function RecipeDetailClient({
     let count = 0;
     for (const ing of recipe.ingredients) {
       const scaledDetail = scaleQuantity(ing.detail, multiplier);
-      await addShoppingItemAction(ing.name, scaledDetail, recipe.title, user?.uid);
+      await addShoppingItem(ing.name, scaledDetail, recipe.title, user?.uid);
       count++;
     }
-    toast.success(`${count} bahan berhasil ditambahkan ke Daftar Belanja!`);
+    toast.success(language === 'en' ? `${count} ingredients added to Shopping List!` : `${count} bahan berhasil ditambahkan ke Daftar Belanja!`);
   };
 
   const handleAddSingleIngredient = async (name: string, detail: string) => {
     const scaledDetail = scaleQuantity(detail, multiplier);
-    const res = await addShoppingItemAction(name, scaledDetail, recipe.title, user?.uid);
-    if (res.success) {
-      toast.success(`${name} masuk ke Daftar Belanja`);
-    } else {
-      toast.error(res.error || 'Gagal menambahkan bahan');
-    }
+    await addShoppingItem(name, scaledDetail, recipe.title, user?.uid);
+    toast.success(
+      language === 'en'
+        ? `${name} added to Shopping List`
+        : `${name} masuk ke Daftar Belanja`
+    );
   };
 
   // Submit comment and rating together
@@ -426,7 +428,7 @@ export default function RecipeDetailClient({
             onClick={handleAddAllIngredientsToShopping}
             className="w-full py-3 px-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-primary/10 hover:text-primary text-zinc-800 dark:text-zinc-200 font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95"
           >
-            <ShoppingBag className="w-4 h-4" /> Masukkan Semua ke Daftar Belanja
+            <ShoppingBag className="w-4 h-4" /> {t('Masukkan Semua ke Daftar Belanja')}
           </button>
         </aside>
 

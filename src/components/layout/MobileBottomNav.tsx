@@ -3,17 +3,19 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Home, Compass, Plus, ShoppingBag, User } from 'lucide-react';
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   const tabs = [
-    { label: 'Beranda', href: '/', icon: Home },
-    { label: 'Eksplorasi', href: '/eksplorasi', icon: Compass },
-    { label: 'Tulis', href: '/resep/tambah', icon: Plus, isAction: true },
-    { label: 'Belanja', href: '/belanja', icon: ShoppingBag },
-    { label: 'Profil', href: '/profil', icon: User },
+    { label: t('Beranda'), href: '/', icon: Home },
+    { label: t('Eksplorasi'), href: '/eksplorasi', icon: Compass },
+    { label: t('Tulis'), href: '/resep/tambah', icon: Plus, isAction: true },
+    { label: t('Belanja'), href: '/belanja', icon: ShoppingBag },
+    { label: t('Profil'), href: '/profil', icon: User },
   ];
 
   return (
@@ -33,7 +35,7 @@ export default function MobileBottomNav() {
                 <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30 transition-transform active:scale-90 group-hover:scale-105 border-2 border-white dark:border-zinc-900">
                   <Plus className="w-6 h-6 stroke-[2.5]" />
                 </div>
-                <span className="text-[10px] font-black text-primary mt-0.5">Tulis Resep</span>
+                <span className="text-[10px] font-black text-primary mt-0.5">{t('Tulis Resep')}</span>
               </Link>
             );
           }

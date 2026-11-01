@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { Bookmark, ChefHat, Plus, ArrowRight, UserCheck } from 'lucide-react';
+import { Bookmark, ChefHat, Plus, ArrowRight } from 'lucide-react';
 import { Recipe } from '@/types';
 import RecipeCard from '@/components/recipe/RecipeCard';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getMyLocalRecipes } from '@/lib/utils/recipe-storage';
 
 interface KoleksiClientProps {
   allRecipes: Recipe[];
@@ -15,21 +17,54 @@ interface KoleksiClientProps {
 
 export default function KoleksiClient({
   allRecipes,
-  savedRecipeIds,
+  savedRecipeIds: initialSavedRecipeIds,
   userId,
 }: KoleksiClientProps) {
-  const { user, signInWithGoogle } = useAuth();
+  const { user, signInWithGoogle, savedRecipeIds: authSavedRecipeIds } = useAuth();
+  const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState<'saved' | 'my-recipes'>('saved');
+  const [localMyRecipes, setLocalMyRecipes] = useState<Recipe[]>([]);
 
   const currentUserId = user?.uid || userId;
 
+  // Active saved IDs synced from AuthContext or initial props
+  const activeSavedIds = useMemo(() => {
+    return Array.from(new Set([...(authSavedRecipeIds || []), ...(initialSavedRecipeIds || [])]));
+  }, [authSavedRecipeIds, initialSavedRecipeIds]);
+
+  // Load and listen to local recipes created by user
+  useEffect(() => {
+    const loadMy = () => {
+      setLocalMyRecipes(getMyLocalRecipes(currentUserId));
+    };
+    loadMy();
+
+    window.addEventListener('my-recipes-updated', loadMy);
+    return () => window.removeEventListener('my-recipes-updated', loadMy);
+  }, [currentUserId]);
+
+  // Combined pool of all available recipes (server fallback + user creations)
+  const allAvailableRecipes = useMemo(() => {
+    const map = new Map<string, Recipe>();
+    allRecipes.forEach((r) => map.set(r.id, r));
+    localMyRecipes.forEach((r) => map.set(r.id, r));
+    return Array.from(map.values());
+  }, [allRecipes, localMyRecipes]);
+
   // Filter saved recipes
-  const savedRecipes = allRecipes.filter((r) => savedRecipeIds.includes(r.id));
+  const savedRecipes = useMemo(() => {
+    return allAvailableRecipes.filter((r) => activeSavedIds.includes(r.id));
+  }, [allAvailableRecipes, activeSavedIds]);
 
   // Filter authored recipes
-  const myRecipes = currentUserId
-    ? allRecipes.filter((r) => r.authorId === currentUserId)
-    : [];
+  const myRecipes = useMemo(() => {
+    if (!currentUserId) return [];
+    const serverAuthored = allRecipes.filter((r) => r.authorId === currentUserId);
+    const map = new Map<string, Recipe>();
+    serverAuthored.forEach((r) => map.set(r.id, r));
+    localMyRecipes.forEach((r) => map.set(r.id, r));
+    return Array.from(map.values());
+  }, [allRecipes, localMyRecipes, currentUserId]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
@@ -37,13 +72,13 @@ export default function KoleksiClient({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider mb-1">
-            <Bookmark className="w-4 h-4" /> Koleksi Pribadi
+            <Bookmark className="w-4 h-4" /> {t('Koleksi Pribadi')}
           </div>
           <h1 className="font-display font-black text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
-            Koleksi & Resep Saya
+            {t('Koleksi & Resep Saya')}
           </h1>
           <p className="text-xs sm:text-sm text-zinc-500 mt-1">
-            Akses cepat resep masakan favorit Anda dan kelola resep yang telah Anda bagikan.
+            {t('Akses cepat resep masakan favorit Anda dan kelola resep yang telah Anda bagikan.')}
           </p>
         </div>
 
@@ -51,7 +86,7 @@ export default function KoleksiClient({
           href="/resep/tambah"
           className="px-5 py-2.5 rounded-2xl bg-primary text-white font-bold text-xs hover:bg-primary-container shadow-md shadow-primary/20 flex items-center gap-1.5 self-start sm:self-auto transition-transform active:scale-95"
         >
-          <Plus className="w-4 h-4" /> Tulis Resep Baru
+          <Plus className="w-4 h-4" /> {t('Tulis Resep Baru')}
         </Link>
       </div>
 
@@ -66,7 +101,9 @@ export default function KoleksiClient({
           }`}
         >
           <Bookmark className="w-4 h-4" />
-          <span>Resep Disimpan ({savedRecipes.length})</span>
+          <span>
+            {t('Resep Disimpan')} ({savedRecipes.length})
+          </span>
         </button>
 
         <button
@@ -78,7 +115,9 @@ export default function KoleksiClient({
           }`}
         >
           <ChefHat className="w-4 h-4" />
-          <span>Kreasi Resep Saya ({myRecipes.length})</span>
+          <span>
+            {t('Kreasi Resep Saya')} ({myRecipes.length})
+          </span>
         </button>
       </div>
 
@@ -97,16 +136,16 @@ export default function KoleksiClient({
                 <Bookmark className="w-8 h-8" />
               </div>
               <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
-                Belum ada resep yang disimpan
+                {t('Belum ada resep yang disimpan')}
               </h3>
               <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
-                Saat menemukan resep yang Anda sukai, klik ikon bookmark untuk menyimpannya ke koleksi ini.
+                {t('Jelajahi resep Nusantara dan klik tombol bookmark untuk menyimpannya di sini.')}
               </p>
               <Link
                 href="/eksplorasi"
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container"
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-sm"
               >
-                Cari Resep Favorit <ArrowRight className="w-3.5 h-3.5" />
+                {t('Jelajahi Resep Sekarang')} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           )}
@@ -119,16 +158,18 @@ export default function KoleksiClient({
                 <ChefHat className="w-8 h-8" />
               </div>
               <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
-                Masuk untuk Melihat Resep Anda
+                {language === 'en' ? 'Sign In to View Your Recipes' : 'Masuk untuk Melihat Resep Anda'}
               </h3>
               <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
-                Masuk dengan akun Google Anda untuk mulai mempublikasikan dan mengedit resep masakan Anda sendiri.
+                {language === 'en'
+                  ? 'Sign in with your Google account to start publishing and editing your own recipes.'
+                  : 'Masuk dengan akun Google Anda untuk mulai mempublikasikan dan mengedit resep masakan Anda sendiri.'}
               </p>
               <button
                 onClick={() => signInWithGoogle()}
                 className="px-6 py-3 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-md shadow-primary/20"
               >
-                Masuk dengan Google
+                {t('Masuk dengan Google')}
               </button>
             </div>
           ) : myRecipes.length > 0 ? (
@@ -137,7 +178,7 @@ export default function KoleksiClient({
                 <RecipeCard
                   key={recipe.id}
                   recipe={recipe}
-                  isSaved={savedRecipeIds.includes(recipe.id)}
+                  isSaved={activeSavedIds.includes(recipe.id)}
                   canEdit={true}
                 />
               ))}
@@ -148,16 +189,16 @@ export default function KoleksiClient({
                 <ChefHat className="w-8 h-8" />
               </div>
               <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
-                Belum ada resep yang Anda buat
+                {t('Belum ada resep buatan Anda')}
               </h3>
               <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
-                Punya resep rahasia keluarga atau masakan daerah khas Anda? Bagikan ke komunitas Resepedia sekarang!
+                {t('Bagikan resep keluarga atau kreasi kuliner Nusantara Anda kepada komunitas.')}
               </p>
               <Link
                 href="/resep/tambah"
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container"
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-sm"
               >
-                <Plus className="w-4 h-4" /> Tulis Resep Pertamaku
+                <Plus className="w-4 h-4" /> {t('Tulis Resep Baru')}
               </Link>
             </div>
           )}
