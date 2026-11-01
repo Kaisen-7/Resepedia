@@ -4,13 +4,14 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Search,
-  Sparkles,
   Flame,
   ChefHat,
   ArrowRight,
-  SlidersHorizontal,
   Compass,
   Check,
+  Utensils,
+  BookOpen,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { Recipe } from '@/types';
 import RecipeCard from '@/components/recipe/RecipeCard';
@@ -31,25 +32,31 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
   // Time of day greeting
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 11) return { title: 'Selamat Pagi! Mau Sarapan Apa Hari Ini?', time: 'pagi' };
-    if (hour < 15) return { title: 'Selamat Siang! Siap Masak Makan Siang Lezat?', time: 'siang' };
-    if (hour < 18) return { title: 'Selamat Sore! Cari Ide Camilan atau Makan Malam?', time: 'sore' };
-    return { title: 'Selamat Malam! Butuh Inspirasi Masakan Hangat?', time: 'malam' };
+    if (hour < 11) return { title: 'Mau Masak Sarapan Apa Pagi Ini?', time: 'pagi' };
+    if (hour < 15) return { title: 'Inspirasi Masakan Lezat Siang Ini', time: 'siang' };
+    if (hour < 18) return { title: 'Ide Camilan & Santapan Sore Hari', time: 'sore' };
+    return { title: 'Resep Hangat untuk Makan Malam', time: 'malam' };
   };
 
   const greeting = getGreeting();
 
   const regions = [
-    { name: 'All', label: 'Semua Wilayah' },
+    { name: 'All', label: 'Semua Daerah', badge: 'Seluruh Nusantara' },
     { name: 'Sumatra', label: 'Sumatra', badge: 'Rendang & Gulai' },
-    { name: 'Jawa', label: 'Jawa', badge: 'Rawon & Soto' },
+    { name: 'Jawa', label: 'Jawa', badge: 'Rawon, Gudeg & Soto' },
     { name: 'Bali', label: 'Bali & NTB', badge: 'Betutu & Sambal Matah' },
     { name: 'Sulawesi', label: 'Sulawesi', badge: 'Coto & Woku' },
     { name: 'Kalimantan', label: 'Kalimantan', badge: 'Soto Banjar' },
-    { name: 'Papua', label: 'Papua & Maluku', badge: 'Ikan Kuah Kuning' },
+    { name: 'Papua', label: 'Papua & Maluku', badge: 'Kuah Kuning' },
   ];
 
-  const categories = ['All', 'Main Course', 'Appetizer', 'Dessert', 'Drink'];
+  const categories = [
+    { id: 'All', label: 'Semua Hidangan' },
+    { id: 'Main Course', label: 'Makanan Utama' },
+    { id: 'Appetizer', label: 'Camilan & Pembuka' },
+    { id: 'Dessert', label: 'Hidangan Penutup' },
+    { id: 'Drink', label: 'Minuman Tradisional' },
+  ];
 
   const popularIngredients = [
     'Ayam',
@@ -61,6 +68,9 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
     'Ikan',
     'Cabai',
     'Udang',
+    'Bawang Merah',
+    'Kunyit',
+    'Kecap Manis',
   ];
 
   const toggleIngredient = (ing: string) => {
@@ -108,58 +118,69 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
   }, [initialRecipes, searchQuery, selectedRegion, selectedCategory, selectedIngredients]);
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-12">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-6 pb-12 sm:pt-10 sm:pb-16 bg-gradient-to-b from-primary/5 via-surface to-surface border-b border-zinc-200/50 dark:border-zinc-800/50">
+    <div className="space-y-10 sm:space-y-14 pb-16">
+      {/* Editorial Hero Section */}
+      <section className="relative overflow-hidden pt-8 pb-12 sm:pt-12 sm:pb-16 bg-surface-container-low/60 dark:bg-zinc-900/40 border-b border-zinc-200/60 dark:border-zinc-800/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center space-y-4 sm:space-y-6">
-            {/* Top Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Resepedia v1.0 • Ensiklopedi Kuliner Nusantara</span>
+          <div className="max-w-3xl mx-auto text-center space-y-4 sm:space-y-5">
+            {/* Tagline */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-wide">
+              <Utensils className="w-3.5 h-3.5" />
+              <span>Ensiklopedi Kuliner Nusantara</span>
             </div>
 
             {/* Headline */}
-            <h1 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-on-surface tracking-tight leading-[1.15]">
+            <h1 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-zinc-900 dark:text-zinc-100 tracking-tight leading-[1.15]">
               {greeting.title}
             </h1>
 
-            <p className="text-sm sm:text-base text-on-surface-variant max-w-xl mx-auto leading-relaxed">
-              Jelajahi warisan resep autentik dari 6 pulau besar Indonesia. Didukung panduan memasak bersuara bebas genggam dan konsultasi bumbu bersama Chef AI.
+            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
+              Jelajahi warisan resep autentik dari 6 kepulauan besar Indonesia. Dilengkapi takaran porsi terukur dan panduan langkah demi langkah.
             </p>
 
-            {/* Smart Search Bar */}
+            {/* Practical Search Bar */}
             <div className="pt-2 max-w-2xl mx-auto">
-              <div className="relative flex items-center bg-white dark:bg-zinc-900 rounded-3xl p-2 shadow-xl shadow-zinc-200/50 dark:shadow-none border border-zinc-200/80 dark:border-zinc-800 focus-within:border-primary/80 focus-within:ring-4 focus-within:ring-primary/10 transition-all">
+              <div className="relative flex items-center bg-white dark:bg-zinc-900 rounded-2xl p-2 shadow-sm border border-zinc-200 dark:border-zinc-800 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
                 <Search className="w-5 h-5 text-zinc-400 ml-3 shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Cari masakan (Rendang, Rawon, Coto) atau bahan..."
+                  placeholder="Cari masakan (Rendang, Rawon, Coto) atau bahan (Ayam, Santan)..."
                   className="w-full bg-transparent px-3 py-2 text-sm sm:text-base text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
                 />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 px-2 font-bold"
+                  >
+                    Hapus
+                  </button>
+                )}
                 <button
                   onClick={() => openAI()}
-                  className="hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-primary text-white text-xs font-bold shadow-md hover:bg-primary-container transition-transform active:scale-95 shrink-0"
+                  className="hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-primary/10 hover:text-primary text-zinc-700 dark:text-zinc-300 text-xs font-bold transition-colors shrink-0"
+                  title="Konsultasi bumbu dan ide masak"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Tanya AI</span>
+                  <ChefHat className="w-3.5 h-3.5" />
+                  <span>Tanya Dapur</span>
                 </button>
               </div>
 
-              {/* Quick Prompt Chips */}
+              {/* Popular Search Suggestions */}
               <div className="mt-3 flex items-center justify-center gap-2 flex-wrap text-xs text-zinc-500">
-                <span className="font-semibold text-zinc-400">Populer:</span>
-                {['Rendang Padang', 'Soto Betawi', 'Sate Madura', 'Gado-Gado', 'Ayam Betutu'].map((item) => (
-                  <button
-                    key={item}
-                    onClick={() => setSearchQuery(item)}
-                    className="hover:text-primary transition-colors hover:underline"
-                  >
-                    {item}
-                  </button>
-                ))}
+                <span className="font-semibold text-zinc-400">Paling Dicari:</span>
+                {['Rendang Sapi', 'Soto Betawi', 'Rawon Daging', 'Gado-Gado', 'Ayam Betutu'].map(
+                  (item) => (
+                    <button
+                      key={item}
+                      onClick={() => setSearchQuery(item)}
+                      className="hover:text-primary transition-colors hover:underline"
+                    >
+                      {item}
+                    </button>
+                  )
+                )}
               </div>
             </div>
           </div>
@@ -167,27 +188,27 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
       </section>
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        {/* Ingredient-First Filter ("Bahan di Kulkas") */}
-        <section className="bg-white dark:bg-zinc-900 rounded-3xl p-5 sm:p-7 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+        {/* Ingredient-First Filter ("Punya Bahan Apa di Rumah?") */}
+        <section className="bg-white dark:bg-zinc-900 rounded-3xl p-5 sm:p-7 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               <h2 className="font-display font-bold text-lg sm:text-xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                <span>🧊 Bahan di Kulkas Kamu</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold">
-                  Filter Cerdas
+                <span>Punya Bahan Apa di Rumah?</span>
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold">
+                  Saring Resep
                 </span>
               </h2>
               <p className="text-xs text-zinc-500 mt-0.5">
-                Pilih bahan yang ada di dapur, Resepedia akan menyaring resep yang cocok untukmu.
+                Pilih persediaan bahan yang ada di dapurmu untuk menemukan hidangan yang cocok.
               </p>
             </div>
             {selectedIngredients.length > 0 && (
               <button
                 onClick={() => setSelectedIngredients([])}
-                className="text-xs font-bold text-primary hover:underline text-left"
+                className="text-xs font-bold text-primary hover:underline self-start sm:self-auto"
               >
-                Reset Bahan ({selectedIngredients.length})
+                Reset Pilihan ({selectedIngredients.length})
               </button>
             )}
           </div>
@@ -199,13 +220,13 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                 <button
                   key={ing}
                   onClick={() => toggleIngredient(ing)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-bold transition-all ${
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                     isSelected
-                      ? 'bg-secondary text-white shadow-md shadow-secondary/20 scale-105'
+                      ? 'bg-secondary text-white shadow-sm'
                       : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                   }`}
                 >
-                  {isSelected && <Check className="w-3.5 h-3.5" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                   <span>{ing}</span>
                 </button>
               );
@@ -218,15 +239,17 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
           <div className="flex items-center justify-between">
             <div>
               <h2 className="font-display font-bold text-xl sm:text-2xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                <Compass className="w-5 h-5 text-primary" /> Jelajahi Pulau Nusantara
+                <Compass className="w-5 h-5 text-primary" /> Jelajahi Tradisi Daerah
               </h2>
-              <p className="text-xs text-zinc-500">Cita rasa khas rempah dari Sabang sampai Merauke</p>
+              <p className="text-xs text-zinc-500">
+                Pilih pulau untuk melihat ragam masakan khas rempah setempat
+              </p>
             </div>
             <Link
               href="/eksplorasi"
               className="text-xs font-bold text-primary flex items-center gap-1 hover:underline"
             >
-              Lihat Semua <ArrowRight className="w-3.5 h-3.5" />
+              Semua Daerah <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
@@ -237,16 +260,16 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                 <button
                   key={reg.name}
                   onClick={() => setSelectedRegion(reg.name)}
-                  className={`px-4 py-2.5 rounded-2xl text-xs font-bold shrink-0 transition-all text-left flex flex-col gap-0.5 border ${
+                  className={`px-4 py-3 rounded-2xl text-xs font-bold shrink-0 transition-all text-left flex flex-col gap-0.5 border ${
                     isActive
-                      ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105'
-                      : 'bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border-zinc-200/80 dark:border-zinc-800 hover:border-primary/50'
+                      ? 'bg-primary text-white border-primary shadow-md'
+                      : 'bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border-zinc-200/80 dark:border-zinc-800 hover:border-zinc-400'
                   }`}
                 >
-                  <span className="font-bold">{reg.label}</span>
+                  <span className="font-bold text-sm leading-snug">{reg.label}</span>
                   {reg.badge && (
                     <span
-                      className={`text-[10px] ${isActive ? 'text-white/80' : 'text-zinc-400'}`}
+                      className={`text-[10px] ${isActive ? 'text-white/85' : 'text-zinc-400 font-normal'}`}
                     >
                       {reg.badge}
                     </span>
@@ -260,18 +283,18 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
         {/* Category Filters Chips */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
           {categories.map((cat) => {
-            const isActive = selectedCategory === cat;
+            const isActive = selectedCategory === cat.id;
             return (
               <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
                 className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
                   isActive
                     ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-sm'
                     : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                 }`}
               >
-                {cat === 'All' ? 'Semua Hidangan' : cat}
+                {cat.label}
               </button>
             );
           })}
@@ -282,16 +305,18 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
           <div className="flex items-center justify-between border-b border-zinc-200/80 dark:border-zinc-800/80 pb-4">
             <div>
               <h3 className="font-display font-black text-xl sm:text-2xl text-zinc-900 dark:text-zinc-100">
-                {selectedRegion === 'All' ? 'Resep Pilihan Nusantara' : `Masakan Khas ${selectedRegion}`}
+                {selectedRegion === 'All'
+                  ? 'Katalog Resep Nusantara'
+                  : `Masakan Khas Wilayah ${selectedRegion}`}
               </h3>
               <p className="text-xs text-zinc-500 mt-0.5">
-                Ditemukan <strong>{filteredRecipes.length}</strong> resep masakan
+                Menampilkan <strong>{filteredRecipes.length}</strong> resep masakan
               </p>
             </div>
           </div>
 
           {filteredRecipes.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
               {filteredRecipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
@@ -302,14 +327,14 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
             </div>
           ) : (
             <div className="text-center py-16 bg-white dark:bg-zinc-900 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 p-8 space-y-4">
-              <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
-                <ChefHat className="w-8 h-8" />
+              <div className="w-14 h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 flex items-center justify-center mx-auto">
+                <ChefHat className="w-7 h-7" />
               </div>
-              <h4 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
-                Tidak ada resep yang cocok
+              <h4 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
+                Tidak ada resep yang sesuai kriteria
               </h4>
-              <p className="text-xs text-zinc-500 max-w-md mx-auto">
-                Coba ubah kata kunci pencarian atau bersihkan filter bahan kulkas untuk melihat resep lainnya.
+              <p className="text-xs text-zinc-500 max-w-md mx-auto leading-relaxed">
+                Coba kurangi kata kunci pencarian atau sesuaikan pilihan bahan kulkas untuk melihat resep Nusantara lainnya.
               </p>
               <button
                 onClick={() => {
@@ -318,7 +343,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                   setSelectedCategory('All');
                   setSelectedIngredients([]);
                 }}
-                className="px-5 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container"
+                className="px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors"
               >
                 Reset Semua Filter
               </button>
@@ -326,25 +351,28 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
           )}
         </section>
 
-        {/* Chef AI Banner CTA */}
-        <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-primary to-primary-container p-6 sm:p-10 text-white shadow-xl shadow-primary/20">
-          <div className="relative z-10 max-w-xl space-y-4">
-            <span className="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5 backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5" /> Asisten Cerdas Dapur
-            </span>
-            <h3 className="font-display font-black text-2xl sm:text-4xl leading-tight">
-              Punya bahan terbatas di rumah tapi bingung mau masak apa?
+        {/* Human, Grounded Kitchen Sous-Chef Card */}
+        <section className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-10 border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">
+              <ChefHat className="w-3.5 h-3.5" />
+              <span>Konsultasi Dapur Interaktif</span>
+            </div>
+            <h3 className="font-display font-black text-2xl sm:text-3xl text-zinc-900 dark:text-zinc-100 leading-tight">
+              Bingung Takaran Bumbu atau Bahan Pengganti?
             </h3>
-            <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
-              Konsultasikan dengan Chef Resepedia AI. Dapatkan rekomendasi racikan bumbu alternatif dan resep instan dalam hitungan detik!
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Tanyakan pada Asisten Dapur Resepedia untuk tips mengolah santan, racikan rempah alternatif jika bahan tidak lengkap, atau saran menu keluarga.
             </p>
-            <button
-              onClick={() => openAI()}
-              className="px-6 py-3 rounded-full bg-white text-primary font-bold text-xs sm:text-sm shadow-lg hover:bg-zinc-100 transition-transform active:scale-95"
-            >
-              Mulai Ngobrol dengan Chef AI
-            </button>
           </div>
+
+          <button
+            onClick={() => openAI()}
+            className="px-6 py-3.5 rounded-2xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-md transition-transform active:scale-95 shrink-0 flex items-center gap-2"
+          >
+            <ChefHat className="w-4 h-4" />
+            <span>Mulai Tanya Asisten Dapur</span>
+          </button>
         </section>
       </div>
     </div>

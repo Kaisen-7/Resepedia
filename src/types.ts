@@ -25,6 +25,7 @@ export interface Comment {
   time: string;
   timestamp: number;
   text: string;
+  rating?: number; // 1 - 5 stars
   avatar?: string;
   initial?: string;
   helpfulCount: number;
@@ -82,6 +83,7 @@ export function mapCommentDocToComment(docData: any): Comment {
     time: formatTimeAgo(ts),
     timestamp: ts,
     text: docData.text || '',
+    rating: typeof docData.rating === 'number' && docData.rating > 0 ? docData.rating : undefined,
     avatar: docData.authorAvatar || undefined,
     initial: (docData.authorName || 'U').charAt(0).toUpperCase(),
     helpfulCount: docData.helpfulCount || 0,

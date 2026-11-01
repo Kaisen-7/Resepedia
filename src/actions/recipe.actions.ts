@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { adminDb } from '@/lib/firebase/admin';
+import { adminDb, hasAdminCredentials } from '@/lib/firebase/admin';
 import { RecipeDocument, Recipe, generateSlug, generateKeywords } from '@/types';
 
 export async function createRecipeAction(
@@ -9,9 +9,8 @@ export async function createRecipeAction(
   userId?: string
 ): Promise<{ success: boolean; recipe?: Recipe; error?: string }> {
   try {
-    const recipesRef = adminDb.collection('recipes');
-    const docRef = recipesRef.doc();
-    const slug = generateSlug(recipeData.title, docRef.id);
+    const id = 'rcp_' + Math.random().toString(36).substring(2, 9);
+    const slug = generateSlug(recipeData.title, id);
 
     const ingredientNames = (recipeData.ingredients || []).map((i) =>
       i.name.toLowerCase().trim()
@@ -23,7 +22,7 @@ export async function createRecipeAction(
     );
 
     const newDoc: RecipeDocument = {
-      id: docRef.id,
+      id,
       slug,
       title: recipeData.title,
       description: recipeData.description || '',
@@ -52,6 +51,13 @@ export async function createRecipeAction(
       createdAt: Date.now(),
     };
 
+    if (!hasAdminCredentials || !adminDb) {
+      // In local/demo mode without admin creds, return recipe for client persistence
+      return { success: true, recipe: newDoc };
+    }
+
+    const recipesRef = adminDb.collection('recipes');
+    const docRef = recipesRef.doc(id);
     await docRef.set(newDoc);
 
     revalidatePath('/');
@@ -70,6 +76,10 @@ export async function updateRecipeAction(
   updates: Partial<RecipeDocument>
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    if (!hasAdminCredentials || !adminDb) {
+      return { success: true };
+    }
+
     const docRef = adminDb.collection('recipes').doc(id);
 
     const cleanUpdates: any = { ...updates };
@@ -104,6 +114,10 @@ export async function updateRecipeAction(
 
 export async function deleteRecipeAction(id: string): Promise<{ success: boolean; error?: string }> {
   try {
+    if (!hasAdminCredentials || !adminDb) {
+      return { success: true };
+    }
+
     const docRef = adminDb.collection('recipes').doc(id);
     await docRef.delete();
 
@@ -123,10 +137,14 @@ export async function updateRatingAction(
   currentCount: number = 0
 ): Promise<{ success: boolean; newRating?: number; newCount?: number; error?: string }> {
   try {
-    const docRef = adminDb.collection('recipes').doc(id);
-
     const newCount = currentCount + 1;
     const newRating = Number(((currentRating * currentCount + userRating) / newCount).toFixed(1));
+
+    if (!hasAdminCredentials || !adminDb) {
+      return { success: true, newRating, newCount };
+    }
+
+    const docRef = adminDb.collection('recipes').doc(id);
 
     await docRef.update({
       rating: newRating,

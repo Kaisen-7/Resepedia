@@ -7,7 +7,6 @@ import {
   Compass,
   Bookmark,
   ShoppingBag,
-  Sparkles,
   Plus,
   Search,
   User,
@@ -16,6 +15,7 @@ import {
   Sun,
   Menu,
   X,
+  MessageSquare,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAI } from '@/contexts/AIContext';
@@ -77,7 +77,7 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? 'bg-surface/85 dark:bg-surface-container-low/85 backdrop-blur-md border-b border-zinc-200/60 dark:border-zinc-800/60 shadow-sm'
+          ? 'bg-surface/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200/70 dark:border-zinc-800/70 shadow-sm'
           : 'bg-transparent'
       }`}
     >
@@ -85,7 +85,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/25 transition-transform group-hover:scale-105">
+            <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white shadow-md shadow-primary/20 transition-transform group-hover:scale-105">
               <ChefHat className="w-5 h-5" />
             </div>
             <div>
@@ -99,7 +99,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 bg-surface-container-low dark:bg-zinc-800/50 p-1.5 rounded-full border border-zinc-200/50 dark:border-zinc-700/50">
+          <nav className="hidden md:flex items-center gap-1 bg-surface-container-low dark:bg-zinc-800/60 p-1.5 rounded-full border border-zinc-200/60 dark:border-zinc-700/60">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -119,12 +119,12 @@ export default function Navbar() {
           </nav>
 
           {/* Right Action Icons */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {/* Search Trigger */}
             <button
               onClick={() => setIsSearchOpen(true)}
               className="flex items-center gap-2 px-3 py-2 rounded-full bg-surface-container-low dark:bg-zinc-800/80 text-on-surface-variant text-xs font-semibold hover:border-primary/50 transition-colors border border-transparent"
-              title="Cari Resep (Ctrl + K)"
+              title="Cari Resep"
             >
               <Search className="w-4 h-4 text-zinc-400" />
               <span className="hidden lg:inline text-zinc-400">Cari resep...</span>
@@ -133,19 +133,20 @@ export default function Navbar() {
               </kbd>
             </button>
 
-            {/* Chef AI Assistant Button */}
+            {/* Asisten Dapur Button */}
             <button
               onClick={() => openAI()}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-primary/10 dark:bg-primary/20 hover:bg-primary text-primary hover:text-white text-xs font-bold transition-all active:scale-95 border border-primary/20"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold transition-all active:scale-95 border border-primary/20"
+              title="Konsultasi racikan bumbu dan panduan masak"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Chef AI</span>
+              <ChefHat className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Asisten Dapur</span>
             </button>
 
             {/* Add Recipe Button */}
             <Link
               href="/resep/tambah"
-              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-container text-xs font-bold shadow-md shadow-primary/20 transition-transform active:scale-95"
+              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-container text-xs font-bold shadow-sm transition-transform active:scale-95"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Tulis Resep</span>
@@ -164,6 +165,7 @@ export default function Navbar() {
             <Link
               href="/profil"
               className="p-1 rounded-full border border-zinc-200 dark:border-zinc-700 hover:border-primary transition-colors"
+              title="Profil Pengguna"
             >
               {user?.photoURL ? (
                 <img
@@ -205,7 +207,7 @@ export default function Navbar() {
             </form>
             <div className="mt-3 flex items-center justify-between text-xs text-zinc-400 px-1">
               <span>Tekan <strong>Enter</strong> untuk mencari</span>
-              <span>Resepedia Search</span>
+              <span>Katalog Resepedia</span>
             </div>
           </div>
         </div>

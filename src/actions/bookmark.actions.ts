@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { adminDb } from '@/lib/firebase/admin';
+import { adminDb, hasAdminCredentials } from '@/lib/firebase/admin';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export async function toggleSaveRecipeAction(
@@ -16,6 +16,11 @@ export async function toggleSaveRecipeAction(
         isSaved: isCurrentlySaved,
         error: 'Silakan masuk untuk menyimpan resep favorit.',
       };
+    }
+
+    if (!hasAdminCredentials || !adminDb) {
+      // Local fallback mode when admin credentials are not in environment
+      return { success: true, isSaved: !isCurrentlySaved };
     }
 
     const userRef = adminDb.collection('users').doc(userId);

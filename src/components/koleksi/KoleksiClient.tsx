@@ -122,7 +122,7 @@ export default function KoleksiClient({
                 Masuk untuk Melihat Resep Anda
               </h3>
               <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
-                Masuk dengan akun Google Anda untuk mulai mempublikasikan resep masakan Anda sendiri.
+                Masuk dengan akun Google Anda untuk mulai mempublikasikan dan mengedit resep masakan Anda sendiri.
               </p>
               <button
                 onClick={() => signInWithGoogle()}
@@ -138,6 +138,7 @@ export default function KoleksiClient({
                   key={recipe.id}
                   recipe={recipe}
                   isSaved={savedRecipeIds.includes(recipe.id)}
+                  canEdit={true}
                 />
               ))}
             </div>

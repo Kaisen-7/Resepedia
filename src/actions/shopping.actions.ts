@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { adminDb } from '@/lib/firebase/admin';
+import { adminDb, hasAdminCredentials } from '@/lib/firebase/admin';
 import { ShoppingItemDocument } from '@/types/recipe.types';
 
 export async function addShoppingItemAction(
@@ -11,11 +11,18 @@ export async function addShoppingItemAction(
   userId?: string
 ): Promise<{ success: boolean; item?: ShoppingItemDocument; error?: string }> {
   try {
-    if (!userId) {
-      return {
-        success: false,
-        error: 'Silakan masuk untuk menyinkronkan daftar belanja ke akun Cloud.',
-      };
+    const now = Date.now();
+    const newItem: ShoppingItemDocument = {
+      id: 'shop_' + Math.random().toString(36).substring(2, 9),
+      name: name.trim(),
+      detail: detail.trim(),
+      checked: false,
+      recipeTitle: recipeTitle || null,
+      createdAt: now,
+    };
+
+    if (!userId || !hasAdminCredentials || !adminDb) {
+      return { success: true, item: newItem };
     }
 
     const itemsRef = adminDb
@@ -24,16 +31,7 @@ export async function addShoppingItemAction(
       .collection('shopping_items');
 
     const docRef = itemsRef.doc();
-    const now = Date.now();
-
-    const newItem: ShoppingItemDocument = {
-      id: docRef.id,
-      name: name.trim(),
-      detail: detail.trim(),
-      checked: false,
-      recipeTitle: recipeTitle || null,
-      createdAt: now,
-    };
+    newItem.id = docRef.id;
 
     await docRef.set(newItem);
 
@@ -51,7 +49,9 @@ export async function toggleCheckShoppingItemAction(
   userId?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    if (!userId) return { success: false, error: 'User tidak ditemukan' };
+    if (!userId || !hasAdminCredentials || !adminDb) {
+      return { success: true };
+    }
 
     const itemRef = adminDb
       .collection('users')
@@ -75,7 +75,9 @@ export async function deleteShoppingItemAction(
   userId?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    if (!userId) return { success: false, error: 'User tidak ditemukan' };
+    if (!userId || !hasAdminCredentials || !adminDb) {
+      return { success: true };
+    }
 
     await adminDb
       .collection('users')
@@ -95,7 +97,9 @@ export async function clearCheckedItemsAction(
   userId?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    if (!userId) return { success: false, error: 'User tidak ditemukan' };
+    if (!userId || !hasAdminCredentials || !adminDb) {
+      return { success: true };
+    }
 
     const itemsRef = adminDb
       .collection('users')

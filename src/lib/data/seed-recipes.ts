@@ -41,8 +41,8 @@ export const SEED_RECIPES: Array<
       { title: 'Tumis Rempah & Masak Santan', text: 'Masukkan santan ke dalam wajan tebal bersama bumbu halus, serai, daun kunyit, dan daun jeruk. Aduk terus dengan api sedang agar santan tidak pecah.' },
       { title: 'Masukkan Daging & Masak Perlahan', text: 'Setelah santan mulai berminyak, masukkan potongan daging sapi. Kecilkan api ke tingkat minimal. Masak perlahan selama 3-4 jam sambil diaduk sesekali hingga kuah mengering dan berwarna cokelat kehitaman.' }
     ],
-    rating: 4.9,
-    ratingCount: 142,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -78,8 +78,8 @@ export const SEED_RECIPES: Array<
       { title: 'Ulek Saus Kacang', text: 'Ulek cabai, bawang putih, gula merah, dan garam. Masukkan kacang giling, air asam jawa, dan air hangat secukupnya hingga kekentalan pas.' },
       { title: 'Tata dan Sajikan', text: 'Tata sayuran, tahu, tempe, dan potongan telur rebus di piring. Siram dengan kuah kacang melimpah dan taburi bawang goreng serta emping.' }
     ],
-    rating: 4.7,
-    ratingCount: 98,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -114,8 +114,8 @@ export const SEED_RECIPES: Array<
       { title: 'Tusuk Daging', text: 'Tusukkan 4-5 potong daging ayam ke setiap tusuk sate bambu yang sudah direndam air sebelumnya.' },
       { title: 'Bakar & Balur', text: 'Panggang sate di atas bara api arang. Saat setengah matang, celupkan ke dalam bumbu olesan lalu bakar kembali hingga matang kecokelatan beraroma asap harum.' }
     ],
-    rating: 4.8,
-    ratingCount: 165,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -149,8 +149,8 @@ export const SEED_RECIPES: Array<
       { title: 'Lilitkan pada Serai', text: 'Ambil sekepal kecil adonan, tempelkan dan lilitkan rapat di sekeliling ujung batang serai.' },
       { title: 'Panggang', text: 'Panggang di atas grill pan atau bara arang sambil dibalik-balik hingga matang merata dan berwarna keemasan.' }
     ],
-    rating: 4.7,
-    ratingCount: 74,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -184,8 +184,8 @@ export const SEED_RECIPES: Array<
       { title: 'Buat Papeda', text: 'Larutkan tepung sagu dengan sedikit air dingin. Siramkan air panas mendidih secara perlahan sambil terus diaduk cepat hingga adonan berubah bening dan kental.' },
       { title: 'Penyajian Tradisional', text: 'Gulung papeda menggunakan sumpit bambu (gata-gata), pindahkan ke mangkuk, dan siram dengan kuah kuning beserta ikan hangat.' }
     ],
-    rating: 4.6,
-    ratingCount: 52,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -219,8 +219,8 @@ export const SEED_RECIPES: Array<
       { title: 'Tumis Bumbu Kluwek', text: 'Haluskan isi kluwek bersama bawang, cabai, ketumbar, dan jintan. Tumis bersama kayu manis dan cengkeh hingga matang tanak.' },
       { title: 'Satukan & Ungkep', text: 'Tuang bumbu tumis ke dalam panci rebusan iga. Bumbui garam, gula, dan kaldu sapi. Masak dengan api kecil hingga daging iga benar-benar empuk lepas dari tulang.' }
     ],
-    rating: 4.8,
-    ratingCount: 89,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -255,8 +255,8 @@ export const SEED_RECIPES: Array<
       { title: 'Penyempurnaan Kuah', text: 'Tuang susu evaporasi ke dalam kuah, aduk rata. Koreksi rasa dengan garam dan merica putih.' },
       { title: 'Penyajian', text: 'Tata ketupat/lontong, soun, suwiran ayam, perkedel kentang, dan irisan telur bebek di mangkuk. Siram kuah mendidih dan beri perasan jeruk limau.' }
     ],
-    rating: 4.6,
-    ratingCount: 110,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -291,8 +291,8 @@ export const SEED_RECIPES: Array<
       { title: 'Masak Daging & Sayur', text: 'Masukkan irisan daging sapi dan udang, aduk hingga berubah warna. Tuang kaldu sapi secukupnya.' },
       { title: 'Masukkan Mie', text: 'Masukkan mie kuning, tauge, kecap manis, dan sedikit cuka. Masak dengan api besar hingga bumbu meresap dan kuah mengental.' }
     ],
-    rating: 4.8,
-    ratingCount: 130,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -326,8 +326,8 @@ export const SEED_RECIPES: Array<
       { title: 'Rebus Kinca Gula Aren', text: 'Didihkan gula aren cincang dengan air dan daun pandan hingga larut mengental. Dinginkan.' },
       { title: 'Sajikan', text: 'Tuang sirup gula aren ke dasar gelas saji, beri butiran cendol, es serut, dan siram santan di atasnya.' }
     ],
-    rating: 4.7,
-    ratingCount: 155,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -360,8 +360,8 @@ export const SEED_RECIPES: Array<
       { title: 'Campurkan Susu', text: 'Campurkan seduhan teh dengan kental manis dan susu evaporasi. Aduk rata.' },
       { title: 'Tarik Teh', text: 'Tuang teh bergantian antara dua cangkir dari ketinggian beberapa kali hingga busa tebal terbentuk. Sajikan dingin dengan es batu.' }
     ],
-    rating: 4.6,
-    ratingCount: 210,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -396,8 +396,8 @@ export const SEED_RECIPES: Array<
       { title: 'Orak-Arik Telur', text: 'Sisihkan bumbu di tepi wajan, ceplok telur dan orak-arik hingga berbutir matang.' },
       { title: 'Goreng Nasi', text: 'Masukkan nasi dingin. Bumbui garam, merica, dan sedikit kecap asin. Aduk cepat dengan api besar hingga aroma smoky terbentuk.' }
     ],
-    rating: 4.8,
-    ratingCount: 180,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -431,8 +431,8 @@ export const SEED_RECIPES: Array<
       { title: 'Balur & Isi Ayam', text: 'Lumuri bumbu ke seluruh permukaan dan sela-sela kulit ayam. Masukkan daun singkong ke dalam rongga perut.' },
       { title: 'Bungkus & Kukus Panggang', text: 'Bungkus rapat dengan daun pisang dan aluminium foil. Kukus selama 1.5 jam, lalu panggang dalam oven atau arang selama 30 menit hingga harum.' }
     ],
-    rating: 4.9,
-    ratingCount: 112,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -466,8 +466,8 @@ export const SEED_RECIPES: Array<
       { title: 'Masak Kuah Kuning', text: 'Tumis bumbu halus kunyit hingga harum matang. Masukkan ke dalam air kaldu rebusan ayam. Bumbui garam, gula, dan merica.' },
       { title: 'Penyajian Lengkap', text: 'Tata soun, kol iris, suwiran ayam, dan irisan seledri di mangkuk. Siram kuah kuning mendidih, lalu taburkan bubuk koya melimpah.' }
     ],
-    rating: 4.8,
-    ratingCount: 145,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -503,8 +503,8 @@ export const SEED_RECIPES: Array<
       { title: 'Buat Cuko', text: 'Didihkan air bersama gula batok dan asam jawa. Masukkan ulekan halus bawang putih dan cabai rawit. Masak hingga mendidih dan menyusut kental, saring.' },
       { title: 'Goreng & Sajikan', text: 'Goreng pempek hingga kulitnya keemasan renyah. Potong-potong dan siram dengan cuko kental beserta potongan timun segar.' }
     ],
-    rating: 4.9,
-    ratingCount: 168,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -538,8 +538,8 @@ export const SEED_RECIPES: Array<
       { title: 'Bentuk Bulatan Bakso', text: 'Remas adonan di tangan hingga keluar bulatan di antara ibu jari dan telunjuk. Sendokkan ke dalam air panas (bukan mendidih pergolakan) hingga mengapung.' },
       { title: 'Rebus Kuah Kaldu', text: 'Rebus tulang sumsum sapi dengan bawang putih geprek, daun bawang, dan lada hingga keluar kaldu gurihnya. Sajikan bakso dengan kuah panas.' }
     ],
-    rating: 4.8,
-    ratingCount: 195,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -573,8 +573,8 @@ export const SEED_RECIPES: Array<
       { title: 'Panggang di Wajan Tebal', text: 'Larutkan baking soda dengan sedikit air, aduk ke adonan. Tuang ke wajan tebal panas beralas api kecil. Taburi gula saat sarang mulai terbuka, tutup hingga matang.' },
       { title: 'Oles Mentega & Beri Topping', text: 'Angkat martabak, olesi mentega selagi panas. Beri parutan keju, meses, dan susu kental manis. Lipat dan potong potong.' }
     ],
-    rating: 4.9,
-    ratingCount: 220,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -608,8 +608,8 @@ export const SEED_RECIPES: Array<
       { title: 'Goreng Ayam', text: 'Pisahkan ayam dari ampas lengkuas. Goreng ayam dalam minyak panas hingga berwarna cokelat keemasan, angkat.' },
       { title: 'Goreng Serundeng Lengkuas', text: 'Goreng ampas parutan lengkuas hingga renyah keemasan. Tiriskan dan taburkan di atas ayam goreng hangat.' }
     ],
-    rating: 4.8,
-    ratingCount: 135,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -643,8 +643,8 @@ export const SEED_RECIPES: Array<
       { title: 'Beri Es Serut', text: 'Beri es batu serut secukupnya hingga menggunung menutupi buah.' },
       { title: 'Siram Kuah Manis', text: 'Tuangkan susu kental manis dan sirup gula secara merata. Sajikan dingin segera.' }
     ],
-    rating: 4.8,
-    ratingCount: 172,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -678,8 +678,8 @@ export const SEED_RECIPES: Array<
       { title: 'Tumis Bumbu Sambal', text: 'Tumis bumbu halus cabai, bawang merah, bawang putih, lengkuas, dan daun salam hingga berminyak wangi.' },
       { title: 'Masak dengan Santan', text: 'Tuang santan, beri garam dan gula merah. Masukkan hati sapi dan kentang goreng. Aduk perlahan hingga kuah mengering dan meresap rata.' }
     ],
-    rating: 4.7,
-    ratingCount: 88,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   },
@@ -713,8 +713,8 @@ export const SEED_RECIPES: Array<
       { title: 'Panggang di Atas Arang', text: 'Bakar ayam di atas bara arang sambil terus dibaluri sisa bumbu tumisan taliwang hingga kedua sisinya agak gosong harum.' },
       { title: 'Sajikan dengan Sambal Beberuk', text: 'Beri perasan air jeruk limau di atas ayam bakar panas. Nikmati bersama plecing kangkung atau sambal beberuk terong.' }
     ],
-    rating: 4.8,
-    ratingCount: 140,
+    rating: 0,
+    ratingCount: 0,
     authorName: 'Resepedia Official',
     isDefault: true
   }

@@ -89,6 +89,7 @@ export interface CommentDocument {
   authorName: string;
   authorAvatar: string | null;
   text: string;
+  rating?: number | null; // 1 - 5 stars
   helpfulCount: number;
   repliesCount: number;
   createdAt: number;
