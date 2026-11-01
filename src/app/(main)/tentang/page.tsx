@@ -1,32 +1,33 @@
 import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { ChefHat, Globe, Shield, Sparkles, Heart, ArrowRight } from 'lucide-react';
+import { ChefHat, Globe, Shield, Heart, ArrowRight, Flame } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Tentang Resepedia — Misi Pelestarian Kuliner Nusantara',
+  title: 'Tentang Resepedia — Ensiklopedi Kuliner Nusantara',
   description:
-    'Mengenal misi Resepedia dalam melestarikan resep tradisional autentik Indonesia dengan teknologi web modern.',
+    'Misi Resepedia dalam melestarikan warisan resep masakan autentik Nusantara dari Sabang sampai Merauke.',
 };
 
 export default function TentangPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12">
-      {/* Hero Header */}
+      {/* Hero Mission */}
       <div className="text-center space-y-4">
-        <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto shadow-sm">
-          <ChefHat className="w-8 h-8" />
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold">
+          <Heart className="w-3.5 h-3.5 fill-current" />
+          <span>Warisan Rasa Nusantara</span>
         </div>
-        <h1 className="font-display font-black text-3xl sm:text-5xl text-zinc-900 dark:text-zinc-100 tracking-tight">
-          Menjaga Warisan Rasa Nusantara
+        <h1 className="font-display font-black text-3xl sm:text-5xl text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight">
+          Menjaga Autentisitas Kuliner Nusantara Tetap Hidup
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-          Resepedia lahir dari kepedulian terhadap ribuan resep tradisional Indonesia yang perlahan terlupakan. Kami menggabungkan kekayaan rempah kepulauan dengan inovasi kecerdasan buatan modern.
+          Resepedia lahir dari kepedulian terhadap resep masakan tradisional daerah Indonesia yang sarat rempah, cerita, dan kehangatan keluarga di setiap piringnya.
         </p>
       </div>
 
-      {/* Grid Pillars */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Pillars */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="p-6 sm:p-8 bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
             <Globe className="w-6 h-6" />
@@ -41,13 +42,13 @@ export default function TentangPage() {
 
         <div className="p-6 sm:p-8 bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-secondary/10 text-secondary flex items-center justify-center">
-            <Sparkles className="w-6 h-6" />
+            <Flame className="w-6 h-6" />
           </div>
           <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
             Teknologi Ramah Dapur
           </h3>
           <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            Menghadirkan fitur interaktif seperti <em>Zen Cook Mode</em> yang membacakan langkah memasak dengan audio, <em>Cooking Timer Synthesizer</em>, dan kalkulator porsi dinamis.
+            Menghadirkan fitur interaktif seperti <em>Zen Cook Mode</em> yang membacakan langkah memasak dengan audio bebas genggam, timer masak, dan kalkulator porsi dinamis.
           </p>
         </div>
       </div>

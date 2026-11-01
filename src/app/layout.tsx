@@ -8,29 +8,31 @@ import { AIProvider } from '@/contexts/AIContext';
 import CookingTimer from '@/components/widgets/CookingTimer';
 import AIChatDrawer from '@/components/ai/AIChatDrawer';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://resepedia-seven.vercel.app';
+
 export const metadata: Metadata = {
   title: {
-    default: 'Resepedia — Ensiklopedi & Asisten Koki Cerdas Kuliner Nusantara',
+    default: 'Resepedia — Ensiklopedi & Asisten Dapur Kuliner Nusantara',
     template: '%s | Resepedia',
   },
   description:
-    'Eksplorasi ribuan resep masakan tradisional autentik Nusantara, dilengkapi panduan memasak bebas genggam dengan suara, kalkulator porsi dinamis, dan Chef AI cerdas.',
+    'Eksplorasi ribuan resep masakan tradisional autentik Nusantara, dilengkapi panduan memasak bebas genggam dengan suara, kalkulator porsi dinamis, dan Asisten Dapur cerdas.',
   keywords: [
     'resep masakan',
     'kuliner nusantara',
     'masakan indonesia',
     'resep rendang',
     'resep soto',
-    'chef ai',
+    'asisten dapur',
     'resepedia',
   ],
   authors: [{ name: 'Resepedia Community' }],
-  metadataBase: new URL('https://resepedia.id'),
+  metadataBase: new URL(siteUrl),
   openGraph: {
-    title: 'Resepedia — Ensiklopedi & Asisten Koki Cerdas Kuliner Nusantara',
+    title: 'Resepedia — Ensiklopedi & Asisten Dapur Kuliner Nusantara',
     description:
-      'Katalog resep masakan Nusantara interaktif terlengkap dengan Chef AI dan mode memasak hands-free.',
-    url: 'https://resepedia.id',
+      'Katalog resep masakan Nusantara interaktif terlengkap dengan asisten kuliner dan mode memasak hands-free.',
+    url: siteUrl,
     siteName: 'Resepedia',
     locale: 'id_ID',
     type: 'website',

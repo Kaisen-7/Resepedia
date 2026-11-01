@@ -12,7 +12,6 @@ import {
   Upload,
   ChevronLeft,
   Youtube,
-  Sparkles,
 } from 'lucide-react';
 import { Recipe } from '@/types';
 import { createRecipeAction } from '@/actions/recipe.actions';

@@ -1,42 +1,40 @@
 import { MetadataRoute } from 'next';
 import { getRecipes } from '@/lib/firebase/firestore-queries';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://resepedia.id';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://resepedia-seven.vercel.app';
 
-  // Static routes
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
+      url: siteUrl,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/eksplorasi`,
+      url: `${siteUrl}/eksplorasi`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/belanja`,
+      url: `${siteUrl}/belanja`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/tentang`,
+      url: `${siteUrl}/tentang`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.5,
     },
   ];
 
-  // Dynamic recipe routes
   try {
     const recipes = await getRecipes();
     const recipeRoutes: MetadataRoute.Sitemap = recipes.map((recipe) => ({
-      url: `${baseUrl}/resep/${recipe.slug || recipe.id}`,
+      url: `${siteUrl}/resep/${recipe.slug || recipe.id}`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ChefHat, Heart, Globe, Shield, Sparkles } from 'lucide-react';
+import { ChefHat, Heart, Globe, Shield } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -18,11 +18,11 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm leading-relaxed max-w-md text-zinc-600 dark:text-zinc-400">
-              Ensiklopedi resep masakan Nusantara dan dunia yang interaktif, dilengkapi kecerdasan buatan Chef AI, mode memasak bebas genggam, dan kalkulator porsi presisi.
+              Ensiklopedi resep masakan Nusantara autentik, dilengkapi asisten konsultasi dapur interaktif, mode memasak bebas genggam, dan kalkulator takaran porsi.
             </p>
             <div className="flex items-center gap-2 text-xs font-semibold text-primary">
-              <Sparkles className="w-4 h-4" />
-              <span>Didukung oleh Google Gemini 2.5 Flash</span>
+              <ChefHat className="w-4 h-4" />
+              <span>Didukung Asisten Dapur Cerdas Gemini</span>
             </div>
           </div>
 

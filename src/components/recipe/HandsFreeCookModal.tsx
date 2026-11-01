@@ -9,7 +9,6 @@ import {
   ChevronLeft,
   ChevronRight,
   RotateCcw,
-  Sparkles,
   Flame,
   Clock,
   Eye,

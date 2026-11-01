@@ -10,7 +10,6 @@ import {
   Circle,
   ListChecks,
   ChevronLeft,
-  Sparkles,
   ArrowRight,
   Wifi,
 } from 'lucide-react';
@@ -243,7 +242,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
 
                 {group.isComplete && (
                   <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 text-xs font-bold flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5" /> Siap Masak!
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Siap Masak!
                   </span>
                 )}
               </div>

@@ -23,7 +23,6 @@ import {
   Volume2,
   Edit3,
   MessageSquare,
-  Sparkles,
 } from 'lucide-react';
 import { Recipe, Comment } from '@/types';
 import PortionScaler from './PortionScaler';
