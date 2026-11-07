@@ -98,24 +98,24 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
     : null;
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-zinc-950 text-white flex flex-col justify-between p-4 sm:p-8 select-none">
+    <div className="fixed inset-0 z-9999 bg-zinc-950 text-white flex flex-col justify-between p-4 sm:p-8 select-none">
       {/* Top Header */}
-      <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white">
-            <Flame className="w-5 h-5" />
+      <div className="flex items-center justify-between border-b border-zinc-800 pb-3 sm:pb-4 gap-2">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-primary flex items-center justify-center text-white shrink-0">
+            <Flame className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary block">
-              Zen Cook Mode (Bebas Genggam)
+          <div className="min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-primary block">
+              Zen Cook Mode
             </span>
-            <h2 className="text-base sm:text-lg font-bold text-zinc-100 truncate max-w-sm sm:max-w-md">
+            <h2 className="text-sm sm:text-lg font-bold text-zinc-100 truncate max-w-[150px] sm:max-w-md">
               {recipe.title}
             </h2>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {wakeLockActive && (
             <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold">
               <Eye className="w-3.5 h-3.5" /> Layar Tetap Menyala
@@ -123,17 +123,17 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
           )}
           <button
             onClick={() => setIsMuted(!isMuted)}
-            className="p-3 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white"
+            className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white"
             title={isMuted ? 'Nyalakan Suara' : 'Bisukan Suara'}
           >
-            {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5 text-primary" />}
+            {isMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
           </button>
           <button
             onClick={onClose}
-            className="p-3 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white"
+            className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white"
             title="Keluar"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>
@@ -183,27 +183,27 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between w-full sm:w-auto gap-2 sm:gap-3">
           <button
             onClick={speakCurrentStep}
-            className="p-4 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white"
+            className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white shrink-0"
             title="Ulangi Suara"
           >
-            <RotateCcw className="w-6 h-6" />
+            <RotateCcw className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
           <button
             onClick={handlePrev}
             disabled={currentStepIndex === 0}
-            className="px-6 py-4 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:text-white disabled:opacity-30 font-bold flex items-center gap-2 text-base transition-colors"
+            className="flex-1 sm:flex-initial px-3 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:text-white disabled:opacity-30 font-bold flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-base transition-colors"
           >
-            <ChevronLeft className="w-5 h-5" /> Sebelumnya
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" /> Sebelumnya
           </button>
           <button
             onClick={handleNext}
             disabled={currentStepIndex === instructions.length - 1}
-            className="px-8 py-4 rounded-2xl bg-primary hover:bg-primary-container text-white disabled:opacity-30 font-bold flex items-center gap-2 text-base shadow-xl shadow-primary/25 transition-transform active:scale-95"
+            className="flex-1 sm:flex-initial px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-primary hover:bg-primary-container text-white disabled:opacity-30 font-bold flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-base shadow-xl shadow-primary/25 transition-transform active:scale-95"
           >
-            Berikutnya <ChevronRight className="w-5 h-5" />
+            Berikutnya <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>

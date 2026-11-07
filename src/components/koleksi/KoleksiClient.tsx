@@ -91,10 +91,10 @@ export default function KoleksiClient({
       </div>
 
       {/* Tabs Switcher */}
-      <div className="flex items-center gap-2 border-b border-zinc-200/80 dark:border-zinc-800 pb-2">
+      <div className="flex items-center gap-2 border-b border-zinc-200/80 dark:border-zinc-800 pb-2 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setActiveTab('saved')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+          className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap shrink-0 ${
             activeTab === 'saved'
               ? 'bg-primary text-white shadow-sm'
               : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200'
@@ -108,7 +108,7 @@ export default function KoleksiClient({
 
         <button
           onClick={() => setActiveTab('my-recipes')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+          className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap shrink-0 ${
             activeTab === 'my-recipes'
               ? 'bg-primary text-white shadow-sm'
               : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200'
@@ -125,7 +125,7 @@ export default function KoleksiClient({
       {activeTab === 'saved' ? (
         <div>
           {savedRecipes.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {savedRecipes.map((recipe) => (
                 <RecipeCard key={recipe.id} recipe={recipe} isSaved={true} />
               ))}
@@ -173,7 +173,7 @@ export default function KoleksiClient({
               </button>
             </div>
           ) : myRecipes.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {myRecipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}

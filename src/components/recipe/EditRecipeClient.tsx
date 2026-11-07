@@ -236,7 +236,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
       {/* Main Form */}
       <form onSubmit={handleSave} className="space-y-8">
         {/* Section 1: Basic Information */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
           <h2 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 border-b border-zinc-100 dark:border-zinc-800 pb-3">
             1. Informasi Utama Hidangan
           </h2>
@@ -327,7 +327,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
         </div>
 
         {/* Section 2: Metadata & Specifications */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
           <h2 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 border-b border-zinc-100 dark:border-zinc-800 pb-3">
             2. Karakteristik & Takaran
           </h2>
@@ -444,7 +444,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
         </div>
 
         {/* Section 3: Ingredients */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
           <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
             <div>
               <h2 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
@@ -467,9 +467,9 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
             {ingredients.map((ing, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-12 gap-2 sm:gap-3 items-center bg-zinc-50 dark:bg-zinc-800/60 p-3 rounded-2xl border border-zinc-200/60 dark:border-zinc-700/60"
+                className="bg-zinc-50 dark:bg-zinc-800/60 p-3 rounded-2xl border border-zinc-200/60 dark:border-zinc-700/60 space-y-2 sm:space-y-0 sm:grid sm:grid-cols-12 sm:gap-3 sm:items-center"
               >
-                <div className="col-span-5 sm:col-span-5">
+                <div className="flex items-center gap-2 sm:col-span-5">
                   <input
                     type="text"
                     value={ing.name}
@@ -481,39 +481,51 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                     placeholder="Nama bahan (Daging Sapi, Santan...)"
                     className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary"
                   />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveIngredient(idx)}
+                    disabled={ingredients.length <= 1}
+                    className="sm:hidden p-1.5 text-zinc-400 hover:text-red-500 disabled:opacity-30 rounded-lg transition-colors shrink-0"
+                    title="Hapus bahan"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
-                <div className="col-span-3 sm:col-span-3">
-                  <input
-                    type="text"
-                    value={ing.detail}
-                    onChange={(e) => {
-                      const updated = [...ingredients];
-                      updated[idx].detail = e.target.value;
-                      setIngredients(updated);
-                    }}
-                    placeholder="Takaran (500 gr, 2 sdm...)"
-                    className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary font-mono"
-                  />
+                <div className="grid grid-cols-2 gap-2 sm:contents">
+                  <div className="sm:col-span-3">
+                    <input
+                      type="text"
+                      value={ing.detail}
+                      onChange={(e) => {
+                        const updated = [...ingredients];
+                        updated[idx].detail = e.target.value;
+                        setIngredients(updated);
+                      }}
+                      placeholder="Takaran (500 gr, 2 sdm...)"
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+                    />
+                  </div>
+                  <div className="sm:col-span-3">
+                    <input
+                      type="text"
+                      value={ing.role || ''}
+                      onChange={(e) => {
+                        const updated = [...ingredients];
+                        updated[idx].role = e.target.value;
+                        setIngredients(updated);
+                      }}
+                      placeholder="Keterangan (opsional)"
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                  </div>
                 </div>
-                <div className="col-span-3 sm:col-span-3">
-                  <input
-                    type="text"
-                    value={ing.role || ''}
-                    onChange={(e) => {
-                      const updated = [...ingredients];
-                      updated[idx].role = e.target.value;
-                      setIngredients(updated);
-                    }}
-                    placeholder="Keterangan (Bumbu halus, Rempah aroma...)"
-                    className="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
-                <div className="col-span-1 text-right">
+                <div className="hidden sm:block sm:col-span-1 text-right">
                   <button
                     type="button"
                     onClick={() => handleRemoveIngredient(idx)}
                     disabled={ingredients.length <= 1}
                     className="p-1.5 text-zinc-400 hover:text-red-500 disabled:opacity-30 rounded-lg transition-colors"
+                    title="Hapus bahan"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -524,7 +536,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
         </div>
 
         {/* Section 4: Instructions */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
           <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
             <div>
               <h2 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
@@ -593,7 +605,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
         </div>
 
         {/* Section 5: Variations & Tips */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
           <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
             <div>
               <h2 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
@@ -659,7 +671,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
         </div>
 
         {/* Submit Bar */}
-        <div className="sticky bottom-4 z-20 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md p-4 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-xl flex items-center justify-between gap-4">
+        <div className="sticky bottom-20 md:bottom-4 z-20 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md p-3.5 sm:p-4 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-xl flex items-center justify-between gap-3 sm:gap-4">
           <Link
             href={backUrl}
             className="text-xs font-bold text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 px-4 py-2"

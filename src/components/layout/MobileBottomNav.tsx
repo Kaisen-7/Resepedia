@@ -33,9 +33,9 @@ export default function MobileBottomNav() {
                 title="Tulis Resep Masakan Baru"
               >
                 <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30 transition-transform active:scale-90 group-hover:scale-105 border-2 border-white dark:border-zinc-900">
-                  <Plus className="w-6 h-6 stroke-[2.5]" />
+                  <Plus className="w-6 h-6 stroke-3" />
                 </div>
-                <span className="text-[10px] font-black text-primary mt-0.5">{t('Tulis Resep')}</span>
+                <span className="text-[10px] font-black text-primary mt-0.5">{tab.label}</span>
               </Link>
             );
           }

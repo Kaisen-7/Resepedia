@@ -287,24 +287,24 @@ export default function RecipeDetailClient({
         </p>
 
         {/* Quick Recipe Info Bar */}
-        <div className="flex flex-wrap items-center gap-4 sm:gap-8 pt-3 text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 border-t border-zinc-200/60 dark:border-zinc-800/60">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-3 sm:gap-8 pt-3 text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 border-t border-zinc-200/60 dark:border-zinc-800/60">
           <div className="flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-primary" />
+            <Clock className="w-4 h-4 text-primary shrink-0" />
             <span>Persiapan: <strong>{recipe.prepTime || '15 Mnt'}</strong></span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Flame className="w-4 h-4 text-primary" />
+            <Flame className="w-4 h-4 text-primary shrink-0" />
             <span>Memasak: <strong>{recipe.cookTime || '30 Mnt'}</strong></span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Users className="w-4 h-4 text-primary" />
+            <Users className="w-4 h-4 text-primary shrink-0" />
             <span>Porsi: <strong>{recipe.servings || '4 Porsi'}</strong></span>
           </div>
 
           {/* Authentic Rating / Review Status */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 col-span-2 sm:col-span-1">
             <Star
-              className={`w-4 h-4 ${
+              className={`w-4 h-4 shrink-0 ${
                 hasReviews ? 'fill-amber-400 text-amber-400' : 'text-zinc-300 dark:text-zinc-600'
               }`}
             />
@@ -325,36 +325,36 @@ export default function RecipeDetailClient({
       </div>
 
       {/* Featured Recipe Hero Image Banner */}
-      <div className="relative aspect-video sm:aspect-21/9 rounded-3xl overflow-hidden shadow-lg bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60">
+      <div className="relative min-h-[280px] sm:min-h-0 aspect-4/3 sm:aspect-video lg:aspect-21/9 rounded-3xl overflow-hidden shadow-lg bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60">
         <img
           src={recipe.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}
           alt={recipe.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/35 to-transparent" />
 
         {/* CTA Bar inside image */}
-        <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="absolute bottom-3 sm:bottom-6 left-3 sm:left-6 right-3 sm:right-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="text-white">
-            <span className="text-[11px] font-black uppercase tracking-wider text-amber-300 block mb-0.5">
+            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-amber-300 block mb-0.5">
               Panduan Memasak
             </span>
-            <p className="text-xs sm:text-sm font-semibold drop-shadow">
+            <p className="text-xs sm:text-sm font-semibold drop-shadow line-clamp-2 sm:line-clamp-none">
               Nyalakan panduan audio per langkah untuk kemudahan di dapur.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               onClick={() => setIsZenModeOpen(true)}
-              className="px-4 py-2.5 rounded-2xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-2 transition-transform active:scale-95 shrink-0"
+              className="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-2xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-2 transition-transform active:scale-95 shrink-0"
             >
               <Volume2 className="w-4 h-4" />
               <span>Mode Bebas Genggam</span>
             </button>
             <button
               onClick={() => openAI(recipe)}
-              className="px-3.5 py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 text-white backdrop-blur-md text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 text-white backdrop-blur-md text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0"
               title="Konsultasikan resep ini dengan asisten dapur"
             >
               <ChefHat className="w-4 h-4" />
@@ -367,7 +367,7 @@ export default function RecipeDetailClient({
       {/* Split-Screen Layout: Left Column Ingredients + Right Column Instructions */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
         {/* Kolom Kiri: Ingredients & Portion Scaler (Sticky on desktop) */}
-        <aside className="lg:col-span-5 lg:sticky lg:top-24 space-y-6 bg-white dark:bg-zinc-900 rounded-3xl p-5 sm:p-6 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
+        <aside className="lg:col-span-5 lg:sticky lg:top-24 space-y-6 bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-6 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
           <div>
             <h3 className="font-display font-black text-xl text-zinc-900 dark:text-zinc-100 flex items-center justify-between">
               <span>Bahan-Bahan</span>
@@ -453,7 +453,7 @@ export default function RecipeDetailClient({
                 return (
                   <li
                     key={idx}
-                    className="p-5 sm:p-6 bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 space-y-3 shadow-sm"
+                    className="p-4 sm:p-6 bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 space-y-3 shadow-sm"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
@@ -557,13 +557,13 @@ export default function RecipeDetailClient({
             </div>
 
             {/* Review & Rating Form */}
-            <form onSubmit={handleCommentSubmit} className="space-y-4 bg-white dark:bg-zinc-900 p-5 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
+            <form onSubmit={handleCommentSubmit} className="space-y-4 bg-white dark:bg-zinc-900 p-4 sm:p-5 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
               <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
                 Tulis Ulasan & Beri Bintang
               </h4>
 
               {/* Interactive Star Picker */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border border-zinc-200/60 dark:border-zinc-700/60">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border border-zinc-200/60 dark:border-zinc-700/60">
                 <div className="text-xs">
                   <span className="font-bold text-zinc-800 dark:text-zinc-200 block">
                     Nilai resep ini:
@@ -628,7 +628,7 @@ export default function RecipeDetailClient({
                 {comments.map((comment) => (
                   <div
                     key={comment.id}
-                    className="p-5 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 space-y-2.5 shadow-sm"
+                    className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 space-y-2.5 shadow-sm"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-3">
@@ -670,7 +670,7 @@ export default function RecipeDetailClient({
                       </button>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed pl-12">
+                    <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed pl-0 sm:pl-12">
                       {comment.text}
                     </p>
                   </div>

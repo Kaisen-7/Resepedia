@@ -121,7 +121,7 @@ export default function Navbar() {
           </nav>
 
           {/* Right Action Icons */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5">
+          <div className="flex items-center gap-1 sm:gap-2.5">
             {/* Search Trigger */}
             <button
               onClick={() => setIsSearchOpen(true)}
@@ -148,10 +148,10 @@ export default function Navbar() {
             {/* Add Recipe Button (Always visible on mobile & desktop) */}
             <Link
               href="/resep/tambah"
-              className="flex items-center gap-1 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary text-white hover:bg-primary-container text-xs font-bold shadow-sm transition-transform active:scale-95 shrink-0"
+              className="flex items-center gap-1 p-2 sm:px-4 sm:py-2 rounded-full bg-primary text-white hover:bg-primary-container text-xs font-bold shadow-sm transition-transform active:scale-95 shrink-0"
               title="Tulis Resep Masakan"
             >
-              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <Plus className="w-4 h-4 sm:w-3.5 sm:h-3.5 stroke-3" />
               <span className="hidden sm:inline">{t('Tulis Resep')}</span>
             </Link>
 

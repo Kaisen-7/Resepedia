@@ -121,23 +121,23 @@ export default function ProfilClient({
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
       {/* Profile Header Card */}
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6 text-center sm:text-left">
-        <div className="flex flex-col sm:flex-row items-center gap-5">
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6 text-center sm:text-left">
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5">
           {user?.photoURL ? (
             <img
               src={user.photoURL}
               alt="Avatar"
-              className="w-20 h-20 rounded-full object-cover ring-4 ring-primary/20 shadow-md"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-4 ring-primary/20 shadow-md"
             />
           ) : (
-            <div className="w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center font-display font-black text-3xl shadow-inner">
-              <User className="w-10 h-10" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center font-display font-black text-2xl sm:text-3xl shadow-inner">
+              <User className="w-8 h-8 sm:w-10 sm:h-10" />
             </div>
           )}
 
           <div className="space-y-1">
             <div className="flex items-center justify-center sm:justify-start gap-2">
-              <h1 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-100">
+              <h1 className="font-display font-bold text-xl sm:text-2xl text-zinc-900 dark:text-zinc-100">
                 {user?.displayName || t('Pengguna Tamu')}
               </h1>
               {user && (
@@ -152,18 +152,18 @@ export default function ProfilClient({
           </div>
         </div>
 
-        <div>
+        <div className="w-full sm:w-auto">
           {user ? (
             <button
               onClick={() => logout()}
-              className="px-5 py-2.5 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 text-xs font-bold text-zinc-700 dark:text-zinc-300 transition-colors flex items-center gap-2"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 text-xs font-bold text-zinc-700 dark:text-zinc-300 transition-colors flex items-center justify-center gap-2"
             >
               <LogOut className="w-4 h-4" /> {t('Keluar')}
             </button>
           ) : (
             <button
               onClick={() => signInWithGoogle()}
-              className="px-6 py-3 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary-container shadow-md shadow-primary/20"
+              className="w-full sm:w-auto px-6 py-3 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary-container shadow-md shadow-primary/20"
             >
               {t('Masuk dengan Google')}
             </button>
@@ -214,7 +214,7 @@ export default function ProfilClient({
       </div>
 
       {/* Quick Action: Recipe Management */}
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
@@ -224,16 +224,16 @@ export default function ProfilClient({
               {t('Tulis resep baru atau perbarui resep masakan yang telah Anda publikasikan.')}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
             <Link
               href="/resep/tambah"
-              className="px-4 py-2 rounded-xl bg-primary text-white font-bold text-xs hover:bg-primary-container shadow-sm flex items-center gap-1.5 transition-transform active:scale-95"
+              className="px-4 py-2.5 rounded-xl bg-primary text-white font-bold text-xs hover:bg-primary-container shadow-sm flex items-center justify-center gap-1.5 transition-transform active:scale-95"
             >
               <Plus className="w-4 h-4" /> {t('Tulis Resep')}
             </Link>
             <Link
               href="/koleksi"
-              className="px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs hover:bg-zinc-200 flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs hover:bg-zinc-200 flex items-center justify-center gap-1.5 transition-colors"
             >
               <Edit3 className="w-4 h-4" /> {t('Buka Koleksi Saya')}
             </Link>
@@ -242,13 +242,13 @@ export default function ProfilClient({
       </div>
 
       {/* Preferences Section */}
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-6">
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-6">
         <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 pb-3 border-b border-zinc-100 dark:border-zinc-800 flex items-center gap-2">
           <Settings className="w-5 h-5 text-primary" /> {t('Pengaturan & Preferensi')}
         </h3>
 
         {/* Dark Mode Switch */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <div>
             <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100 block">
               {t('Tampilan Gelap (Dark Mode)')}
@@ -259,7 +259,7 @@ export default function ProfilClient({
           </div>
           <button
             onClick={handleToggleDark}
-            className={`w-14 h-8 rounded-full p-1 transition-colors ${
+            className={`w-14 h-8 rounded-full p-1 transition-colors shrink-0 ${
               darkMode ? 'bg-primary' : 'bg-zinc-200 dark:bg-zinc-700'
             }`}
             aria-label="Toggle Dark Mode"
@@ -279,7 +279,7 @@ export default function ProfilClient({
         </div>
 
         {/* Language Selection */}
-        <div className="flex items-center justify-between pt-4 border-t border-zinc-100 dark:border-zinc-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
           <div>
             <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100 block">
               {t('Bahasa Antarmuka')}
@@ -288,10 +288,10 @@ export default function ProfilClient({
               {t('Pilih bahasa yang digunakan di aplikasi')}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-2xl">
+          <div className="flex items-center justify-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-2xl w-full sm:w-auto">
             <button
               onClick={() => setLanguage('id')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all text-center ${
                 language === 'id'
                   ? 'bg-primary text-white shadow-sm'
                   : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900'
@@ -301,7 +301,7 @@ export default function ProfilClient({
             </button>
             <button
               onClick={() => setLanguage('en')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all text-center ${
                 language === 'en'
                   ? 'bg-primary text-white shadow-sm'
                   : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900'
@@ -322,12 +322,12 @@ export default function ProfilClient({
               {t('Resepedia akan memprioritaskan resep yang sesuai dengan gaya makan Anda')}
             </span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {dietOptions.map((opt) => (
               <button
                 key={opt}
                 onClick={() => handleDietChange(opt)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                className={`px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
                   selectedDiet === opt
                     ? 'bg-secondary text-white shadow-sm'
                     : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'

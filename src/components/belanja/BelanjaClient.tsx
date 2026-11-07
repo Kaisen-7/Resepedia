@@ -171,7 +171,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
       {/* Quick Add Custom Item Form */}
       <form
         onSubmit={handleAddCustom}
-        className="bg-white dark:bg-zinc-900 p-4 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col sm:flex-row items-center gap-2"
+        className="bg-white dark:bg-zinc-900 p-3.5 sm:p-4 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-2"
       >
         <input
           type="text"
@@ -180,19 +180,21 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
           placeholder={t('Nama bahan tambahan (misal: Minyak Goreng, Garam)...')}
           className="w-full sm:flex-1 px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary"
         />
-        <input
-          type="text"
-          value={customDetail}
-          onChange={(e) => setCustomDetail(e.target.value)}
-          placeholder={t('Takaran (1 liter, 2 ikat)...')}
-          className="w-full sm:w-48 px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary"
-        />
-        <button
-          type="submit"
-          className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-sm flex items-center justify-center gap-1.5 transition-transform active:scale-95 shrink-0"
-        >
-          <Plus className="w-4 h-4" /> {t('Tambah Bahan')}
-        </button>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={customDetail}
+            onChange={(e) => setCustomDetail(e.target.value)}
+            placeholder={t('Takaran (1 liter, 2 ikat)...')}
+            className="flex-1 sm:w-48 px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <button
+            type="submit"
+            className="px-5 py-2.5 rounded-2xl bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-sm flex items-center justify-center gap-1.5 transition-transform active:scale-95 shrink-0"
+          >
+            <Plus className="w-4 h-4" /> {t('Tambah Bahan')}
+          </button>
+        </div>
       </form>
 
       {/* Items List grouped by recipe */}
@@ -248,7 +250,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
                         e.stopPropagation();
                         handleDeleteItem(item.id);
                       }}
-                      className="p-1.5 rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                      className="p-1.5 rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100"
                       title={language === 'en' ? 'Delete item' : 'Hapus bahan'}
                     >
                       <Trash2 className="w-4 h-4" />

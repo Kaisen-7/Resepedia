@@ -137,7 +137,7 @@ export default function AIChatDrawer() {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 26, stiffness: 240 }}
-        className="relative w-full max-w-md sm:max-w-lg bg-white dark:bg-zinc-900 h-full shadow-2xl flex flex-col z-10 border-l border-zinc-200 dark:border-zinc-800"
+        className="relative w-full max-w-full sm:max-w-md bg-white dark:bg-zinc-900 h-full shadow-2xl flex flex-col z-10 border-l border-zinc-200 dark:border-zinc-800"
       >
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/70 dark:bg-zinc-900/80">
@@ -226,7 +226,7 @@ export default function AIChatDrawer() {
         </div>
 
         {/* Input box */}
-        <div className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <div className="p-3.5 sm:p-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 pb-[max(env(safe-area-inset-bottom),0.875rem)]">
           <form
             onSubmit={(e) => {
               e.preventDefault();

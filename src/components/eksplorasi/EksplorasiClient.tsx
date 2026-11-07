@@ -86,7 +86,7 @@ export default function EksplorasiClient({
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-5 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-5 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
         {/* Search input */}
         <div className="relative">
           <Search className="w-5 h-5 text-zinc-400 absolute left-4 top-1/2 -translate-y-1/2" />
@@ -100,10 +100,10 @@ export default function EksplorasiClient({
         </div>
 
         {/* Filter Pills row */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
           {/* Region Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-            <span className="text-xs font-bold text-zinc-400 mr-1">Pulau:</span>
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar w-full sm:w-auto">
+            <span className="text-xs font-bold text-zinc-400 mr-1 shrink-0">Pulau:</span>
             {regions.map((reg) => (
               <button
                 key={reg}
@@ -120,7 +120,7 @@ export default function EksplorasiClient({
           </div>
 
           {/* Quick Spicy toggle & Reset */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
             <button
               onClick={() => setSpicyOnly(!spicyOnly)}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold border transition-colors ${
@@ -143,7 +143,7 @@ export default function EksplorasiClient({
         </div>
 
         {/* Second row: Categories & Difficulties & Sort */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 text-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 text-xs">
           <div className="flex flex-wrap items-center gap-3">
             {/* Category dropdown */}
             <div className="flex items-center gap-1.5">
@@ -200,7 +200,7 @@ export default function EksplorasiClient({
         </p>
 
         {filteredRecipes.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {filteredRecipes.map((recipe) => (
               <RecipeCard
                 key={recipe.id}

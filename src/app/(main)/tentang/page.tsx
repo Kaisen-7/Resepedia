@@ -54,7 +54,7 @@ export default function TentangPage() {
       </div>
 
       {/* Community Banner */}
-      <div className="bg-surface-container-low dark:bg-zinc-900/60 rounded-3xl p-8 border border-zinc-200/80 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div className="bg-surface-container-low dark:bg-zinc-900/60 rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="space-y-2 text-center sm:text-left">
           <h4 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
             Bergabunglah Menjadi Kontributor Resepedia
@@ -66,7 +66,7 @@ export default function TentangPage() {
 
         <Link
           href="/resep/tambah"
-          className="px-6 py-3 rounded-2xl bg-primary text-white font-bold text-xs hover:bg-primary-container shadow-md shadow-primary/20 transition-transform active:scale-95 shrink-0"
+          className="w-full sm:w-auto text-center px-6 py-3 rounded-2xl bg-primary text-white font-bold text-xs hover:bg-primary-container shadow-md shadow-primary/20 transition-transform active:scale-95 shrink-0"
         >
           Tulis Resep Sekarang
         </Link>

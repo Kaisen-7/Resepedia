@@ -166,19 +166,19 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
 
             {/* Practical Search Bar */}
             <div className="pt-2 max-w-2xl mx-auto">
-              <div className="relative flex items-center bg-white dark:bg-zinc-900 rounded-2xl p-2 shadow-sm border border-zinc-200 dark:border-zinc-800 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-                <Search className="w-5 h-5 text-zinc-400 ml-3 shrink-0" />
+              <div className="relative flex items-center bg-white dark:bg-zinc-900 rounded-2xl p-1.5 sm:p-2 shadow-sm border border-zinc-200 dark:border-zinc-800 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 ml-2.5 sm:ml-3 shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Cari masakan (Rendang, Rawon, Coto) atau bahan (Ayam, Santan)..."
-                  className="w-full bg-transparent px-3 py-2 text-sm sm:text-base text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
+                  placeholder={language === 'en' ? 'Search dishes or ingredients (Chicken, Coconut)...' : 'Cari masakan atau bahan (Ayam, Rendang, Santan)...'}
+                  className="w-full bg-transparent px-2.5 sm:px-3 py-2 text-xs sm:text-base text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 px-2 font-bold"
+                    className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 px-2 font-bold shrink-0"
                   >
                     Hapus
                   </button>
@@ -216,7 +216,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
         {/* Ingredient-First Filter ("Punya Bahan Apa di Rumah?") */}
-        <section className="bg-white dark:bg-zinc-900 rounded-3xl p-5 sm:p-7 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
+        <section className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-7 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               <h2 className="font-display font-bold text-lg sm:text-xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
@@ -239,14 +239,14 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {popularIngredients.map((ing) => {
               const isSelected = selectedIngredients.includes(ing);
               return (
                 <button
                   key={ing}
                   onClick={() => toggleIngredient(ing)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold transition-all ${
                     isSelected
                       ? 'bg-secondary text-white shadow-sm'
                       : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
@@ -378,7 +378,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
         </section>
 
         {/* Human, Grounded Kitchen Sous-Chef Card */}
-        <section className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-10 border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <section className="bg-white dark:bg-zinc-900 rounded-3xl p-5 sm:p-10 border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">
               <ChefHat className="w-3.5 h-3.5" />
@@ -394,7 +394,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
 
           <button
             onClick={() => openAI()}
-            className="px-6 py-3.5 rounded-2xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-md transition-transform active:scale-95 shrink-0 flex items-center gap-2"
+            className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-md transition-transform active:scale-95 shrink-0 flex items-center justify-center gap-2"
           >
             <ChefHat className="w-4 h-4" />
             <span>Mulai Tanya Asisten Dapur</span>

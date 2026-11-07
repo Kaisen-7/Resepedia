@@ -135,22 +135,22 @@ export default function RecipeCard({
       </div>
 
       {/* Content Body */}
-      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+      <div className="p-3.5 sm:p-5 flex-1 flex flex-col justify-between">
         <div>
           <Link href={recipeUrl} className="block group-hover:text-primary transition-colors">
-            <h3 className="font-display font-bold text-lg sm:text-xl text-zinc-900 dark:text-zinc-100 line-clamp-1 leading-snug">
+            <h3 className="font-display font-bold text-base sm:text-xl text-zinc-900 dark:text-zinc-100 line-clamp-1 leading-snug">
               {recipe.title}
             </h3>
           </Link>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 sm:mt-1.5 line-clamp-2 leading-relaxed">
             {recipe.description}
           </p>
         </div>
 
         {/* Metrics Footer */}
-        <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs text-zinc-600 dark:text-zinc-400">
+        <div className="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-[11px] sm:text-xs text-zinc-600 dark:text-zinc-400">
           {/* Total Time */}
-          <div className="flex items-center gap-1.5 font-medium">
+          <div className="flex items-center gap-1 font-medium">
             <Clock className="w-3.5 h-3.5 text-zinc-400" />
             <span>{recipe.cookTime || recipe.prepTime || '20 Mnt'}</span>
           </div>
@@ -165,7 +165,7 @@ export default function RecipeCard({
               </span>
             </div>
           ) : (
-            <div className="flex items-center gap-1 text-[11px] font-medium text-zinc-400 dark:text-zinc-500">
+            <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-medium text-zinc-400 dark:text-zinc-500">
               <Star className="w-3 h-3 text-zinc-300 dark:text-zinc-600" />
               <span>{language === 'en' ? 'No reviews' : 'Belum diulas'}</span>
             </div>

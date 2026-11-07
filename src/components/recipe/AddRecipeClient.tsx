@@ -189,7 +189,7 @@ export default function AddRecipeClient() {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Informasi Utama */}
-        <div className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
+        <div className="bg-white dark:bg-zinc-900 p-4 sm:p-8 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
           <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 pb-2 border-b border-zinc-100 dark:border-zinc-800">
             1. Informasi Resep
           </h3>
@@ -377,7 +377,7 @@ export default function AddRecipeClient() {
         </div>
 
         {/* Daftar Bahan Masakan */}
-        <div className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
+        <div className="bg-white dark:bg-zinc-900 p-4 sm:p-8 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
             <div>
               <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
@@ -396,44 +396,61 @@ export default function AddRecipeClient() {
 
           <div className="space-y-3">
             {ingredients.map((ing, idx) => (
-              <div key={idx} className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={ing.name}
-                  onChange={(e) => {
-                    const next = [...ingredients];
-                    next[idx].name = e.target.value;
-                    setIngredients(next);
-                  }}
-                  placeholder="Nama Bahan (misal: Daging Sapi Has Luar)"
-                  className="flex-1 px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none"
-                />
-                <input
-                  type="text"
-                  value={ing.detail}
-                  onChange={(e) => {
-                    const next = [...ingredients];
-                    next[idx].detail = e.target.value;
-                    setIngredients(next);
-                  }}
-                  placeholder="Takaran (500 gr)"
-                  className="w-36 px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none"
-                />
-                <input
-                  type="text"
-                  value={ing.role}
-                  onChange={(e) => {
-                    const next = [...ingredients];
-                    next[idx].role = e.target.value;
-                    setIngredients(next);
-                  }}
-                  placeholder="Peran/Tips (potong dadu 3cm)"
-                  className="hidden sm:block flex-1 px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none"
-                />
+              <div
+                key={idx}
+                className="bg-zinc-50 dark:bg-zinc-800/60 p-3 sm:p-0 rounded-2xl sm:rounded-none border sm:border-0 border-zinc-200/70 dark:border-zinc-700/70 space-y-2 sm:space-y-0 sm:flex sm:items-center sm:gap-2"
+              >
+                <div className="flex items-center gap-2 sm:flex-1">
+                  <input
+                    type="text"
+                    value={ing.name}
+                    onChange={(e) => {
+                      const next = [...ingredients];
+                      next[idx].name = e.target.value;
+                      setIngredients(next);
+                    }}
+                    placeholder="Nama Bahan (misal: Daging Sapi)"
+                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-white sm:bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveIngredient(idx)}
+                    disabled={ingredients.length <= 1}
+                    className="sm:hidden p-2 text-zinc-400 hover:text-red-500 disabled:opacity-30 rounded-lg shrink-0"
+                    title="Hapus baris"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-2 sm:contents">
+                  <input
+                    type="text"
+                    value={ing.detail}
+                    onChange={(e) => {
+                      const next = [...ingredients];
+                      next[idx].detail = e.target.value;
+                      setIngredients(next);
+                    }}
+                    placeholder="Takaran (500 gr)"
+                    className="w-full sm:w-36 px-3.5 py-2.5 rounded-xl bg-white sm:bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+                  />
+                  <input
+                    type="text"
+                    value={ing.role}
+                    onChange={(e) => {
+                      const next = [...ingredients];
+                      next[idx].role = e.target.value;
+                      setIngredients(next);
+                    }}
+                    placeholder="Peran/Tips (opsional)"
+                    className="w-full sm:flex-1 px-3.5 py-2.5 rounded-xl bg-white sm:bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={() => handleRemoveIngredient(idx)}
-                  className="p-2.5 text-zinc-400 hover:text-red-500 rounded-xl"
+                  disabled={ingredients.length <= 1}
+                  className="hidden sm:block p-2.5 text-zinc-400 hover:text-red-500 disabled:opacity-30 rounded-xl shrink-0"
                   title="Hapus baris"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -444,7 +461,7 @@ export default function AddRecipeClient() {
         </div>
 
         {/* Langkah Instruksi Memasak */}
-        <div className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
+        <div className="bg-white dark:bg-zinc-900 p-4 sm:p-8 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
             <div>
               <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
@@ -513,17 +530,17 @@ export default function AddRecipeClient() {
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-end gap-3 pt-4">
+        <div className="flex items-center justify-between sm:justify-end gap-3 pt-4">
           <Link
             href="/eksplorasi"
-            className="px-6 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs hover:bg-zinc-200"
+            className="flex-1 sm:flex-initial text-center px-6 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs hover:bg-zinc-200"
           >
             Batal
           </Link>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-8 py-3 rounded-2xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-xl shadow-primary/25 disabled:opacity-50 transition-transform active:scale-95 flex items-center gap-2"
+            className="flex-1 sm:flex-initial justify-center px-6 sm:px-8 py-3 rounded-2xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-xl shadow-primary/25 disabled:opacity-50 transition-transform active:scale-95 flex items-center gap-2"
           >
             <ChefHat className="w-4 h-4" />
             <span>{isSubmitting ? 'Menerbitkan...' : 'Terbitkan Resep'}</span>
