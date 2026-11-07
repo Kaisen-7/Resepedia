@@ -109,7 +109,7 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
             <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-primary block">
               Zen Cook Mode
             </span>
-            <h2 className="text-sm sm:text-lg font-bold text-zinc-100 truncate max-w-[150px] sm:max-w-md">
+            <h2 className="text-sm sm:text-lg font-bold text-zinc-100 truncate max-w-37.5 sm:max-w-md">
               {recipe.title}
             </h2>
           </div>

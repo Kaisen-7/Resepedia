@@ -52,7 +52,7 @@ export default function MobileBottomNav() {
                   : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200'
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
+              <Icon className={`w-5 h-5 ${isActive ? 'stroke-3' : 'stroke-2'}`} />
               <span className={`text-[10px] mt-0.5 ${isActive ? 'font-black' : 'font-semibold'}`}>
                 {tab.label}
               </span>

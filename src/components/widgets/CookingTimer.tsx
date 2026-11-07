@@ -58,7 +58,7 @@ export default function CookingTimer() {
           >
             <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
             <span className="font-mono font-bold text-sm">{timeFormatted}</span>
-            <span className="text-xs text-zinc-500 max-w-[100px] truncate">{recipeTitle}</span>
+            <span className="text-xs text-zinc-500 max-w-25 truncate">{recipeTitle}</span>
             <Maximize2 className="w-3.5 h-3.5 opacity-60 ml-1" />
           </motion.div>
         ) : (
