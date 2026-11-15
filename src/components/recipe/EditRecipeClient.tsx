@@ -218,14 +218,14 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
           <Link
             href={backUrl}
             onClick={() => playClickSound()}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#C85A32] transition-colors mb-2"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#5C3A21] dark:text-outline-variant hover:text-[#C85A32] transition-colors mb-2"
           >
             <ChevronLeft className="w-4 h-4" /> {language === 'en' ? 'Cancel & Return to Recipe' : 'Batal & Kembali ke Resep'}
           </Link>
           <h1 className="font-display font-black text-2xl sm:text-4xl text-[#2C1E16] dark:text-[#F6EFE2]">
             {language === 'en' ? 'Edit Recipe' : 'Edit Resep Masakan'}
           </h1>
-          <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA] mt-1">
+          <p className="text-xs text-[#5C3A21] dark:text-outline-variant mt-1">
             {language === 'en'
               ? 'Update ingredients, instructions, cooking time, or dish details.'
               : 'Perbarui bahan, panduan langkah, waktu masak, atau detail hidangan ini.'}
@@ -239,7 +239,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
               playClickSound();
               setShowDeleteConfirm(true);
             }}
-            className="px-4 py-2.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] hover:bg-[#B83B2B] hover:text-white text-[#B83B2B] dark:text-red-400 border-2 border-[#5C3A21]/40 text-xs font-black shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 transition-colors flex items-center gap-1.5"
+            className="px-4 py-2.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] hover:bg-cabai-600 hover:text-white text-cabai-600 dark:text-red-400 border-2 border-[#5C3A21]/40 text-xs font-black shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 transition-colors flex items-center gap-1.5"
             title="Hapus Resep"
           >
             <Trash2 className="w-4 h-4" />
@@ -258,7 +258,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] mb-1.5">
+              <label className="block text-xs font-bold text-[#5C3A21] dark:text-outline-variant mb-1.5">
                 Judul Resep <span className="text-[#C85A32]">*</span>
               </label>
               <input
@@ -266,13 +266,13 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Contoh: Rendang Sapi Asli Payakumbuh"
-                className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none focus:border-[#C85A32]"
+                className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-[#EFE4CE]/50 dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none focus:border-[#C85A32]"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] mb-1.5">
+              <label className="block text-xs font-bold text-[#5C3A21] dark:text-outline-variant mb-1.5">
                 Deskripsi & Cerita Kuliner <span className="text-[#C85A32]">*</span>
               </label>
               <textarea
@@ -280,14 +280,14 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Ceritakan cita rasa khas, keunikan rempah, atau latar belakang masakan ini..."
                 rows={3}
-                className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none focus:border-[#C85A32]"
+                className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-[#EFE4CE]/50 dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none focus:border-[#C85A32]"
                 required
               />
             </div>
 
             {/* Photo / Image */}
             <div>
-              <label className="block text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] mb-1.5">
+              <label className="block text-xs font-bold text-[#5C3A21] dark:text-outline-variant mb-1.5">
                 Foto Hidangan
               </label>
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
@@ -302,10 +302,10 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     placeholder="Masukkan URL foto (https://...)"
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
                   />
                   <div className="flex items-center gap-2">
-                    <label className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] hover:bg-[#E2D1B0] text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] border border-[#5C3A21]/40 transition-colors">
+                    <label className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] hover:bg-[#E2D1B0] text-xs font-bold text-[#5C3A21] dark:text-outline-variant border border-[#5C3A21]/40 transition-colors">
                       <Upload className="w-3.5 h-3.5" />
                       <span>{isUploading ? 'Mengunggah...' : 'Unggah File Foto'}</span>
                       <input
@@ -324,17 +324,17 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
 
             {/* Video Tutorial Link */}
             <div>
-              <label className="block text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] mb-1.5">
+              <label className="block text-xs font-bold text-[#5C3A21] dark:text-outline-variant mb-1.5">
                 Link Video YouTube (Opsional)
               </label>
               <div className="relative">
-                <Youtube className="w-4 h-4 text-[#B83B2B] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Youtube className="w-4 h-4 text-cabai-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="url"
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
                   placeholder="https://www.youtube.com/watch?v=..."
-                  className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
+                  className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
                 />
               </div>
             </div>
@@ -349,13 +349,13 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] mb-1.5">
+              <label className="block text-xs font-bold text-[#5C3A21] dark:text-outline-variant mb-1.5">
                 Kategori Hidangan
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm font-bold text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#EFE4CE]/50 dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-xs sm:text-sm font-bold text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               >
                 <option value="Main Course">Makanan Utama (Main Course)</option>
                 <option value="Appetizer">Hidangan Pembuka / Camilan</option>
@@ -365,13 +365,13 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] mb-1.5">
+              <label className="block text-xs font-bold text-[#5C3A21] dark:text-outline-variant mb-1.5">
                 Asal Wilayah Nusantara
               </label>
               <select
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm font-bold text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#EFE4CE]/50 dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-xs sm:text-sm font-bold text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               >
                 <option value="Sumatra">Sumatra (Minang, Batak, Aceh, Palembang)</option>
                 <option value="Jawa">Jawa (Sunda, Jawa Tengah, Jawa Timur, Betawi)</option>
@@ -384,13 +384,13 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] mb-1.5">
+              <label className="block text-xs font-bold text-[#5C3A21] dark:text-outline-variant mb-1.5">
                 Tingkat Kesulitan
               </label>
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm font-bold text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#EFE4CE]/50 dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-xs sm:text-sm font-bold text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               >
                 <option value="Easy">★ Rank C (Mudah / Easy)</option>
                 <option value="Medium">★★ Rank B (Menengah / Medium)</option>
@@ -399,7 +399,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] mb-1.5">
+              <label className="block text-xs font-bold text-[#5C3A21] dark:text-outline-variant mb-1.5">
                 Waktu Persiapan
               </label>
               <input
@@ -407,12 +407,12 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                 value={prepTime}
                 onChange={(e) => setPrepTime(e.target.value)}
                 placeholder="15 Mnt"
-                className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] mb-1.5">
+              <label className="block text-xs font-bold text-[#5C3A21] dark:text-outline-variant mb-1.5">
                 Waktu Memasak
               </label>
               <input
@@ -420,12 +420,12 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                 value={cookTime}
                 onChange={(e) => setCookTime(e.target.value)}
                 placeholder="30 Mnt"
-                className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] mb-1.5">
+              <label className="block text-xs font-bold text-[#5C3A21] dark:text-outline-variant mb-1.5">
                 Porsi Standar
               </label>
               <input
@@ -433,7 +433,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                 value={servings}
                 onChange={(e) => setServings(e.target.value)}
                 placeholder="4 Porsi"
-                className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               />
             </div>
           </div>
@@ -448,8 +448,8 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
               }}
               className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border-2 transition-all active:translate-y-0.5 ${
                 spicy
-                  ? 'bg-[#B83B2B] text-white border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
-                  : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] border-[#5C3A21]/40'
+                  ? 'bg-cabai-600 text-white border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
+                  : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-outline-variant border-[#5C3A21]/40'
               }`}
             >
               <Flame className="w-3.5 h-3.5" />
@@ -468,14 +468,14 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
               <h2 className="font-display font-black text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2]">
                 3. Bahan-Bahan Masakan
               </h2>
-              <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+              <p className="text-xs text-[#5C3A21] dark:text-outline-variant">
                 Tulis nama bahan, takaran, dan fungsinya (misal: bumbu halus, aroma, topping)
               </p>
             </div>
             <button
               type="button"
               onClick={handleAddIngredient}
-              className="px-3 py-1.5 rounded-xl bg-[#4A7C59] text-white hover:bg-[#365C41] text-xs font-bold transition-all border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center gap-1"
+              className="px-3 py-1.5 rounded-xl bg-[#4A7C59] text-white hover:bg-secondary-container text-xs font-bold transition-all border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center gap-1"
             >
               <Plus className="w-3.5 h-3.5" /> Tambah Bahan
             </button>
@@ -485,7 +485,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
             {ingredients.map((ing, idx) => (
               <div
                 key={idx}
-                className="bg-[#EFE4CE]/60 dark:bg-[#1C1410] p-3 rounded-xl border-2 border-[#5C3A21]/30 space-y-2 sm:space-y-0 sm:grid sm:grid-cols-12 sm:gap-3 sm:items-center"
+                className="bg-[#EFE4CE]/60 dark:bg-wood-950 p-3 rounded-xl border-2 border-[#5C3A21]/30 space-y-2 sm:space-y-0 sm:grid sm:grid-cols-12 sm:gap-3 sm:items-center"
               >
                 <div className="flex items-center gap-2 sm:col-span-5">
                   <input
@@ -503,7 +503,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                     type="button"
                     onClick={() => handleRemoveIngredient(idx)}
                     disabled={ingredients.length <= 1}
-                    className="sm:hidden p-1.5 text-[#8C6239] hover:text-[#B83B2B] disabled:opacity-30 rounded-lg transition-colors shrink-0"
+                    className="sm:hidden p-1.5 text-[#8C6239] hover:text-cabai-600 disabled:opacity-30 rounded-lg transition-colors shrink-0"
                     title="Hapus bahan"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -542,7 +542,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                     type="button"
                     onClick={() => handleRemoveIngredient(idx)}
                     disabled={ingredients.length <= 1}
-                    className="p-1.5 text-[#8C6239] hover:text-[#B83B2B] disabled:opacity-30 rounded-lg transition-colors"
+                    className="p-1.5 text-[#8C6239] hover:text-cabai-600 disabled:opacity-30 rounded-lg transition-colors"
                     title="Hapus bahan"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -560,14 +560,14 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
               <h2 className="font-display font-black text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2]">
                 4. Langkah-Langkah Memasak
               </h2>
-              <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+              <p className="text-xs text-[#5C3A21] dark:text-outline-variant">
                 Jelaskan cara memasak secara bertahap dan mudah dipahami.
               </p>
             </div>
             <button
               type="button"
               onClick={handleAddInstruction}
-              className="px-3 py-1.5 rounded-xl bg-[#4A7C59] text-white hover:bg-[#365C41] text-xs font-bold transition-all border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center gap-1"
+              className="px-3 py-1.5 rounded-xl bg-[#4A7C59] text-white hover:bg-secondary-container text-xs font-bold transition-all border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center gap-1"
             >
               <Plus className="w-3.5 h-3.5" /> Tambah Langkah
             </button>
@@ -577,7 +577,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
             {instructions.map((step, idx) => (
               <div
                 key={idx}
-                className="bg-[#EFE4CE]/60 dark:bg-[#1C1410] p-3.5 sm:p-4 rounded-xl border-2 border-[#5C3A21]/30 space-y-2.5"
+                className="bg-[#EFE4CE]/60 dark:bg-wood-950 p-3.5 sm:p-4 rounded-xl border-2 border-[#5C3A21]/30 space-y-2.5"
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 flex-1">
@@ -600,7 +600,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                     type="button"
                     onClick={() => handleRemoveInstruction(idx)}
                     disabled={instructions.length <= 1}
-                    className="p-1.5 text-[#8C6239] hover:text-[#B83B2B] disabled:opacity-30 rounded-lg transition-colors shrink-0"
+                    className="p-1.5 text-[#8C6239] hover:text-cabai-600 disabled:opacity-30 rounded-lg transition-colors shrink-0"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -629,14 +629,14 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
               <h2 className="font-display font-black text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2]">
                 5. Variasi & Tips Tambahan (Opsional)
               </h2>
-              <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+              <p className="text-xs text-[#5C3A21] dark:text-outline-variant">
                 Berikan opsi modifikasi bahan atau rahasia memasak agar hidangan lebih maksimal.
               </p>
             </div>
             <button
               type="button"
               onClick={handleAddVariation}
-              className="px-3 py-1.5 rounded-xl bg-[#4A7C59] text-white hover:bg-[#365C41] text-xs font-bold transition-all border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center gap-1"
+              className="px-3 py-1.5 rounded-xl bg-[#4A7C59] text-white hover:bg-secondary-container text-xs font-bold transition-all border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center gap-1"
             >
               <Plus className="w-3.5 h-3.5" /> Tambah Tips
             </button>
@@ -647,7 +647,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
               {variations.map((v, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#EFE4CE]/60 dark:bg-[#1C1410] p-4 rounded-xl border-2 border-[#D99B26] shadow-[2px_2px_0px_#2C1E16] space-y-2"
+                  className="bg-[#EFE4CE]/60 dark:bg-wood-950 p-4 rounded-xl border-2 border-[#D99B26] shadow-[2px_2px_0px_#2C1E16] space-y-2"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <input
@@ -664,7 +664,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                     <button
                       type="button"
                       onClick={() => handleRemoveVariation(idx)}
-                      className="p-1.5 text-[#8C6239] hover:text-[#B83B2B] rounded-lg transition-colors"
+                      className="p-1.5 text-[#8C6239] hover:text-cabai-600 rounded-lg transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -693,7 +693,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
           <Link
             href={backUrl}
             onClick={() => playClickSound()}
-            className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#C85A32] px-4 py-2"
+            className="text-xs font-bold text-[#5C3A21] dark:text-outline-variant hover:text-[#C85A32] px-4 py-2"
           >
             Batal
           </Link>
@@ -714,14 +714,14 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-md bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-6 border-[3px] border-[#5C3A21] shadow-[6px_6px_0px_#2C1E16] space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#B83B2B]/20 text-[#B83B2B] flex items-center justify-center border-2 border-[#B83B2B]">
+            <div className="w-12 h-12 rounded-2xl bg-cabai-600/20 text-cabai-600 flex items-center justify-center border-2 border-cabai-600">
               <AlertCircle className="w-6 h-6" />
             </div>
             <div>
               <h3 className="font-display font-black text-xl text-[#2C1E16] dark:text-[#F6EFE2]">
                 Hapus Resep Ini?
               </h3>
-              <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA] mt-1.5 leading-relaxed">
+              <p className="text-xs text-[#5C3A21] dark:text-outline-variant mt-1.5 leading-relaxed">
                 Tindakan ini permanen. Resep <strong>{recipe.title}</strong> beserta seluruh data bahan dan ulasannya akan dihapus dari Resepedia.
               </p>
             </div>
@@ -733,7 +733,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                   setShowDeleteConfirm(false);
                 }}
                 disabled={isDeleting}
-                className="px-4 py-2.5 rounded-xl text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] hover:bg-[#EFE4CE] transition-colors border border-[#5C3A21]/30"
+                className="px-4 py-2.5 rounded-xl text-xs font-bold text-[#5C3A21] dark:text-outline-variant hover:bg-[#EFE4CE] transition-colors border border-[#5C3A21]/30"
               >
                 Batal
               </button>
@@ -741,7 +741,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                 type="button"
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="px-5 py-2.5 rounded-xl text-xs font-black bg-[#B83B2B] hover:bg-red-700 text-white transition-all border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl text-xs font-black bg-cabai-600 hover:bg-red-700 text-white transition-all border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center gap-1.5"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>{isDeleting ? 'Menghapus...' : 'Ya, Hapus Resep'}</span>

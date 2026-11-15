@@ -300,7 +300,7 @@ export default function RecipeDetailClient({
         <Link
           href="/eksplorasi"
           onClick={() => playClickSound()}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#C85A32] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#5C3A21] dark:text-outline-variant hover:text-[#C85A32] transition-colors"
         >
           <ChevronLeft className="w-4 h-4" /> {t('Kembali ke Katalog')}
         </Link>
@@ -321,14 +321,14 @@ export default function RecipeDetailClient({
 
           <button
             onClick={handleShare}
-            className="p-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#C85A32] border-2 border-[#5C3A21]/40 shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5"
+            className="p-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-outline-variant hover:text-[#C85A32] border-2 border-[#5C3A21]/40 shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5"
             title={t('Bagikan Resep')}
           >
             <Share2 className="w-4 h-4" />
           </button>
           <button
             onClick={() => window.print()}
-            className="p-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#C85A32] border-2 border-[#5C3A21]/40 shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 hidden sm:block"
+            className="p-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-outline-variant hover:text-[#C85A32] border-2 border-[#5C3A21]/40 shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 hidden sm:block"
             title={t('Cetak Resep')}
           >
             <Printer className="w-4 h-4" />
@@ -339,7 +339,7 @@ export default function RecipeDetailClient({
             className={`p-2 rounded-xl transition-all border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 ${
               isSaved
                 ? 'bg-[#C85A32] text-white'
-                : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA]'
+                : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-outline-variant'
             }`}
             title={t('Simpan Resep')}
           >
@@ -356,16 +356,16 @@ export default function RecipeDetailClient({
               ? `Seal of ${recipe.region || 'Nusantara'}`
               : `Segel ${recipe.region || 'Nusantara'}`}
           </span>
-          <span className="px-3 py-1 rounded-lg bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] font-bold text-xs border border-[#5C3A21]/30">
+          <span className="px-3 py-1 rounded-lg bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-outline-variant font-bold text-xs border border-[#5C3A21]/30">
             {recipe.category}
           </span>
           {recipe.spicy && (
-            <span className="px-3 py-1 rounded-lg bg-[#B83B2B] text-white font-bold text-xs flex items-center gap-1 border border-[#2C1E16]">
+            <span className="px-3 py-1 rounded-lg bg-cabai-600 text-white font-bold text-xs flex items-center gap-1 border border-[#2C1E16]">
               <Flame className="w-3.5 h-3.5 fill-white" /> {t('Pedas')}
             </span>
           )}
           {recipe.authorName && (
-            <span className="px-3 py-1 rounded-lg bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] text-xs">
+            <span className="px-3 py-1 rounded-lg bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-outline-variant text-xs">
               {t('Oleh:')} <strong>{recipe.authorName}</strong>
             </span>
           )}
@@ -375,12 +375,12 @@ export default function RecipeDetailClient({
           {recipe.title}
         </h1>
 
-        <p className="text-sm sm:text-base text-[#5C3A21] dark:text-[#D9C8AA] max-w-3xl leading-relaxed">
+        <p className="text-sm sm:text-base text-[#5C3A21] dark:text-outline-variant max-w-3xl leading-relaxed">
           {recipe.description}
         </p>
 
         {/* Quick Recipe Info Bar */}
-        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-3 sm:gap-6 pt-3 text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] border-t-2 border-[#5C3A21]/20 dark:border-[#8C6239]/30">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-3 sm:gap-6 pt-3 text-xs sm:text-sm text-[#5C3A21] dark:text-outline-variant border-t-2 border-[#5C3A21]/20 dark:border-[#8C6239]/30">
           <div className="flex items-center gap-1.5 font-bold">
             <Clock className="w-4 h-4 text-[#C85A32] shrink-0" />
             <span>
@@ -428,7 +428,7 @@ export default function RecipeDetailClient({
       </div>
 
       {/* Featured Recipe Hero Image Banner with RPG Action Bar */}
-      <div className="relative min-h-[260px] sm:min-h-0 aspect-4/3 sm:aspect-video lg:aspect-21/9 max-h-[440px] sm:max-h-none rounded-2xl overflow-hidden border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] bg-[#1C1410]">
+      <div className="relative min-h-65 sm:min-h-0 aspect-4/3 sm:aspect-video lg:aspect-21/9 max-h-110 sm:max-h-none rounded-2xl overflow-hidden border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] bg-wood-950">
         <img
           src={recipe.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}
           alt={recipe.title}
@@ -467,7 +467,7 @@ export default function RecipeDetailClient({
                 setAlmanacInitialQuery('');
                 setIsAlmanacOpen(true);
               }}
-              className="px-3.5 py-2.5 rounded-xl bg-[#4A7C59] hover:bg-[#365C41] text-white font-bold text-xs border-2 border-[#2C1E16] shadow-[3px_3px_0px_#2C1E16] flex items-center gap-1.5 transition-transform active:translate-y-0.5 shrink-0"
+              className="px-3.5 py-2.5 rounded-xl bg-[#4A7C59] hover:bg-secondary-container text-white font-bold text-xs border-2 border-[#2C1E16] shadow-[3px_3px_0px_#2C1E16] flex items-center gap-1.5 transition-transform active:translate-y-0.5 shrink-0"
               title={language === 'en' ? 'Open Spice Almanac' : 'Buka Kitab Rempah Nusantara'}
             >
               <BookOpen className="w-4 h-4" />
@@ -493,7 +493,7 @@ export default function RecipeDetailClient({
                 {preparedIngredients.size}/{recipe.ingredients.length} {language === 'en' ? 'Ready' : 'Siap'}
               </span>
             </div>
-            <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA] mt-1">
+            <p className="text-xs text-[#5C3A21] dark:text-outline-variant mt-1">
               {language === 'en'
                 ? 'Click items to mark them ready on your kitchen table, or inspect spice substitutes.'
                 : 'Klik bahan untuk menandai sudah siap di meja, atau cek kitab substitusi rempah.'}
@@ -508,7 +508,7 @@ export default function RecipeDetailClient({
           />
 
           {/* Interactive RPG Crafting Slots */}
-          <div className="space-y-2.5 pt-1 max-h-[31.25rem] overflow-y-auto pr-1">
+          <div className="space-y-2.5 pt-1 max-h-125 overflow-y-auto pr-1">
             {recipe.ingredients.map((ing, idx) => {
               const scaledDetail = scaleQuantity(ing.detail, multiplier);
               const isPrepared = preparedIngredients.has(idx);
@@ -521,7 +521,7 @@ export default function RecipeDetailClient({
                   className={`p-3 rounded-xl border-2 transition-all cursor-pointer flex items-start justify-between gap-3 ${
                     isPrepared
                       ? 'bg-[#4A7C59]/15 border-[#4A7C59] shadow-[2px_2px_0px_#2C1E16]'
-                      : 'bg-[#EFE4CE] dark:bg-[#1C1410] border-[#5C3A21]/40 hover:border-[#5C3A21]'
+                      : 'bg-[#EFE4CE] dark:bg-wood-950 border-[#5C3A21]/40 hover:border-[#5C3A21]'
                   }`}
                 >
                   <div className="flex items-start gap-2.5 flex-1 min-w-0">
@@ -532,7 +532,7 @@ export default function RecipeDetailClient({
                           : 'bg-white dark:bg-[#2C1E16] border-[#5C3A21]/50 text-transparent'
                       }`}
                     >
-                      <Check className="w-3.5 h-3.5 stroke-[3]" />
+                      <Check className="w-3.5 h-3.5 stroke-3" />
                     </div>
 
                     <div className="min-w-0 flex-1">
@@ -608,7 +608,7 @@ export default function RecipeDetailClient({
                 <h3 className="font-display font-black text-2xl text-[#2C1E16] dark:text-[#F6EFE2]">
                   {language === 'en' ? 'Cooking Quest Steps' : 'Tahapan Quest Memasak'}
                 </h3>
-                <span className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+                <span className="text-xs text-[#5C3A21] dark:text-outline-variant">
                   {recipe.instructions.length} {language === 'en' ? 'Sequential Stages' : 'Tahapan Memasak'}
                 </span>
               </div>
@@ -618,7 +618,7 @@ export default function RecipeDetailClient({
                 <span className="font-mono font-black text-xs text-[#C85A32]">
                   {questProgress}% {language === 'en' ? 'Done' : 'Selesai'}
                 </span>
-                <div className="w-24 h-2.5 rounded-full bg-[#EFE4CE] dark:bg-[#1C1410] border border-[#5C3A21]/40 overflow-hidden">
+                <div className="w-24 h-2.5 rounded-full bg-[#EFE4CE] dark:bg-wood-950 border border-[#5C3A21]/40 overflow-hidden">
                   <div
                     className="h-full bg-[#4A7C59] transition-all duration-300"
                     style={{ width: `${questProgress}%` }}
@@ -639,7 +639,7 @@ export default function RecipeDetailClient({
                     className={`p-4 rounded-xl border-2 transition-all space-y-2.5 ${
                       isStepDone
                         ? 'bg-[#4A7C59]/10 border-[#4A7C59]/60'
-                        : 'bg-[#EFE4CE] dark:bg-[#1C1410] border-[#5C3A21]/40'
+                        : 'bg-[#EFE4CE] dark:bg-wood-950 border-[#5C3A21]/40'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-3">
@@ -681,12 +681,12 @@ export default function RecipeDetailClient({
                           }`}
                           title={language === 'en' ? 'Mark step completed' : 'Tandai tahap selesai'}
                         >
-                          <Check className="w-4 h-4 stroke-[3]" />
+                          <Check className="w-4 h-4 stroke-3" />
                         </button>
                       </div>
                     </div>
 
-                    <p className="text-xs sm:text-sm leading-relaxed text-[#5C3A21] dark:text-[#D9C8AA]">
+                    <p className="text-xs sm:text-sm leading-relaxed text-[#5C3A21] dark:text-outline-variant">
                       {step.text}
                     </p>
                   </li>
@@ -702,7 +702,7 @@ export default function RecipeDetailClient({
               <section className="space-y-3 p-4 sm:p-6 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <h3 className="font-display font-bold text-lg sm:text-xl text-[#2C1E16] dark:text-[#F6EFE2] flex items-center gap-2">
-                    <Play className="w-5 h-5 text-[#B83B2B]" /> {t('Video Tutorial Memasak')}
+                    <Play className="w-5 h-5 text-cabai-600" /> {t('Video Tutorial Memasak')}
                   </h3>
                   {embedInfo && (
                     <a
@@ -754,12 +754,12 @@ export default function RecipeDetailClient({
                 {recipe.variations.map((v, i) => (
                   <div
                     key={i}
-                    className="p-3.5 rounded-xl bg-[#EFE4CE] dark:bg-[#1C1410] border-2 border-[#D99B26] shadow-[2px_2px_0px_#2C1E16] space-y-1.5"
+                    className="p-3.5 rounded-xl bg-[#EFE4CE] dark:bg-wood-950 border-2 border-[#D99B26] shadow-[2px_2px_0px_#2C1E16] space-y-1.5"
                   >
                     <h5 className="font-bold text-xs text-[#2C1E16] dark:text-[#F6EFE2]">
                       {v.title}
                     </h5>
-                    <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA] leading-relaxed">
+                    <p className="text-xs text-[#5C3A21] dark:text-outline-variant leading-relaxed">
                       {v.description}
                     </p>
                   </div>
@@ -775,7 +775,7 @@ export default function RecipeDetailClient({
                 <h3 className="font-display font-black text-xl sm:text-2xl text-[#2C1E16] dark:text-[#F6EFE2]">
                   {t('Ulasan & Komentar Komunitas')}
                 </h3>
-                <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+                <p className="text-xs text-[#5C3A21] dark:text-outline-variant">
                   {hasReviews
                     ? language === 'en'
                       ? `Average ${recipeState.rating.toFixed(1)} from ${recipeState.ratingCount} reviews`
@@ -813,12 +813,12 @@ export default function RecipeDetailClient({
               </h4>
 
               {/* Interactive Star Picker */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 bg-[#EFE4CE] dark:bg-[#1C1410] rounded-xl border border-[#5C3A21]/40">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 bg-[#EFE4CE] dark:bg-wood-950 rounded-xl border border-[#5C3A21]/40">
                 <div className="text-xs">
                   <span className="font-bold text-[#2C1E16] dark:text-[#F6EFE2] block">
                     {language === 'en' ? 'Rate this recipe:' : 'Nilai resep ini:'}
                   </span>
-                  <span className="text-[11px] text-[#5C3A21] dark:text-[#D9C8AA]">
+                  <span className="text-[11px] text-[#5C3A21] dark:text-outline-variant">
                     {(hoverRating || selectedRating) === 5 &&
                       (language === 'en' ? '⭐⭐⭐⭐⭐ 5/5 — Perfect & Authentic' : '⭐⭐⭐⭐⭐ 5/5 — Sempurna & Istimewa')}
                     {(hoverRating || selectedRating) === 4 &&
@@ -869,7 +869,7 @@ export default function RecipeDetailClient({
                 }
                 rows={3}
                 maxLength={500}
-                className="w-full p-4 rounded-xl bg-white dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none focus:border-[#C85A32]"
+                className="w-full p-4 rounded-xl bg-white dark:bg-wood-950 border-2 border-[#5C3A21]/40 text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none focus:border-[#C85A32]"
               />
 
               <div className="flex items-center justify-between">
@@ -923,7 +923,7 @@ export default function RecipeDetailClient({
 
                       <button
                         onClick={() => handleHelpful(comment.id, comment.helpfulCount)}
-                        className="flex items-center gap-1 text-xs text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#C85A32] transition-colors px-2 py-1 rounded-lg hover:bg-[#EFE4CE]"
+                        className="flex items-center gap-1 text-xs text-[#5C3A21] dark:text-outline-variant hover:text-[#C85A32] transition-colors px-2 py-1 rounded-lg hover:bg-[#EFE4CE]"
                         title={language === 'en' ? 'Helpful' : 'Bermanfaat'}
                       >
                         <Heart className="w-3.5 h-3.5 text-[#C85A32]" />
@@ -931,7 +931,7 @@ export default function RecipeDetailClient({
                       </button>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] leading-relaxed pl-0 sm:pl-12">
+                    <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-outline-variant leading-relaxed pl-0 sm:pl-12">
                       {comment.text}
                     </p>
                   </div>
@@ -939,13 +939,13 @@ export default function RecipeDetailClient({
               </div>
             ) : (
               <div className="text-center py-10 px-6 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-2 border-dashed border-[#5C3A21]/40 space-y-3">
-                <div className="w-12 h-12 rounded-xl bg-[#EFE4CE] dark:bg-[#1C1410] text-[#D99B26] flex items-center justify-center mx-auto border border-[#5C3A21]/30">
+                <div className="w-12 h-12 rounded-xl bg-[#EFE4CE] dark:bg-wood-950 text-[#D99B26] flex items-center justify-center mx-auto border border-[#5C3A21]/30">
                   <Star className="w-6 h-6" />
                 </div>
                 <h4 className="font-display font-bold text-base text-[#2C1E16] dark:text-[#F6EFE2]">
                   {language === 'en' ? 'No reviews yet for this recipe' : 'Belum ada ulasan untuk resep ini'}
                 </h4>
-                <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA] max-w-sm mx-auto leading-relaxed">
+                <p className="text-xs text-[#5C3A21] dark:text-outline-variant max-w-sm mx-auto leading-relaxed">
                   {language === 'en'
                     ? 'Be the first adventurer to try this recipe and share your taste review!'
                     : 'Jadilah petualang pertama yang mencoba resep ini dan bagikan ulasan serta bintang penilaian Anda di atas!'}
