@@ -446,11 +446,10 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
                 playClickSound();
                 setSpicy(!spicy);
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border-2 transition-all active:translate-y-0.5 ${
-                spicy
+              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border-2 transition-all active:translate-y-0.5 ${spicy
                   ? 'bg-cabai-600 text-white border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
                   : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-outline-variant border-[#5C3A21]/40'
-              }`}
+                }`}
             >
               <Flame className="w-3.5 h-3.5" />
               <span>{spicy ? 'Cita Rasa Pedas Aktif' : 'Tidak Terlalu Pedas'}</span>
