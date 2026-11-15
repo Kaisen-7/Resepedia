@@ -1,37 +1,36 @@
+import React from 'react';
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { ToastProvider } from '@/contexts/ToastContext';
 import { TimerProvider } from '@/contexts/TimerContext';
-import { AIProvider } from '@/contexts/AIContext';
 import CookingTimer from '@/components/widgets/CookingTimer';
-import AIChatDrawer from '@/components/ai/AIChatDrawer';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://resepedia-seven.vercel.app';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Resepedia — Ensiklopedi & Asisten Dapur Kuliner Nusantara',
+    default: 'Resepedia — Ensiklopedi & Kitab Kuliner Nusantara',
     template: '%s | Resepedia',
   },
   description:
-    'Eksplorasi ribuan resep masakan tradisional autentik Nusantara, dilengkapi panduan memasak bebas genggam dengan suara, kalkulator porsi dinamis, dan Asisten Dapur cerdas.',
+    'Eksplorasi ribuan resep masakan tradisional autentik Nusantara, dilengkapi Mode Perapian dengan panduan suara, Kitab Rempah & Substitusi bumbu instan, dan kalkulator porsi rombongan.',
   keywords: [
     'resep masakan',
     'kuliner nusantara',
     'masakan indonesia',
     'resep rendang',
     'resep soto',
-    'asisten dapur',
+    'kitab rempah',
     'resepedia',
   ],
   authors: [{ name: 'Resepedia Community' }],
   metadataBase: new URL(siteUrl),
   openGraph: {
-    title: 'Resepedia — Ensiklopedi & Asisten Dapur Kuliner Nusantara',
+    title: 'Resepedia — Ensiklopedi & Kitab Kuliner Nusantara',
     description:
-      'Katalog resep masakan Nusantara interaktif terlengkap dengan asisten kuliner dan mode memasak hands-free.',
+      'Katalog resep masakan Nusantara interaktif terlengkap dengan Mode Perapian dan Kitab Rempah Tradisional.',
     url: siteUrl,
     siteName: 'Resepedia',
     locale: 'id_ID',
@@ -43,7 +42,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#E04F26',
+  themeColor: '#C85A32',
 };
 
 export default function RootLayout({
@@ -58,11 +57,8 @@ export default function RootLayout({
           <LanguageProvider>
             <ToastProvider>
               <TimerProvider>
-                <AIProvider>
-                  {children}
-                  <CookingTimer />
-                  <AIChatDrawer />
-                </AIProvider>
+                {children}
+                <CookingTimer />
               </TimerProvider>
             </ToastProvider>
           </LanguageProvider>

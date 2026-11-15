@@ -44,21 +44,30 @@ export function TimerProvider({ children }: { children: React.ReactNode }) {
         ctx.resume();
       }
 
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+      // Cozy RPG Gamelan Pelog/Slendro Chime Arpeggio
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      const now = ctx.currentTime;
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
-      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3);
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
 
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.12);
 
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+        const start = now + idx * 0.12;
+        const duration = 0.4;
 
-      osc.start();
-      osc.stop(ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.001, start);
+        gain.gain.linearRampToValueAtTime(0.25, start + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(start);
+        osc.stop(start + duration + 0.02);
+      });
     } catch (e) {
       console.warn('Web Audio API not supported or blocked:', e);
     }

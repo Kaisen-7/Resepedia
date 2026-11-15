@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { Bookmark, ChefHat, Plus, ArrowRight } from 'lucide-react';
+import { Bookmark, ChefHat, Plus, ArrowRight, BookOpen } from 'lucide-react';
 import { Recipe } from '@/types';
 import RecipeCard from '@/components/recipe/RecipeCard';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,6 +10,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { getMyLocalRecipes } from '@/lib/utils/recipe-storage';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
+import { playClickSound } from '@/lib/utils/sound-effects';
 
 interface KoleksiClientProps {
   allRecipes: Recipe[];
@@ -59,7 +60,7 @@ export default function KoleksiClient({
     }
   }, [user]);
 
-  // Combined pool of all available recipes (server fallback + user creations + cloud creations)
+  // Combined pool of all available recipes
   const allAvailableRecipes = useMemo(() => {
     const map = new Map<string, Recipe>();
     allRecipes.forEach((r) => map.set(r.id, r));
@@ -87,35 +88,39 @@ export default function KoleksiClient({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[#5C3A21]/20 pb-6">
         <div>
-          <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider mb-1">
-            <Bookmark className="w-4 h-4" /> {t('Koleksi Pribadi')}
+          <div className="flex items-center gap-2 text-[#C85A32] font-black text-xs uppercase tracking-wider mb-1">
+            <BookOpen className="w-4 h-4" /> {language === 'en' ? 'Chef Grimoire' : 'Kitab Koleksi Pribadi'}
           </div>
-          <h1 className="font-display font-black text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
+          <h1 className="font-display font-black text-3xl sm:text-4xl text-[#2C1E16] dark:text-[#F6EFE2]">
             {t('Koleksi & Resep Saya')}
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-500 mt-1">
+          <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] mt-1">
             {t('Akses cepat resep masakan favorit Anda dan kelola resep yang telah Anda bagikan.')}
           </p>
         </div>
 
         <Link
           href="/resep/tambah"
-          className="px-5 py-2.5 rounded-2xl bg-primary text-white font-bold text-xs hover:bg-primary-container shadow-md shadow-primary/20 flex items-center gap-1.5 self-start sm:self-auto transition-transform active:scale-95"
+          onClick={() => playClickSound()}
+          className="px-5 py-2.5 rounded-xl bg-[#C85A32] text-white font-black text-xs hover:bg-[#A64422] border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] flex items-center gap-1.5 self-start sm:self-auto transition-transform active:translate-y-0.5"
         >
-          <Plus className="w-4 h-4" /> {t('Tulis Resep Baru')}
+          <Plus className="w-4 h-4 stroke-3" /> {t('Tulis Resep Baru')}
         </Link>
       </div>
 
       {/* Tabs Switcher */}
-      <div className="flex items-center gap-2 border-b border-zinc-200/80 dark:border-zinc-800 pb-2 overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
         <button
-          onClick={() => setActiveTab('saved')}
-          className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap shrink-0 ${
+          onClick={() => {
+            playClickSound();
+            setActiveTab('saved');
+          }}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all whitespace-nowrap shrink-0 border-2 active:translate-y-0.5 ${
             activeTab === 'saved'
-              ? 'bg-primary text-white shadow-sm'
-              : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200'
+              ? 'bg-[#C85A32] text-white border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
+              : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] border-[#5C3A21]/30 hover:border-[#5C3A21]'
           }`}
         >
           <Bookmark className="w-4 h-4" />
@@ -125,11 +130,14 @@ export default function KoleksiClient({
         </button>
 
         <button
-          onClick={() => setActiveTab('my-recipes')}
-          className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap shrink-0 ${
+          onClick={() => {
+            playClickSound();
+            setActiveTab('my-recipes');
+          }}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all whitespace-nowrap shrink-0 border-2 active:translate-y-0.5 ${
             activeTab === 'my-recipes'
-              ? 'bg-primary text-white shadow-sm'
-              : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200'
+              ? 'bg-[#C85A32] text-white border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
+              : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] border-[#5C3A21]/30 hover:border-[#5C3A21]'
           }`}
         >
           <ChefHat className="w-4 h-4" />
@@ -143,25 +151,26 @@ export default function KoleksiClient({
       {activeTab === 'saved' ? (
         <div>
           {savedRecipes.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {savedRecipes.map((recipe) => (
                 <RecipeCard key={recipe.id} recipe={recipe} isSaved={true} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 p-8 space-y-4">
-              <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+            <div className="text-center py-20 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-dashed border-[#5C3A21]/40 p-8 space-y-4">
+              <div className="w-16 h-16 rounded-2xl bg-[#EFE4CE] text-[#C85A32] flex items-center justify-center mx-auto border border-[#5C3A21]/30">
                 <Bookmark className="w-8 h-8" />
               </div>
-              <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
+              <h3 className="font-display font-bold text-xl text-[#2C1E16] dark:text-[#F6EFE2]">
                 {t('Belum ada resep yang disimpan')}
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
+              <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] max-w-md mx-auto">
                 {t('Jelajahi resep Nusantara dan klik tombol bookmark untuk menyimpannya di sini.')}
               </p>
               <Link
                 href="/eksplorasi"
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-sm"
+                onClick={() => playClickSound()}
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#C85A32] text-white text-xs font-black border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5"
               >
                 {t('Jelajahi Resep Sekarang')} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -171,27 +180,30 @@ export default function KoleksiClient({
       ) : (
         <div>
           {!currentUserId ? (
-            <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 p-8 space-y-4">
-              <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+            <div className="text-center py-20 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-[#5C3A21] dark:border-[#8C6239] p-8 space-y-4 shadow-[4px_4px_0px_#2C1E16]">
+              <div className="w-16 h-16 rounded-2xl bg-[#EFE4CE] text-[#C85A32] flex items-center justify-center mx-auto border border-[#5C3A21]/30">
                 <ChefHat className="w-8 h-8" />
               </div>
-              <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
+              <h3 className="font-display font-bold text-xl text-[#2C1E16] dark:text-[#F6EFE2]">
                 {language === 'en' ? 'Sign In to View Your Recipes' : 'Masuk untuk Melihat Resep Anda'}
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
+              <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] max-w-md mx-auto">
                 {language === 'en'
                   ? 'Sign in with your Google account to start publishing and editing your own recipes.'
                   : 'Masuk dengan akun Google Anda untuk mulai mempublikasikan dan mengedit resep masakan Anda sendiri.'}
               </p>
               <button
-                onClick={() => signInWithGoogle()}
-                className="px-6 py-3 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-md shadow-primary/20"
+                onClick={() => {
+                  playClickSound();
+                  signInWithGoogle();
+                }}
+                className="px-6 py-3 rounded-xl bg-[#C85A32] text-white text-xs font-black hover:bg-[#A64422] border-2 border-[#2C1E16] shadow-[3px_3px_0px_#2C1E16] active:translate-y-0.5"
               >
                 {t('Masuk dengan Google')}
               </button>
             </div>
           ) : myRecipes.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {myRecipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
@@ -202,21 +214,22 @@ export default function KoleksiClient({
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 p-8 space-y-4">
-              <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+            <div className="text-center py-20 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-dashed border-[#5C3A21]/40 p-8 space-y-4">
+              <div className="w-16 h-16 rounded-2xl bg-[#EFE4CE] text-[#C85A32] flex items-center justify-center mx-auto border border-[#5C3A21]/30">
                 <ChefHat className="w-8 h-8" />
               </div>
-              <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
+              <h3 className="font-display font-bold text-xl text-[#2C1E16] dark:text-[#F6EFE2]">
                 {t('Belum ada resep buatan Anda')}
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
+              <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] max-w-md mx-auto">
                 {t('Bagikan resep keluarga atau kreasi kuliner Nusantara Anda kepada komunitas.')}
               </p>
               <Link
                 href="/resep/tambah"
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-sm"
+                onClick={() => playClickSound()}
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#C85A32] text-white text-xs font-black border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5"
               >
-                <Plus className="w-4 h-4" /> {t('Tulis Resep Baru')}
+                <Plus className="w-4 h-4 stroke-3" /> {t('Tulis Resep Baru')}
               </Link>
             </div>
           )}

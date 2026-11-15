@@ -10,7 +10,8 @@ import {
   Circle,
   ListChecks,
   ArrowRight,
-  Wifi,
+  Store,
+  Scroll,
 } from 'lucide-react';
 import { ShoppingItem } from '@/types';
 import {
@@ -25,6 +26,7 @@ import { subscribeShoppingItems } from '@/lib/firebase/service';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { playClickSound, playChimeSound } from '@/lib/utils/sound-effects';
 
 interface BelanjaClientProps {
   initialItems: ShoppingItem[];
@@ -37,7 +39,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
   const [items, setItems] = useState<ShoppingItem[]>(initialItems);
   const [customName, setCustomName] = useState('');
   const [customDetail, setCustomDetail] = useState('');
-  const [isRealtime, setIsRealtime] = useState(false);
+  const [viewMode, setViewMode] = useState<'recipe' | 'market'>('recipe');
 
   // Load from local storage and sync with Firestore
   useEffect(() => {
@@ -54,15 +56,12 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
 
     let unsubscribeFirestore: (() => void) | null = null;
     if (user?.uid) {
-      setIsRealtime(true);
       unsubscribeFirestore = subscribeShoppingItems(user.uid, (cloudItems) => {
         if (cloudItems && cloudItems.length > 0) {
           setItems(cloudItems);
           saveLocalShoppingItems(cloudItems, user.uid);
         }
       });
-    } else {
-      setIsRealtime(false);
     }
 
     return () => {
@@ -73,6 +72,9 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
 
   const handleToggleCheck = async (item: ShoppingItem) => {
     const nextChecked = !item.checked;
+    if (nextChecked) playChimeSound();
+    else playClickSound();
+
     setItems((prev) =>
       prev.map((i) => (i.id === item.id ? { ...i, checked: nextChecked } : i))
     );
@@ -80,16 +82,18 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
   };
 
   const handleDeleteItem = async (id: string) => {
+    playClickSound();
     setItems((prev) => prev.filter((i) => i.id !== id));
     await deleteShoppingItem(id, user?.uid);
     toast.info(
       language === 'en'
-        ? 'Item removed from shopping list'
-        : 'Item dihapus dari daftar belanja'
+        ? 'Item removed from shopping basket'
+        : 'Bahan dihapus dari bakul belanja'
     );
   };
 
   const handleClearChecked = async () => {
+    playClickSound();
     setItems((prev) => prev.filter((i) => !i.checked));
     await clearCheckedShoppingItems(user?.uid);
     toast.success(
@@ -103,6 +107,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
     e.preventDefault();
     if (!customName.trim()) return;
 
+    playClickSound();
     const newItem = await addShoppingItem(
       customName.trim(),
       customDetail.trim(),
@@ -119,7 +124,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
   };
 
   // Group items by recipeTitle
-  const groups = useMemo(() => {
+  const recipeGroups = useMemo(() => {
     const map: Record<string, ShoppingItem[]> = {};
     items.forEach((item) => {
       const title = item.recipeTitle || t('Catatan Pribadi');
@@ -134,113 +139,243 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
     });
   }, [items, t]);
 
+  // Group items by Traditional Market Stalls (Lapak Pasar)
+  const marketStallGroups = useMemo(() => {
+    const stalls: Record<string, ShoppingItem[]> = {
+      [language === 'en' ? '🌿 Herbs & Spices Stall' : '🌿 Lapak Rimpang & Bumbu']: [],
+      [language === 'en' ? '🥬 Vegetables & Greens Stall' : '🥬 Lapak Sayur & Daun']: [],
+      [language === 'en' ? '🥩 Meat & Seafood Stall' : '🥩 Lapak Daging & Hasil Laut']: [],
+      [language === 'en' ? '🥥 Coconut & Pantry Essentials' : '🥥 Warung Sembako & Santan']: [],
+    };
+
+    const spiceKeywords = [
+      'bawang', 'kunyit', 'jahe', 'lengkuas', 'laja', 'serai', 'daun salam',
+      'daun jeruk', 'kemiri', 'ketumbar', 'merica', 'cabai', 'kluwek',
+      'kencur', 'pala', 'cengkeh', 'terasi', 'asam', 'jinten', 'kapulaga',
+    ];
+    const vegKeywords = [
+      'kangkung', 'bayam', 'kol', 'wortel', 'buncis', 'kacang', 'labu',
+      'tauge', 'seledri', 'daun bawang', 'timun', 'tomat', 'nangka', 'petai',
+      'terong', 'singkong', 'kentang',
+    ];
+    const meatKeywords = [
+      'ayam', 'sapi', 'daging', 'ikan', 'udang', 'cumi', 'iga', 'buntut',
+      'kambing', 'telur', 'bebek',
+    ];
+
+    items.forEach((item) => {
+      const lower = item.name.toLowerCase();
+      if (spiceKeywords.some((k) => lower.includes(k))) {
+        stalls[language === 'en' ? '🌿 Herbs & Spices Stall' : '🌿 Lapak Rimpang & Bumbu'].push(item);
+      } else if (vegKeywords.some((k) => lower.includes(k))) {
+        stalls[language === 'en' ? '🥬 Vegetables & Greens Stall' : '🥬 Lapak Sayur & Daun'].push(item);
+      } else if (meatKeywords.some((k) => lower.includes(k))) {
+        stalls[language === 'en' ? '🥩 Meat & Seafood Stall' : '🥩 Lapak Daging & Hasil Laut'].push(item);
+      } else {
+        stalls[language === 'en' ? '🥥 Coconut & Pantry Essentials' : '🥥 Warung Sembako & Santan'].push(item);
+      }
+    });
+
+    return Object.entries(stalls)
+      .filter(([_, list]) => list.length > 0)
+      .map(([title, list]) => {
+        const total = list.length;
+        const checked = list.filter((i) => i.checked).length;
+        const isComplete = total > 0 && checked === total;
+        return { title, list, total, checked, isComplete };
+      });
+  }, [items, language]);
+
+  const activeGroups = viewMode === 'recipe' ? recipeGroups : marketStallGroups;
   const totalAllItems = items.length;
   const totalChecked = items.filter((i) => i.checked).length;
+  const progressPercent =
+    totalAllItems > 0 ? Math.round((totalChecked / totalAllItems) * 100) : 0;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[#5C3A21]/20 pb-6">
         <div>
-          <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider mb-1">
-            <ShoppingBag className="w-4 h-4" /> Market Assistant
-            {isRealtime && (
-              <span className="flex items-center gap-1 text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200/50">
-                <Wifi className="w-3 h-3" /> Real-time Cloud Sync
-              </span>
-            )}
+          <div className="flex items-center gap-2">
+            <span className="w-8 h-8 rounded-xl bg-[#C85A32] text-white flex items-center justify-center border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]">
+              <ShoppingBag className="w-4 h-4" />
+            </span>
+            <h1 className="font-display font-black text-2xl sm:text-3xl text-[#2C1E16] dark:text-[#F6EFE2]">
+              {language === 'en' ? 'Archipelago Market Basket' : 'Bakul Belanja Pasar'}
+            </h1>
           </div>
-          <h1 className="font-display font-black text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
-            {t('Daftar Belanja Pasar')}
-          </h1>
-          <p className="text-xs sm:text-sm text-zinc-500 mt-1">
-            {totalAllItems > 0
-              ? `${totalChecked} / ${totalAllItems} ${t('bahan telah dibeli')}`
-              : t('Daftar belanja Anda masih kosong.')}
+          <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] mt-1">
+            {language === 'en'
+              ? 'Organized checklist for your trip to traditional market stalls'
+              : 'Daftar belanja taktis yang otomatis terkumpul dari gulungan resep Anda'}
           </p>
         </div>
 
         {totalChecked > 0 && (
           <button
             onClick={handleClearChecked}
-            className="px-4 py-2 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 text-xs font-bold text-zinc-600 dark:text-zinc-300 transition-colors flex items-center gap-1.5 self-start sm:self-auto"
+            className="self-start sm:self-auto px-4 py-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] hover:bg-[#B83B2B] hover:text-white text-[#B83B2B] border-2 border-[#5C3A21]/40 text-xs font-black shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 transition-colors flex items-center gap-1.5"
           >
-            <Trash2 className="w-4 h-4" /> {t('Bersihkan yang Selesai')} ({totalChecked})
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>
+              {language === 'en'
+                ? `Clear (${totalChecked}) Bought`
+                : `Hapus (${totalChecked}) Terbeli`}
+            </span>
           </button>
         )}
       </div>
 
-      {/* Quick Add Custom Item Form */}
+      {/* Progress & Stalls View Switch */}
+      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-5 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16] space-y-3">
+        <div className="flex items-center justify-between flex-wrap gap-2 text-xs">
+          <span className="font-bold text-[#2C1E16] dark:text-[#F6EFE2]">
+            {language === 'en' ? 'Basket Progress' : 'Kesiapan Belanja'}:{' '}
+            <span className="font-mono text-[#C85A32]">
+              {totalChecked} / {totalAllItems} {language === 'en' ? 'Items' : 'Bahan'}
+            </span>
+          </span>
+          <span className="font-mono font-black text-xs text-[#4A7C59]">
+            {progressPercent}%
+          </span>
+        </div>
+
+        <div className="w-full h-2.5 rounded-full bg-[#EFE4CE] dark:bg-[#1C1410] border border-[#5C3A21]/30 overflow-hidden">
+          <div
+            className="h-full bg-[#4A7C59] transition-all duration-300"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+
+        {/* View Mode Toggle: Per Recipe vs Per Market Stall */}
+        <div className="pt-2 flex items-center justify-between flex-wrap gap-2 border-t border-[#5C3A21]/20">
+          <span className="text-[11px] font-bold text-[#5C3A21] dark:text-[#D9C8AA]">
+            {language === 'en' ? 'Grouping Mode' : 'Mode Tampilan'}:
+          </span>
+          <div className="flex items-center gap-1.5 bg-[#EFE4CE] dark:bg-[#1C1410] p-1 rounded-xl border border-[#5C3A21]/40">
+            <button
+              onClick={() => {
+                playClickSound();
+                setViewMode('recipe');
+              }}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                viewMode === 'recipe'
+                  ? 'bg-[#C85A32] text-white border border-[#2C1E16] shadow-[1px_1px_0px_#2C1E16]'
+                  : 'text-[#5C3A21] dark:text-[#D9C8AA]'
+              }`}
+            >
+              <Scroll className="w-3.5 h-3.5" />
+              <span>{language === 'en' ? 'By Recipe' : 'Per Gulungan'}</span>
+            </button>
+            <button
+              onClick={() => {
+                playClickSound();
+                setViewMode('market');
+              }}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                viewMode === 'market'
+                  ? 'bg-[#C85A32] text-white border border-[#2C1E16] shadow-[1px_1px_0px_#2C1E16]'
+                  : 'text-[#5C3A21] dark:text-[#D9C8AA]'
+              }`}
+            >
+              <Store className="w-3.5 h-3.5" />
+              <span>{language === 'en' ? 'By Market Stall' : 'Lapak Pasar'}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Add Custom Ingredient Form */}
       <form
         onSubmit={handleAddCustom}
-        className="bg-white dark:bg-zinc-900 p-3.5 sm:p-4 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-2"
+        className="flex flex-col sm:flex-row items-center gap-2 p-3 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-2 border-[#5C3A21]/40 shadow-[3px_3px_0px_#2C1E16]"
       >
         <input
           type="text"
           value={customName}
           onChange={(e) => setCustomName(e.target.value)}
-          placeholder={t('Nama bahan tambahan (misal: Minyak Goreng, Garam)...')}
-          className="w-full sm:flex-1 px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder={
+            language === 'en'
+              ? 'Add extra item (e.g. eggs, frying oil)...'
+              : 'Tambah bahan tambahan (misal: telur, minyak goreng)...'
+          }
+          className="flex-1 w-full bg-transparent px-3 py-1.5 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none"
         />
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            value={customDetail}
-            onChange={(e) => setCustomDetail(e.target.value)}
-            placeholder={t('Takaran (1 liter, 2 ikat)...')}
-            className="flex-1 sm:w-48 px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-          <button
-            type="submit"
-            className="px-5 py-2.5 rounded-2xl bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-sm flex items-center justify-center gap-1.5 transition-transform active:scale-95 shrink-0"
-          >
-            <Plus className="w-4 h-4" /> {t('Tambah Bahan')}
-          </button>
-        </div>
+        <input
+          type="text"
+          value={customDetail}
+          onChange={(e) => setCustomDetail(e.target.value)}
+          placeholder={
+            language === 'en' ? 'Amount (e.g. 1 kg)' : 'Jumlah (misal: 1 kg)'
+          }
+          className="w-full sm:w-36 bg-transparent px-3 py-1.5 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none border-t sm:border-t-0 sm:border-l border-[#5C3A21]/20"
+        />
+        <button
+          type="submit"
+          disabled={!customName.trim()}
+          className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#C85A32] text-white text-xs font-bold hover:bg-[#A64422] disabled:opacity-40 border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center justify-center gap-1 shrink-0"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          <span>{t('Tambah')}</span>
+        </button>
       </form>
 
-      {/* Items List grouped by recipe */}
-      {groups.length > 0 ? (
+      {/* Grouped Shopping Lists */}
+      {totalAllItems > 0 ? (
         <div className="space-y-6">
-          {groups.map((group, gIdx) => (
+          {activeGroups.map((group, gIdx) => (
             <div
               key={gIdx}
-              className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden"
+              className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16] overflow-hidden"
             >
-              <div className="px-5 py-3.5 bg-zinc-50 dark:bg-zinc-800/60 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-                <span className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">
-                  {group.title}
-                </span>
-                <span className="text-[11px] font-mono font-bold text-zinc-400">
+              <div className="p-4 bg-[#EFE4CE] dark:bg-[#2C1E16] border-b-2 border-[#5C3A21]/40 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-display font-black text-sm sm:text-base text-[#2C1E16] dark:text-[#F6EFE2]">
+                    {group.title}
+                  </h3>
+                  {group.isComplete && (
+                    <span className="px-2 py-0.5 rounded-md bg-[#4A7C59] text-white text-[10px] font-black border border-[#2C1E16]">
+                      ✓ {language === 'en' ? 'Complete' : 'Lengkap'}
+                    </span>
+                  )}
+                </div>
+                <span className="font-mono text-xs font-bold text-[#8C6239]">
                   {group.checked}/{group.total}
                 </span>
               </div>
 
-              <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <div className="p-3 sm:p-4 divide-y divide-[#5C3A21]/15">
                 {group.list.map((item) => (
                   <div
                     key={item.id}
                     onClick={() => handleToggleCheck(item)}
-                    className="px-5 py-3.5 flex items-center justify-between gap-3 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer group"
+                    className="py-2.5 px-2 flex items-center justify-between gap-3 hover:bg-[#EFE4CE]/50 dark:hover:bg-[#2C1E16]/50 rounded-xl transition-colors cursor-pointer"
                   >
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      {item.checked ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-zinc-300 dark:text-zinc-600 shrink-0 group-hover:text-primary transition-colors" />
-                      )}
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <button
+                        type="button"
+                        className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 ${
+                          item.checked
+                            ? 'bg-[#4A7C59] border-[#2C1E16] text-white'
+                            : 'bg-white dark:bg-[#2C1E16] border-[#5C3A21]/50 text-transparent'
+                        }`}
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                      </button>
+
                       <div className="min-w-0">
                         <span
-                          className={`text-sm block truncate transition-all ${
+                          className={`text-xs sm:text-sm font-bold block truncate ${
                             item.checked
-                              ? 'line-through text-zinc-400 dark:text-zinc-500 font-normal'
-                              : 'text-zinc-800 dark:text-zinc-200 font-semibold'
+                              ? 'line-through text-[#8C6239] opacity-60'
+                              : 'text-[#2C1E16] dark:text-[#F6EFE2]'
                           }`}
                         >
                           {item.name}
                         </span>
                         {item.detail && (
-                          <span className="text-xs text-zinc-400 block truncate">
+                          <span className="text-[11px] font-mono text-[#C85A32] block">
                             {item.detail}
                           </span>
                         )}
@@ -248,14 +383,15 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
                     </div>
 
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteItem(item.id);
                       }}
-                      className="p-1.5 rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100"
-                      title={language === 'en' ? 'Delete item' : 'Hapus bahan'}
+                      className="p-1 text-[#8C6239] hover:text-[#B83B2B] transition-colors"
+                      title={language === 'en' ? 'Delete' : 'Hapus'}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ))}
@@ -264,23 +400,25 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 p-8 space-y-4">
-          <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
-            <ListChecks className="w-8 h-8" />
+        <div className="text-center py-16 px-4 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-dashed border-[#5C3A21]/40 space-y-3">
+          <div className="w-12 h-12 rounded-xl bg-[#EFE4CE] text-[#C85A32] flex items-center justify-center mx-auto border border-[#5C3A21]/30">
+            <ShoppingBag className="w-6 h-6" />
           </div>
-          <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100">
-            {t('Daftar belanja Anda masih kosong.')}
+          <h3 className="font-display font-bold text-base text-[#2C1E16] dark:text-[#F6EFE2]">
+            {language === 'en' ? 'Market basket is empty' : 'Bakul belanja Anda masih kosong'}
           </h3>
-          <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
+          <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA] max-w-sm mx-auto leading-relaxed">
             {language === 'en'
-              ? 'Add ingredients from recipe detail pages or type above to create your market shopping list.'
-              : 'Tambahkan bahan dari halaman detail resep atau ketik di atas untuk membuat catatan belanja pasar Anda.'}
+              ? 'Add ingredients from recipe scroll details to build your traditional market list.'
+              : 'Buka lembar resep apa pun dan klik "Masukkan Semua ke Daftar Belanja" untuk mencatat bahan masakan.'}
           </p>
           <Link
             href="/eksplorasi"
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container shadow-sm"
+            onClick={() => playClickSound()}
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#C85A32] text-white font-black text-xs border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5"
           >
-            {t('Jelajahi Resep Sekarang')} <ArrowRight className="w-3.5 h-3.5" />
+            <span>{language === 'en' ? 'Explore Recipe Scrolls' : 'Jelajahi Gulungan Resep'}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       )}

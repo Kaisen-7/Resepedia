@@ -13,24 +13,31 @@ import {
   ChefHat,
   Moon,
   Sun,
-  Menu,
   X,
-  MessageSquare,
+  BookOpen,
+  Volume2,
+  VolumeX,
+  Award,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useAI } from '@/contexts/AIContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import SpiceAlmanacDrawer from '@/components/recipe/SpiceAlmanacDrawer';
+import { isSoundEnabled, setSoundEnabled, playClickSound } from '@/lib/utils/sound-effects';
+import { getLocalMastery, UserMastery } from '@/lib/utils/mastery-storage';
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, signInWithGoogle, isGuest } = useAuth();
-  const { openAI } = useAI();
+  const { user } = useAuth();
   const { t, language } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isAlmanacOpen, setIsAlmanacOpen] = useState(false);
+  const [almanacInitialQuery, setAlmanacInitialQuery] = useState('');
+  const [soundActive, setSoundActive] = useState(true);
+  const [mastery, setMastery] = useState<UserMastery | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,9 +50,32 @@ export default function Navbar() {
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
     setIsDarkMode(isDark);
-  }, []);
+    setSoundActive(isSoundEnabled());
+    setMastery(getLocalMastery(user?.uid, language));
+
+    const handleMasteryUpdate = () => {
+      setMastery(getLocalMastery(user?.uid, language));
+    };
+
+    const handleOpenAlmanac = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail?.query) {
+        setAlmanacInitialQuery(customEvent.detail.query);
+      }
+      setIsAlmanacOpen(true);
+    };
+
+    window.addEventListener('mastery-updated', handleMasteryUpdate);
+    window.addEventListener('open-spice-almanac', handleOpenAlmanac);
+
+    return () => {
+      window.removeEventListener('mastery-updated', handleMasteryUpdate);
+      window.removeEventListener('open-spice-almanac', handleOpenAlmanac);
+    };
+  }, [user, language]);
 
   const toggleDarkMode = () => {
+    playClickSound();
     const nextDark = !isDarkMode;
     setIsDarkMode(nextDark);
     if (nextDark) {
@@ -59,6 +89,13 @@ export default function Navbar() {
     localStorage.setItem('culinary_prefs', JSON.stringify(parsed));
   };
 
+  const toggleSound = () => {
+    const next = !soundActive;
+    setSoundActive(next);
+    setSoundEnabled(next);
+    if (next) playClickSound();
+  };
+
   const navLinks = [
     { name: t('Beranda'), href: '/' },
     { name: t('Eksplorasi'), href: '/eksplorasi' },
@@ -69,6 +106,7 @@ export default function Navbar() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      playClickSound();
       router.push(`/eksplorasi?q=${encodeURIComponent(searchQuery.trim())}`);
       setIsSearchOpen(false);
       setSearchQuery('');
@@ -76,145 +114,207 @@ export default function Navbar() {
   };
 
   return (
-    <header
-      className={`sticky top-0 z-40 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-surface/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200/70 dark:border-zinc-800/70 shadow-sm'
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 sm:h-20">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2 group shrink-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary flex items-center justify-center text-white shadow-md shadow-primary/20 transition-transform group-hover:scale-105">
-              <ChefHat className="w-4 h-4 sm:w-5 sm:h-5" />
-            </div>
-            <div>
-              <span className="font-display font-black text-lg sm:text-2xl tracking-tight text-on-surface">
-                Resepedia
-              </span>
-              <span className="hidden sm:block text-[10px] uppercase font-bold tracking-widest text-primary -mt-1">
-                {t('Katalog Nusantara')}
-              </span>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 bg-surface-container-low dark:bg-zinc-800/60 p-1.5 rounded-full border border-zinc-200/60 dark:border-zinc-700/60">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
-                    isActive
-                      ? 'bg-primary text-white shadow-sm'
-                      : 'text-on-surface-variant hover:text-on-surface hover:bg-white/60 dark:hover:bg-zinc-700/50'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Right Action Icons */}
-          <div className="flex items-center gap-1 sm:gap-2.5">
-            {/* Search Trigger */}
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              className="p-2 sm:px-3 sm:py-2 rounded-full bg-surface-container-low dark:bg-zinc-800/80 text-on-surface-variant text-xs font-semibold hover:border-primary/50 transition-colors border border-transparent shrink-0"
-              title="Cari Resep"
-            >
-              <Search className="w-4 h-4 text-zinc-400" />
-              <span className="hidden lg:inline text-zinc-400 ml-1.5">{t('Cari resep...')}</span>
-              <kbd className="hidden lg:inline ml-1 px-1.5 py-0.5 text-[10px] font-mono bg-zinc-200 dark:bg-zinc-700 rounded text-zinc-600 dark:text-zinc-300">
-                ⌘K
-              </kbd>
-            </button>
-
-            {/* Asisten Dapur Button */}
-            <button
-              onClick={() => openAI()}
-              className="flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-2 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white text-xs font-bold transition-all active:scale-95 border border-primary/20 shrink-0"
-              title="Konsultasi Asisten Dapur"
-            >
-              <ChefHat className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-              <span className="hidden sm:inline">{t('Asisten Dapur')}</span>
-            </button>
-
-            {/* Add Recipe Button (Always visible on mobile & desktop) */}
+    <>
+      <header
+        className={`sticky top-0 z-40 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-[#F6EFE2]/95 dark:bg-[#1C1410]/95 backdrop-blur-md border-b-2 border-[#5C3A21]/30 dark:border-[#8C6239]/40 shadow-[0px_4px_0px_rgba(44,30,22,0.06)]'
+            : 'bg-[#F6EFE2] dark:bg-[#1C1410] border-b border-[#5C3A21]/20'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-20">
+            {/* Brand Logo - Papan Nama Kedai */}
             <Link
-              href="/resep/tambah"
-              className="flex items-center gap-1 p-2 sm:px-4 sm:py-2 rounded-full bg-primary text-white hover:bg-primary-container text-xs font-bold shadow-sm transition-transform active:scale-95 shrink-0"
-              title="Tulis Resep Masakan"
+              href="/"
+              onClick={() => playClickSound()}
+              className="flex items-center gap-2.5 group shrink-0"
             >
-              <Plus className="w-4 h-4 sm:w-3.5 sm:h-3.5 stroke-3" />
-              <span className="hidden sm:inline">{t('Tulis Resep')}</span>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#C85A32] flex items-center justify-center text-white border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] transition-transform group-hover:scale-105">
+                <ChefHat className="w-4 h-4 sm:w-5 sm:h-5" />
+              </div>
+              <div>
+                <span className="font-display font-black text-lg sm:text-2xl tracking-tight text-[#2C1E16] dark:text-[#F6EFE2]">
+                  Resepedia
+                </span>
+                <span className="hidden sm:block text-[10px] uppercase font-bold tracking-widest text-[#C85A32] dark:text-[#E26E45] -mt-1">
+                  {language === 'en' ? 'Archipelago Tavern' : 'Kedai Kuliner Nusantara'}
+                </span>
+              </div>
             </Link>
 
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 sm:p-2.5 rounded-full hover:bg-surface-container-high dark:hover:bg-zinc-800 text-on-surface-variant transition-colors shrink-0"
-              title="Ganti Tema"
-            >
-              {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-            </button>
+            {/* Desktop Navigation Links */}
+            <nav className="hidden md:flex items-center gap-1.5 bg-[#EFE4CE] dark:bg-[#2C1E16] p-1.5 rounded-2xl border-2 border-[#5C3A21]/50 dark:border-[#8C6239]/50 shadow-[2px_2px_0px_#2C1E16]">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => playClickSound()}
+                    className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      isActive
+                        ? 'bg-[#C85A32] text-white border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
+                        : 'text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#2C1E16] hover:bg-[#E2D1B0] dark:hover:bg-[#422B1D]'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+            </nav>
 
-            {/* Profile / Auth Avatar */}
-            <Link
-              href="/profil"
-              className="p-0.5 sm:p-1 rounded-full border border-zinc-200 dark:border-zinc-700 hover:border-primary transition-colors shrink-0"
-              title="Profil Pengguna"
-            >
-              {user?.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt={user.displayName || 'Profile'}
-                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-300">
-                  <User className="w-4 h-4" />
-                </div>
-              )}
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Global Command / Search Modal */}
-      {isSearchOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/50 backdrop-blur-sm">
-          <div className="w-full max-w-xl bg-white dark:bg-zinc-900 rounded-3xl p-4 shadow-2xl border border-zinc-200 dark:border-zinc-800">
-            <form onSubmit={handleSearchSubmit} className="flex items-center gap-3 border-b border-zinc-100 dark:border-zinc-800 pb-3">
-              <Search className="w-5 h-5 text-primary" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('Cari masakan, bahan (ayam, santan, tahu), atau daerah...')}
-                autoFocus
-                className="flex-1 bg-transparent text-sm sm:text-base text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
-              />
+            {/* Right Action Icons */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* Search Trigger */}
               <button
-                type="button"
-                onClick={() => setIsSearchOpen(false)}
-                className="p-1 text-zinc-400 hover:text-zinc-700 rounded-lg"
+                onClick={() => {
+                  playClickSound();
+                  setIsSearchOpen(true);
+                }}
+                className="p-2 sm:px-3 sm:py-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] text-xs font-bold border-2 border-[#5C3A21]/40 dark:border-[#8C6239]/50 hover:border-[#5C3A21] transition-colors shrink-0 flex items-center"
+                title="Cari Resep"
               >
-                <X className="w-5 h-5" />
+                <Search className="w-4 h-4 text-[#8C6239]" />
+                <span className="hidden lg:inline text-[#8C6239] ml-1.5">
+                  {language === 'en' ? 'Search scrolls...' : 'Cari gulungan...'}
+                </span>
+                <kbd className="hidden lg:inline ml-1 px-1.5 py-0.5 text-[10px] font-mono bg-[#E2D1B0] dark:bg-[#422B1D] rounded text-[#5C3A21] dark:text-[#E2D1B0]">
+                  ⌘K
+                </kbd>
               </button>
-            </form>
-            <div className="mt-3 flex items-center justify-between text-xs text-zinc-400 px-1">
-              <span>{t('Tekan Enter untuk mencari')}</span>
-              <span>{t('Katalog Resepedia')}</span>
+
+              {/* Kitab Rempah & Almanak Substitusi (Zero AI, Pure Craft) */}
+              <button
+                onClick={() => {
+                  playClickSound();
+                  setIsAlmanacOpen(true);
+                }}
+                className="flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-2 rounded-xl bg-[#4A7C59] text-white hover:bg-[#365C41] text-xs font-bold border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] transition-transform active:translate-y-0.5 shrink-0"
+                title={language === 'en' ? 'Open Spice Almanac' : 'Buka Kitab Rempah & Substitusi'}
+              >
+                <BookOpen className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                <span className="hidden sm:inline">
+                  {language === 'en' ? 'Spice Almanac' : 'Kitab Rempah'}
+                </span>
+              </button>
+
+              {/* Add Recipe Button (Always visible) */}
+              <Link
+                href="/resep/tambah"
+                onClick={() => playClickSound()}
+                className="flex items-center gap-1 p-2 sm:px-3.5 sm:py-2 rounded-xl bg-[#C85A32] text-white hover:bg-[#A64422] text-xs font-bold border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] transition-transform active:translate-y-0.5 shrink-0"
+                title="Tulis Resep Masakan"
+              >
+                <Plus className="w-4 h-4 sm:w-3.5 sm:h-3.5 stroke-3" />
+                <span className="hidden sm:inline">{t('Tulis Resep')}</span>
+              </Link>
+
+              {/* Sound Effects Toggle (Cozy RPG SFX) */}
+              <button
+                onClick={toggleSound}
+                className="p-2 sm:p-2.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] hover:bg-[#E2D1B0] dark:hover:bg-[#422B1D] border-2 border-[#5C3A21]/30 transition-colors shrink-0"
+                title={soundActive ? 'Matikan Suara SFX' : 'Nyalakan Suara SFX'}
+                aria-label="Toggle Sound Effects"
+              >
+                {soundActive ? (
+                  <Volume2 className="w-4 h-4 text-[#4A7C59]" />
+                ) : (
+                  <VolumeX className="w-4 h-4 text-[#8C6239]" />
+                )}
+              </button>
+
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className="p-2 sm:p-2.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] hover:bg-[#E2D1B0] dark:hover:bg-[#422B1D] border-2 border-[#5C3A21]/30 transition-colors shrink-0"
+                title="Ganti Suasana (Siang / Malam)"
+                aria-label="Toggle Dark Mode"
+              >
+                {isDarkMode ? (
+                  <Sun className="w-4 h-4 text-[#D99B26]" />
+                ) : (
+                  <Moon className="w-4 h-4 text-[#5C3A21]" />
+                )}
+              </button>
+
+              {/* Profile / Guild Rank Badge */}
+              <Link
+                href="/profil"
+                onClick={() => playClickSound()}
+                className="flex items-center gap-1.5 p-1 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] border-2 border-[#5C3A21]/40 hover:border-[#C85A32] transition-colors shrink-0"
+                title={mastery ? `${mastery.title} (Level ${mastery.level})` : 'Profil Pengguna'}
+              >
+                {user?.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName || 'Profile'}
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-cover border border-[#2C1E16]"
+                  />
+                ) : (
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#E2D1B0] dark:bg-[#422B1D] flex items-center justify-center text-[#5C3A21] dark:text-[#E2D1B0]">
+                    <User className="w-4 h-4" />
+                  </div>
+                )}
+                {mastery && (
+                  <div className="hidden xl:flex flex-col pr-1 text-left">
+                    <span className="text-[10px] font-black text-[#C85A32] leading-tight">
+                      Lv. {mastery.level}
+                    </span>
+                    <span className="text-[9px] font-semibold text-[#5C3A21] dark:text-[#D9C8AA] leading-none line-clamp-1">
+                      {mastery.title}
+                    </span>
+                  </div>
+                )}
+              </Link>
             </div>
           </div>
         </div>
-      )}
-    </header>
+
+        {/* Global Command / Search Modal */}
+        {isSearchOpen && (
+          <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/60 backdrop-blur-sm">
+            <div className="w-full max-w-xl bg-[#FCF9F2] dark:bg-[#1C1410] rounded-2xl p-4 shadow-[6px_6px_0px_#2C1E16] border-3 border-[#5C3A21] dark:border-[#8C6239]">
+              <form
+                onSubmit={handleSearchSubmit}
+                className="flex items-center gap-3 border-b-2 border-[#5C3A21]/20 dark:border-[#8C6239]/40 pb-3"
+              >
+                <Search className="w-5 h-5 text-[#C85A32]" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={
+                    language === 'en'
+                      ? 'Search recipes, spices (candlenut, ginger, coconut), or regions...'
+                      : 'Cari masakan, bahan (ayam, santan, tahu), atau daerah...'
+                  }
+                  autoFocus
+                  className="flex-1 bg-transparent text-sm sm:text-base text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsSearchOpen(false)}
+                  className="p-1 text-[#8C6239] hover:text-[#2C1E16] dark:hover:text-white rounded-lg"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </form>
+              <div className="mt-3 flex items-center justify-between text-xs text-[#8C6239] px-1 font-mono">
+                <span>{language === 'en' ? 'Press Enter to explore' : 'Tekan Enter untuk mencari'}</span>
+                <span>{language === 'en' ? 'Resepedia Grimoire' : 'Katalog Resepedia'}</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Global Spice Almanac Modal Drawer */}
+      <SpiceAlmanacDrawer
+        isOpen={isAlmanacOpen}
+        onClose={() => setIsAlmanacOpen(false)}
+        initialQuery={almanacInitialQuery}
+      />
+    </>
   );
 }

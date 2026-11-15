@@ -1,6 +1,6 @@
 # 📖 Dokumentasi Lengkap Proyek: Resepedia
 
-> **Resepedia — Ensiklopedi & Asisten Cerdas Kuliner Nusantara**  
+> **Resepedia — Ensiklopedi & Kitab Kuliner Nusantara (Edisi Cozy RPG)**  
 > *Platform Web Full-Stack Modern untuk Pelestarian dan Eksplorasi Warisan Kuliner Indonesia*  
 > **URL Produksi:** [https://resepedia-seven.vercel.app](https://resepedia-seven.vercel.app)  
 > **Repository:** [https://github.com/Kaisen-7/Resepedia](https://github.com/Kaisen-7/Resepedia)
@@ -17,7 +17,7 @@
 7. [Server Actions & API Routes](#7-server-actions--api-routes)
 8. [Aturan Keamanan (Security Rules) & Indeks Database](#8-aturan-keamanan-security-rules--indeks-database)
 9. [Internasionalisasi & Lokalisasi (i18n)](#9-internasionalisasi--lokalisasi-i18n)
-10. [Responsivitas Mobile & Sistem Desain](#10-responsivitas-mobile--sistem-desain)
+10. [Responsivitas Mobile & Sistem Desain Cozy RPG](#10-responsivitas-mobile--sistem-desain-cozy-rpg)
 11. [Panduan Instalasi & Pengembangan Lokal](#11-panduan-instalasi--pengembangan-lokal)
 12. [Panduan Deployment Produksi (Vercel & Firebase)](#12-panduan-deployment-produksi-vercel--firebase)
 13. [Catatan Pemecahan Masalah & Rekayasa Teknis](#13-catatan-pemecahan-masalah--rekayasa-teknis)
@@ -26,13 +26,13 @@
 
 ## 1. Ringkasan Eksekutif
 
-**Resepedia** adalah aplikasi web ensiklopedi kuliner Nusantara interaktif yang dirancang untuk mendokumentasikan, melestarikan, dan mempermudah praktik memasak hidangan tradisional Indonesia dari 6 kepulauan besar (Sumatra, Jawa, Bali & Nusa Tenggara, Sulawesi, Kalimantan, dan Papua & Maluku).
-
-Berbeda dari aplikasi resep konvensional, Resepedia mengintegrasikan teknologi ramah dapur (*kitchen-friendly features*):
-- **Zen Cook Mode**: Pembacaan langkah memasak otomatis berbasis suara (*speech synthesis*) dengan pencegahan layar padam (*Screen Wake Lock API*).
-- **Asisten Koki Cerdas Gemini**: Konsultasi bumbu pengganti dan tips memasak secara *real-time streaming* dengan injeksi konteks resep aktif.
-- **Floating Cooking Timer**: Timer audio synthesizer berbasis browser yang persisten antar navigasi halaman.
-- **Portion Scaler**: Perhitungan gramasi bahan otomatis berbasis matematika fraksi presisi.
+**Resepedia (Edisi Cozy Nusantara RPG)** adalah aplikasi web ensiklopedi kuliner Nusantara interaktif bergaya naskah gulungan klasik (*Grimoire*) yang memadukan kehangatan dapur tradisional Indonesia dengan mekanika permainan peran (*RPG mechanics*):
+- **Zero AI Slop**: 100% deterministik, bebas dependensi LLM eksternal, bebas biaya token API, dan bekerja penuh secara luring (*offline*).
+- **Kitab Rempah & Almanak Substitusi Nusantara**: Modul bumbu terkurasi 40+ rempah khas dengan profil rasa, peran kuliner, dan racikan darurat berasio presisi.
+- **Mode Perapian (Hearth Crafting Mode)**: Panduan langkah memasak bersuara otomatis (*Web Speech API*) di latar perapian kayu arang hangat, pencegah layar tidur (*Wake Lock API*), dan layar perayaan kemenangan (+XP Koki).
+- **Party Size Scaler**: Kalkulator porsi dinamis dengan preset Pengelana Tunggal, Jamuan Berdua, Rombongan Kecil, hingga Kenduri Agung.
+- **Efek Suara Taktil Sintetis (Procedural Web Audio SFX)**: Synthesizer nada gamelan pentatonik dan ketukan kayu tanpa unduhan file `.mp3` eksternal (< 2 KB).
+- **Lapak Pasar Tradisional**: Pengelompokan daftar belanja cerdas ke lapak bumbu, lapak sayur, lapak daging, dan sembako.
 - **Sinkronisasi Ganda (Dual-Persistence)**: Dukungan penuh cloud real-time Firebase untuk pengguna login dan *localStorage fallback* untuk pengguna tamu.
 
 ---
@@ -48,7 +48,7 @@ Berbeda dari aplikasi resep konvensional, Resepedia mengintegrasikan teknologi r
 | **CSS Engine** | Tailwind CSS | `^4.1.14` | Tailwind v4 dengan `@tailwindcss/postcss`, sintaks kanonikal modern |
 | **Ikon UI** | Lucide React | `^0.546.0` | Ikon SVG modular & konsisten |
 | **Animasi** | Motion (Framer) | `^12.23.24` | Drawer panel, modal backdrop, timer animations |
-| **Markdown** | React-Markdown + Remark-GFM | `^10.1.0` / `^4.0.1` | Rendering jawaban Markdown AI Chef |
+| **Audio Synthesizer** | Web Audio API | Native Browser | Procedural SFX gamelan, woodblock, & fanfare (< 2 KB) |
 
 ### Backend & Cloud Services
 | Layanan | Package | Versi | Peran / Deskripsi |
@@ -56,7 +56,6 @@ Berbeda dari aplikasi resep konvensional, Resepedia mengintegrasikan teknologi r
 | **Client SDK** | Firebase | `^13.1.0` | Auth (Google Sign-In), Cloud Firestore client, Storage |
 | **Admin SDK** | Firebase Admin | `^13.1.0` | Server-side mutations & Firestore admin access |
 | **JWT / RSA Override** | `jose` | `^4.15.9` | Memastikan kompatibilitas CommonJS `jwks-rsa` pada Vercel Node runtime |
-| **AI LLM Engine** | `@google/genai` | `^1.29.0` | Google Gemini 2.5 Flash dengan streaming SSE response |
 | **Observability** | `@opentelemetry/api` | `^1.10.0` | Tracing & telemetry instrumentation standar Vercel |
 
 ---

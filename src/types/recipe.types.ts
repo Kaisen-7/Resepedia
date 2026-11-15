@@ -6,6 +6,7 @@ export interface UserPreferences {
   darkMode: boolean;
   language: 'id' | 'en';
   dietary: 'None' | 'Vegetarian' | 'Vegan' | 'Gluten Free' | 'Halal';
+  soundEffectsEnabled?: boolean;
 }
 
 export interface UserDocument {
@@ -14,6 +15,9 @@ export interface UserDocument {
   email: string;
   avatarUrl: string | null;
   savedRecipeIds: string[]; // Pengganti tabel saved_recipes
+  cookedRecipeIds?: string[]; // ID resep yang sudah diselesaikan (Quest Selesai)
+  xp?: number; // Total cooking XP
+  unlockedBadges?: string[]; // Lencana koki yang terbuka
   preferences: UserPreferences;
   createdAt: number;
 }
@@ -95,4 +99,23 @@ export interface CommentDocument {
   createdAt: number;
   time?: string;
   initial?: string;
+}
+
+export interface SpiceSubstitute {
+  name: string;
+  ratio: string; // Misal "1:1" atau "1 butir = 1/2 sdt kemiri halus"
+  notes: string;
+}
+
+export interface SpiceAlmanacEntry {
+  id: string;
+  name: string;
+  regionalName?: string; // Nama daerah (misal: "Muncang" di Sunda)
+  aliases: string[]; // ['kemiri', 'candlenut', 'muncang']
+  category: 'Rimpang' | 'Bumbu Kering' | 'Daun & Batang' | 'Buah & Asam' | 'Pelengkap';
+  flavorProfile: string; // Profil rasa (gurih berminyak, pedas hangat, dll.)
+  culinaryRole: string; // Fungsi masakan
+  substitutes: SpiceSubstitute[];
+  storageTip: string;
+  icon?: string;
 }

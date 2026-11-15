@@ -12,13 +12,16 @@ import {
   Utensils,
   BookOpen,
   SlidersHorizontal,
+  Award,
+  Zap,
 } from 'lucide-react';
 import { Recipe } from '@/types';
 import RecipeCard from '@/components/recipe/RecipeCard';
-import { useAI } from '@/contexts/AIContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { getMyLocalRecipes } from '@/lib/utils/recipe-storage';
+import { playClickSound } from '@/lib/utils/sound-effects';
+import { getLocalMastery, UserMastery } from '@/lib/utils/mastery-storage';
 
 interface HomeClientProps {
   initialRecipes: Recipe[];
@@ -26,17 +29,26 @@ interface HomeClientProps {
 }
 
 export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClientProps) {
-  const { openAI } = useAI();
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const [localMyRecipes, setLocalMyRecipes] = useState<Recipe[]>([]);
+  const [mastery, setMastery] = useState<UserMastery | null>(null);
 
   useEffect(() => {
     setLocalMyRecipes(getMyLocalRecipes(user?.uid));
+    setMastery(getLocalMastery(user?.uid, language));
+
     const handleUpdated = () => setLocalMyRecipes(getMyLocalRecipes(user?.uid));
+    const handleMasteryUpdated = () => setMastery(getLocalMastery(user?.uid, language));
+
     window.addEventListener('my-recipes-updated', handleUpdated);
-    return () => window.removeEventListener('my-recipes-updated', handleUpdated);
-  }, [user]);
+    window.addEventListener('mastery-updated', handleMasteryUpdated);
+
+    return () => {
+      window.removeEventListener('my-recipes-updated', handleUpdated);
+      window.removeEventListener('mastery-updated', handleMasteryUpdated);
+    };
+  }, [user, language]);
 
   const allCombinedRecipes = useMemo(() => {
     const map = new Map<string, Recipe>();
@@ -68,10 +80,10 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
   const greeting = getGreeting();
 
   const regions = [
-    { name: 'All', label: t('Semua Daerah'), badge: language === 'en' ? 'Whole Archipelago' : 'Seluruh Nusantara' },
+    { name: 'All', label: t('Semua Daerah'), badge: language === 'en' ? 'Archipelago Tavern' : 'Kedai Nusantara' },
     { name: 'Sumatra', label: 'Sumatra', badge: language === 'en' ? 'Rendang & Curry' : 'Rendang & Gulai' },
-    { name: 'Jawa', label: language === 'en' ? 'Java' : 'Jawa', badge: language === 'en' ? 'Rawon, Gudeg & Soto' : 'Rawon, Gudeg & Soto' },
-    { name: 'Bali', label: 'Bali & NTB', badge: language === 'en' ? 'Betutu & Sambal Matah' : 'Betutu & Sambal Matah' },
+    { name: 'Jawa', label: language === 'en' ? 'Java' : 'Jawa', badge: language === 'en' ? 'Rawon & Soto' : 'Rawon & Soto' },
+    { name: 'Bali', label: 'Bali & NTB', badge: language === 'en' ? 'Betutu & Matah' : 'Betutu & Matah' },
     { name: 'Sulawesi', label: 'Sulawesi', badge: language === 'en' ? 'Coto & Woku' : 'Coto & Woku' },
     { name: 'Kalimantan', label: 'Kalimantan', badge: language === 'en' ? 'Soto Banjar' : 'Soto Banjar' },
     { name: 'Papua', label: 'Papua & Maluku', badge: language === 'en' ? 'Yellow Broth' : 'Kuah Kuning' },
@@ -101,15 +113,20 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
   ];
 
   const toggleIngredient = (ing: string) => {
+    playClickSound();
     setSelectedIngredients((prev) =>
       prev.includes(ing) ? prev.filter((i) => i !== ing) : [...prev, ing]
     );
   };
 
+  const openAlmanac = (query: string = '') => {
+    playClickSound();
+    window.dispatchEvent(new CustomEvent('open-spice-almanac', { detail: { query } }));
+  };
+
   // Filter recipes based on search, region, category, and selected ingredients
   const filteredRecipes = useMemo(() => {
     return allCombinedRecipes.filter((recipe) => {
-      // Search query filter
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const titleMatch = recipe.title.toLowerCase().includes(q);
@@ -119,13 +136,9 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
         if (!titleMatch && !descMatch && !ingMatch && !regionMatch) return false;
       }
 
-      // Region filter
       if (selectedRegion !== 'All' && recipe.region !== selectedRegion) return false;
-
-      // Category filter
       if (selectedCategory !== 'All' && recipe.category !== selectedCategory) return false;
 
-      // Ingredient pantry filter (ANY match)
       if (selectedIngredients.length > 0) {
         const recipeIngNames = recipe.ingredients.map((i) => i.name.toLowerCase());
         const hasSelected = selectedIngredients.some((ing) =>
@@ -140,22 +153,22 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
 
   return (
     <div className="space-y-12 sm:space-y-16 pb-16">
-      {/* Hero Section */}
-      <section className="relative pt-6 sm:pt-12 pb-8 sm:pb-12 bg-linear-to-b from-surface-container-low/70 via-surface/40 to-surface">
+      {/* Hero Section - Papan Kedai Nusantara */}
+      <section className="relative pt-6 sm:pt-12 pb-8 sm:pb-12 bg-linear-to-b from-[#EFE4CE]/60 via-[#F6EFE2] to-[#F6EFE2] dark:from-[#241912] dark:to-[#1C1410] border-b-2 border-[#5C3A21]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center space-y-4 sm:space-y-5">
             {/* Tagline */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-wide">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#C85A32] dark:text-[#E26E45] text-xs font-black tracking-wide border-2 border-[#5C3A21]/30 shadow-[2px_2px_0px_#2C1E16]">
               <Utensils className="w-3.5 h-3.5" />
-              <span>{t('Ensiklopedi Kuliner Nusantara')}</span>
+              <span>{language === 'en' ? 'Archipelago Tavern & Grimoire' : 'Kedai & Kitab Resep Nusantara'}</span>
             </div>
 
             {/* Headline */}
-            <h1 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-zinc-900 dark:text-zinc-100 tracking-tight leading-[1.15]">
+            <h1 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-[#2C1E16] dark:text-[#F6EFE2] tracking-tight leading-[1.15]">
               {greeting.title}
             </h1>
 
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base text-[#5C3A21] dark:text-[#D9C8AA] max-w-xl mx-auto leading-relaxed">
               {t(
                 'Jelajahi warisan resep autentik dari 6 kepulauan besar Indonesia. Dilengkapi takaran porsi terukur dan panduan langkah demi langkah.'
               )}
@@ -163,52 +176,51 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
 
             {/* Practical Search Bar */}
             <div className="pt-2 max-w-2xl mx-auto">
-              <div className="relative flex items-center bg-white dark:bg-zinc-900 rounded-2xl p-1.5 sm:p-2 shadow-sm border border-zinc-200 dark:border-zinc-800 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 ml-2.5 sm:ml-3 shrink-0" />
+              <div className="relative flex items-center bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-1.5 sm:p-2 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16]">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#8C6239] ml-2.5 sm:ml-3 shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={
                     language === 'en'
-                      ? 'Search dishes or ingredients (Chicken, Rendang, Coconut)...'
+                      ? 'Search recipes, spices, or regions (Chicken, Rendang, Coconut)...'
                       : 'Cari masakan atau bahan (Ayam, Rendang, Santan)...'
                   }
-                  className="w-full bg-transparent px-2.5 sm:px-3 py-2 text-xs sm:text-base text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
+                  className="w-full bg-transparent px-2.5 sm:px-3 py-2 text-xs sm:text-base text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 px-2 font-bold shrink-0"
+                    className="text-xs text-[#8C6239] hover:text-[#2C1E16] px-2 font-bold shrink-0"
                   >
                     {language === 'en' ? 'Clear' : 'Hapus'}
                   </button>
                 )}
                 <button
-                  onClick={() => openAI()}
-                  className="hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-primary/10 hover:text-primary text-zinc-700 dark:text-zinc-300 text-xs font-bold transition-colors shrink-0"
-                  title={language === 'en' ? 'Consult Kitchen Assistant' : 'Konsultasi bumbu dan ide masak'}
+                  onClick={() => openAlmanac(searchQuery)}
+                  className="hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#4A7C59] text-white hover:bg-[#365C41] text-xs font-bold border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 shrink-0"
+                  title={language === 'en' ? 'Open Spice Almanac' : 'Buka Kitab Rempah Nusantara'}
                 >
-                  <ChefHat className="w-3.5 h-3.5" />
-                  <span>{t('Tanya Dapur')}</span>
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>{language === 'en' ? 'Spice Almanac' : 'Kitab Rempah'}</span>
                 </button>
               </div>
 
-              {/* Popular Search Suggestions */}
-              <div className="mt-3 flex items-center justify-center gap-2 flex-wrap text-xs text-zinc-500">
-                <span className="font-semibold text-zinc-400">{t('Paling Dicari:')}</span>
-                {['Rendang Sapi', 'Soto Betawi', 'Rawon Daging', 'Gado-Gado', 'Ayam Betutu'].map(
-                  (item) => (
-                    <button
-                      key={item}
-                      onClick={() => setSearchQuery(item)}
-                      className="hover:text-primary transition-colors hover:underline"
-                    >
-                      {item}
-                    </button>
-                  )
-                )}
-              </div>
+              {/* Chef Mastery Status Banner if user has played */}
+              {mastery && mastery.cookedRecipeIds.length > 0 && (
+                <div className="mt-4 p-3 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] border-2 border-[#D99B26] shadow-[2px_2px_0px_#2C1E16] flex items-center justify-between text-xs font-bold">
+                  <div className="flex items-center gap-2">
+                    <Award className="w-4 h-4 text-[#D99B26]" />
+                    <span className="text-[#2C1E16] dark:text-[#F6EFE2]">
+                      {mastery.title} (Level {mastery.level})
+                    </span>
+                  </div>
+                  <span className="text-[#4A7C59] font-mono">
+                    {mastery.cookedRecipeIds.length} {language === 'en' ? 'Mastered Quests' : 'Hidangan Dikuasai'} (+{mastery.xp} XP)
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -216,41 +228,43 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
 
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
-        {/* Ingredient-First Filter ("Punya Bahan Apa di Rumah?") */}
-        <section className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-7 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        {/* Ingredient Pantry Filter */}
+        <section className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-6 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16] space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <div>
-              <h2 className="font-display font-bold text-lg sm:text-xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                <span>{t('Punya Bahan Apa di Rumah?')}</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold">
-                  {t('Saring Resep')}
-                </span>
-              </h2>
-              <p className="text-xs text-zinc-500 mt-0.5">
-                {t('Pilih persediaan bahan yang ada di dapurmu untuk menemukan hidangan yang cocok.')}
+              <h3 className="font-display font-black text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2]">
+                {language === 'en' ? 'Pantry Ingredients at Home' : 'Punya Bahan Apa di Rumah?'}
+              </h3>
+              <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+                {language === 'en'
+                  ? 'Select available kitchen ingredients to reveal matching recipes'
+                  : 'Pilih bahan yang ada di kulkas atau dapur Anda'}
               </p>
             </div>
             {selectedIngredients.length > 0 && (
               <button
-                onClick={() => setSelectedIngredients([])}
-                className="text-xs font-bold text-primary hover:underline self-start sm:self-auto"
+                onClick={() => {
+                  playClickSound();
+                  setSelectedIngredients([]);
+                }}
+                className="text-xs font-bold text-[#C85A32] hover:underline"
               >
-                {t('Reset Pilihan')} ({selectedIngredients.length})
+                {language === 'en' ? 'Reset Ingredients' : 'Atur Ulang Bahan'}
               </button>
             )}
           </div>
 
-          <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-1">
             {popularIngredients.map((ing) => {
               const isSelected = selectedIngredients.includes(ing);
               return (
                 <button
                   key={ing}
                   onClick={() => toggleIngredient(ing)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border-2 flex items-center gap-1.5 active:translate-y-0.5 ${
                     isSelected
-                      ? 'bg-secondary text-white shadow-sm'
-                      : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                      ? 'bg-[#C85A32] text-white border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
+                      : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] border-[#5C3A21]/30 hover:border-[#5C3A21]'
                   }`}
                 >
                   {isSelected && <Check className="w-3.5 h-3.5 stroke-3" />}
@@ -261,104 +275,95 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
           </div>
         </section>
 
-        {/* Region Carousel / Tabs */}
+        {/* Region Archipelago Filter */}
         <section className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between border-b-2 border-[#5C3A21]/20 pb-3 flex-wrap gap-2">
             <div>
-              <h2 className="font-display font-bold text-xl sm:text-2xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                <Compass className="w-5 h-5 text-primary" />{' '}
-                {language === 'en' ? 'Explore Regional Traditions' : 'Jelajahi Tradisi Daerah'}
+              <h2 className="font-display font-black text-xl sm:text-2xl text-[#2C1E16] dark:text-[#F6EFE2] flex items-center gap-2">
+                <Compass className="w-5 h-5 text-[#C85A32]" />
+                <span>{language === 'en' ? 'Archipelago Regions' : 'Kepulauan Citarasa Nusantara'}</span>
               </h2>
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
                 {language === 'en'
-                  ? 'Select an island to view authentic local spice-rich dishes'
-                  : 'Pilih pulau untuk melihat ragam masakan khas rempah setempat'}
+                  ? 'Discover traditional culinary signatures from across the islands'
+                  : 'Jelajahi resep khas daerah dari Sabang sampai Merauke'}
               </p>
             </div>
+
             <Link
               href="/eksplorasi"
-              className="text-xs font-bold text-primary flex items-center gap-1 hover:underline"
+              onClick={() => playClickSound()}
+              className="text-xs font-black text-[#C85A32] hover:underline flex items-center gap-1"
             >
-              {t('Semua Daerah')} <ArrowRight className="w-3.5 h-3.5" />
+              <span>{language === 'en' ? 'View All Scrolls' : 'Lihat Semua Gulungan'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="flex gap-2.5 overflow-x-auto pb-2 no-scrollbar">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
             {regions.map((reg) => {
-              const isActive = selectedRegion === reg.name;
+              const isSelected = selectedRegion === reg.name;
               return (
                 <button
                   key={reg.name}
-                  onClick={() => setSelectedRegion(reg.name)}
-                  className={`px-4 py-3 rounded-2xl text-xs font-bold shrink-0 transition-all text-left flex flex-col gap-0.5 border ${
-                    isActive
-                      ? 'bg-primary text-white border-primary shadow-md'
-                      : 'bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border-zinc-200/80 dark:border-zinc-800 hover:border-zinc-400'
+                  onClick={() => {
+                    playClickSound();
+                    setSelectedRegion(reg.name);
+                  }}
+                  className={`p-3 rounded-xl border-2 text-left transition-all active:translate-y-0.5 ${
+                    isSelected
+                      ? 'bg-[#C85A32] text-white border-[#2C1E16] shadow-[3px_3px_0px_#2C1E16]'
+                      : 'bg-[#FCF9F2] dark:bg-[#241912] border-[#5C3A21]/40 text-[#2C1E16] dark:text-[#F6EFE2] hover:border-[#5C3A21]'
                   }`}
                 >
-                  <span className="font-bold text-sm leading-snug">{reg.label}</span>
-                  {reg.badge && (
-                    <span
-                      className={`text-[10px] ${isActive ? 'text-white/85' : 'text-zinc-400 font-normal'}`}
-                    >
-                      {reg.badge}
-                    </span>
-                  )}
+                  <span className="font-display font-black text-xs sm:text-sm block">
+                    {reg.label}
+                  </span>
+                  <span
+                    className={`text-[10px] mt-0.5 block truncate ${
+                      isSelected ? 'text-amber-200' : 'text-[#8C6239] dark:text-[#D1A67B]'
+                    }`}
+                  >
+                    {reg.badge}
+                  </span>
                 </button>
               );
             })}
           </div>
         </section>
 
-        {/* Category Filters Chips */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-          {categories.map((cat) => {
-            const isActive = selectedCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
-                  isActive
-                    ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-sm'
-                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
-                }`}
-              >
-                {cat.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Recipe Cards Grid */}
+        {/* Category Tabs & Recipe Grid */}
         <section className="space-y-6">
-          <div className="flex items-center justify-between border-b border-zinc-200/80 dark:border-zinc-800/80 pb-4">
-            <div>
-              <h3 className="font-display font-black text-xl sm:text-2xl text-zinc-900 dark:text-zinc-100">
-                {selectedRegion === 'All'
-                  ? language === 'en'
-                    ? 'Archipelago Recipe Catalog'
-                    : 'Katalog Resep Nusantara'
-                  : language === 'en'
-                  ? `Dishes from ${selectedRegion}`
-                  : `Masakan Khas Wilayah ${selectedRegion}`}
-              </h3>
-              <p className="text-xs text-zinc-500 mt-0.5">
-                {language === 'en' ? (
-                  <>
-                    Showing <strong>{filteredRecipes.length}</strong> authentic recipes
-                  </>
-                ) : (
-                  <>
-                    Menampilkan <strong>{filteredRecipes.length}</strong> resep masakan
-                  </>
-                )}
-              </p>
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+              {categories.map((cat) => {
+                const isSelected = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      playClickSound();
+                      setSelectedCategory(cat.id);
+                    }}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border-2 active:translate-y-0.5 ${
+                      isSelected
+                        ? 'bg-[#4A7C59] text-white border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
+                        : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] border-[#5C3A21]/30 hover:border-[#5C3A21]'
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
             </div>
+
+            <span className="text-xs font-mono font-bold text-[#8C6239]">
+              {filteredRecipes.length} {language === 'en' ? 'scrolls found' : 'gulungan ditemukan'}
+            </span>
           </div>
 
           {filteredRecipes.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {filteredRecipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
@@ -368,28 +373,27 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white dark:bg-zinc-900 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 p-8 space-y-4">
-              <div className="w-14 h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 flex items-center justify-center mx-auto">
-                <ChefHat className="w-7 h-7" />
+            <div className="text-center py-16 px-4 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-dashed border-[#5C3A21]/40 space-y-3">
+              <div className="w-12 h-12 rounded-xl bg-[#EFE4CE] text-[#C85A32] flex items-center justify-center mx-auto border border-[#5C3A21]/30">
+                <Search className="w-6 h-6" />
               </div>
-              <h4 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
-                {language === 'en'
-                  ? 'No recipes match your criteria'
-                  : 'Tidak ada resep yang sesuai kriteria'}
-              </h4>
-              <p className="text-xs text-zinc-500 max-w-md mx-auto leading-relaxed">
+              <h3 className="font-display font-bold text-base text-[#2C1E16] dark:text-[#F6EFE2]">
+                {language === 'en' ? 'No recipes found' : 'Tidak ada resep yang sesuai'}
+              </h3>
+              <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA] max-w-md mx-auto leading-relaxed">
                 {language === 'en'
                   ? 'Try fewer search keywords or adjust pantry ingredients to discover more archipelago recipes.'
                   : 'Coba kurangi kata kunci pencarian atau sesuaikan pilihan bahan kulkas untuk melihat resep Nusantara lainnya.'}
               </p>
               <button
                 onClick={() => {
+                  playClickSound();
                   setSearchQuery('');
                   setSelectedRegion('All');
                   setSelectedCategory('All');
                   setSelectedIngredients([]);
                 }}
-                className="px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors"
+                className="px-5 py-2.5 rounded-xl bg-[#C85A32] text-white text-xs font-bold border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5"
               >
                 {language === 'en' ? 'Reset All Filters' : 'Reset Semua Filter'}
               </button>
@@ -397,31 +401,31 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
           )}
         </section>
 
-        {/* Human, Grounded Kitchen Sous-Chef Card */}
-        <section className="bg-white dark:bg-zinc-900 rounded-3xl p-5 sm:p-10 border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        {/* Kitab Rempah Nusantara Showcase Banner (Replaces AI Slop Banner) */}
+        <section className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-6 sm:p-10 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">
-              <ChefHat className="w-3.5 h-3.5" />
-              <span>{language === 'en' ? 'Interactive Kitchen Assistant' : 'Konsultasi Dapur Interaktif'}</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-[#4A7C59]/15 text-[#4A7C59] dark:text-[#88C59A] border border-[#4A7C59]/30 text-xs font-black">
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>{language === 'en' ? 'Archipelago Spice Almanac' : 'Kitab Rempah & Rahasia Bumbu'}</span>
             </div>
-            <h3 className="font-display font-black text-2xl sm:text-3xl text-zinc-900 dark:text-zinc-100 leading-tight">
+            <h3 className="font-display font-black text-2xl sm:text-3xl text-[#2C1E16] dark:text-[#F6EFE2] leading-tight">
               {language === 'en'
-                ? 'Need Help with Seasoning Amounts or Substitutes?'
-                : 'Bingung Takaran Bumbu atau Bahan Pengganti?'}
+                ? 'Missing an Ingredient or Need Accurate Substitutes?'
+                : 'Bingung Takaran Bumbu atau Kehabisan Bahan?'}
             </h3>
-            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] leading-relaxed">
               {language === 'en'
-                ? 'Ask Resepedia Kitchen Assistant for coconut milk tips, alternative spice blends when ingredients are missing, or family meal recommendations.'
-                : 'Tanyakan pada Asisten Dapur Resepedia untuk tips mengolah santan, racikan rempah alternatif jika bahan tidak lengkap, atau saran menu keluarga.'}
+                ? 'Open the Nusantara Spice Almanac for instant ratios on candlenut, kluwek, galangal, tamarind, and other authentic spices. 100% curated, zero wait time, completely offline.'
+                : 'Buka Kitab Rempah Nusantara untuk mengetahui profil rasa, peran kuliner, dan racikan darurat kemiri, kluwek, laja, asam kandis, dan bumbu tradisional lainnya secara instan!'}
             </p>
           </div>
 
           <button
-            onClick={() => openAI()}
-            className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-md transition-transform active:scale-95 shrink-0 flex items-center justify-center gap-2"
+            onClick={() => openAlmanac()}
+            className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#4A7C59] hover:bg-[#365C41] text-white font-black text-xs sm:text-sm border-2 border-[#2C1E16] shadow-[3px_3px_0px_#2C1E16] transition-transform active:translate-y-0.5 shrink-0 flex items-center justify-center gap-2"
           >
-            <ChefHat className="w-4 h-4" />
-            <span>{language === 'en' ? 'Start Kitchen Chat' : 'Mulai Tanya Asisten Dapur'}</span>
+            <BookOpen className="w-4 h-4" />
+            <span>{language === 'en' ? 'Open Spice Almanac' : 'Buka Kitab Rempah'}</span>
           </button>
         </section>
       </div>
