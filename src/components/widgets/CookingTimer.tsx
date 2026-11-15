@@ -73,7 +73,7 @@ export default function CookingTimer() {
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
-            className={`w-[calc(100vw-2rem)] sm:w-80 rounded-2xl p-4 sm:p-5 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] transition-colors ${
+            className={`w-[calc(100vw-2rem)] sm:w-80 rounded-2xl p-4 sm:p-5 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] transition-colors ${
               isCompleted
                 ? 'bg-[#FCF9F2] dark:bg-[#241912] border-[#B83B2B]'
                 : 'bg-[#FCF9F2] dark:bg-[#241912]'

@@ -86,7 +86,7 @@ export default function RecipeCard({
   const rankInfo = getDifficultyBadge(recipe.difficulty);
 
   return (
-    <article className="group relative bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-2 border-[#5C3A21] dark:border-[#8C6239] overflow-hidden shadow-[4px_4px_0px_#2C1E16] hover:shadow-[6px_6px_0px_#2C1E16] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all duration-150 flex flex-col h-full">
+    <article className="group relative bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-2 border-[#5C3A21] dark:border-[#8C6239] overflow-hidden shadow-[4px_4px_0px_#2C1E16] hover:shadow-[6px_6px_0px_#2C1E16] hover:-translate-x-0.5 hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-150 flex flex-col h-full">
       {/* Recipe Image with 4:3 Aspect Ratio */}
       <div className="relative aspect-4/3 w-full overflow-hidden bg-[#EFE4CE] dark:bg-[#1C1410] border-b-2 border-[#5C3A21] dark:border-[#8C6239]">
         <Link

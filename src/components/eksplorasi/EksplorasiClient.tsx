@@ -99,13 +99,14 @@ export default function EksplorasiClient({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 space-y-6 sm:space-y-8 pb-28 md:pb-12">
       {/* Header Title */}
-      <div className="space-y-2 border-b-2 border-[#5C3A21]/20 pb-6">
-        <h1 className="font-display font-black text-3xl sm:text-4xl text-[#2C1E16] dark:text-[#F6EFE2] flex items-center gap-2">
-          <Compass className="w-8 h-8 text-[#C85A32]" /> {t('Eksplorasi Kuliner Nusantara')}
+      <div className="space-y-2 border-b-2 border-[#5C3A21]/20 pb-5 sm:pb-6">
+        <h1 className="font-display font-black text-2xl sm:text-4xl text-[#2C1E16] dark:text-[#F6EFE2] flex items-center gap-2">
+          <Compass className="w-6 h-6 sm:w-8 sm:h-8 text-[#C85A32] shrink-0" />{' '}
+          <span>{t('Eksplorasi Kuliner Nusantara')}</span>
         </h1>
-        <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] max-w-2xl">
+        <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] max-w-2xl leading-relaxed">
           {t(
             'Telusuri ratusan resep masakan autentik Indonesia dengan filter komprehensif berdasarkan wilayah, bahan, tingkat kesulitan, dan kategori hidangan.'
           )}
@@ -113,10 +114,10 @@ export default function EksplorasiClient({
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-5 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] space-y-4">
+      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-3.5 sm:p-5 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] space-y-3.5 sm:space-y-4">
         {/* Search input */}
         <div className="relative">
-          <Search className="w-5 h-5 text-[#8C6239] absolute left-4 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#8C6239] absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={query}
@@ -126,12 +127,12 @@ export default function EksplorasiClient({
                 ? 'Search by recipe scroll name, spices, or regional keywords...'
                 : 'Cari berdasarkan nama gulungan resep, bumbu, atau bahan...'
             }
-            className="w-full pl-12 pr-4 py-3 rounded-xl bg-white dark:bg-[#1C1410] border-2 border-[#5C3A21]/50 text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none focus:border-[#C85A32]"
+            className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-[#1C1410] border-2 border-[#5C3A21]/50 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none focus:border-[#C85A32]"
           />
         </div>
 
         {/* Filter Pills row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 pt-1">
           {/* Region Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar w-full sm:w-auto">
             <span className="text-xs font-bold text-[#8C6239] mr-1 shrink-0">
@@ -183,7 +184,7 @@ export default function EksplorasiClient({
 
         {/* Second row: Categories & Difficulties & Sort */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t-2 border-[#5C3A21]/20 text-xs">
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             {/* Category dropdown */}
             <div className="flex items-center gap-1.5">
               <span className="text-[#8C6239] font-bold">{t('Kategori')}:</span>
@@ -193,7 +194,7 @@ export default function EksplorasiClient({
                   playClickSound();
                   setSelectedCategory(e.target.value);
                 }}
-                className="bg-[#EFE4CE] dark:bg-[#2C1E16] rounded-xl px-2.5 py-1 font-bold text-[#2C1E16] dark:text-[#F6EFE2] border-2 border-[#5C3A21]/40 focus:outline-none"
+                className="bg-[#EFE4CE] dark:bg-[#2C1E16] rounded-xl px-2.5 py-1.5 font-bold text-[#2C1E16] dark:text-[#F6EFE2] border-2 border-[#5C3A21]/40 focus:outline-none"
               >
                 {categories.map((c) => (
                   <option key={c} value={c}>
@@ -212,7 +213,7 @@ export default function EksplorasiClient({
                   playClickSound();
                   setSelectedDifficulty(e.target.value);
                 }}
-                className="bg-[#EFE4CE] dark:bg-[#2C1E16] rounded-xl px-2.5 py-1 font-bold text-[#2C1E16] dark:text-[#F6EFE2] border-2 border-[#5C3A21]/40 focus:outline-none"
+                className="bg-[#EFE4CE] dark:bg-[#2C1E16] rounded-xl px-2.5 py-1.5 font-bold text-[#2C1E16] dark:text-[#F6EFE2] border-2 border-[#5C3A21]/40 focus:outline-none"
               >
                 {difficulties.map((d) => (
                   <option key={d} value={d}>
@@ -232,7 +233,7 @@ export default function EksplorasiClient({
                 playClickSound();
                 setSortBy(e.target.value as any);
               }}
-              className="bg-[#EFE4CE] dark:bg-[#2C1E16] rounded-xl px-2.5 py-1 font-bold text-[#2C1E16] dark:text-[#F6EFE2] border-2 border-[#5C3A21]/40 focus:outline-none"
+              className="bg-[#EFE4CE] dark:bg-[#2C1E16] rounded-xl px-2.5 py-1.5 font-bold text-[#2C1E16] dark:text-[#F6EFE2] border-2 border-[#5C3A21]/40 focus:outline-none"
             >
               <option value="newest">{t('Terbaru')}</option>
               <option value="rating">{t('Rating Tertinggi')}</option>
@@ -256,7 +257,7 @@ export default function EksplorasiClient({
         </p>
 
         {filteredRecipes.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
             {filteredRecipes.map((recipe) => (
               <RecipeCard
                 key={recipe.id}
@@ -266,7 +267,7 @@ export default function EksplorasiClient({
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-dashed border-[#5C3A21]/40 p-8 space-y-3">
+          <div className="text-center py-16 sm:py-20 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-[3px] border-dashed border-[#5C3A21]/40 p-6 sm:p-8 space-y-3">
             <h4 className="font-display font-bold text-lg text-[#2C1E16] dark:text-[#F6EFE2]">
               {language === 'en'
                 ? 'No recipe scrolls match your criteria'

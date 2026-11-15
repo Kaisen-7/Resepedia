@@ -40,6 +40,7 @@ import {
 } from '@/actions/comment.actions';
 import { findSpiceByIngredientName } from '@/lib/data/spice-almanac';
 import { playClickSound, playChimeSound } from '@/lib/utils/sound-effects';
+import { getYouTubeEmbedInfo } from '@/lib/utils/youtube';
 
 interface RecipeDetailClientProps {
   recipe: Recipe;
@@ -293,7 +294,7 @@ export default function RecipeDetailClient({
       : 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-8 pb-28 md:pb-16 space-y-6 sm:space-y-8">
       {/* Back button & Action Bar */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <Link
@@ -348,7 +349,7 @@ export default function RecipeDetailClient({
       </div>
 
       {/* Main Title & Quest Header Card */}
-      <div className="p-5 sm:p-7 rounded-2xl bg-[#FCF9F2] dark:bg-[#241912] border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] space-y-4">
+      <div className="p-4 sm:p-7 rounded-2xl bg-[#FCF9F2] dark:bg-[#241912] border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] space-y-3.5 sm:space-y-4">
         <div className="flex flex-wrap items-center gap-2">
           <span className="px-3 py-1 rounded-lg bg-[#C85A32] text-white font-black uppercase text-xs tracking-wider border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]">
             {language === 'en'
@@ -427,13 +428,13 @@ export default function RecipeDetailClient({
       </div>
 
       {/* Featured Recipe Hero Image Banner with RPG Action Bar */}
-      <div className="relative min-h-[280px] sm:min-h-0 aspect-4/3 sm:aspect-video lg:aspect-21/9 rounded-2xl overflow-hidden border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] bg-[#1C1410]">
+      <div className="relative min-h-[260px] sm:min-h-0 aspect-4/3 sm:aspect-video lg:aspect-21/9 max-h-[440px] sm:max-h-none rounded-2xl overflow-hidden border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] bg-[#1C1410]">
         <img
           src={recipe.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}
           alt={recipe.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/35 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent" />
 
         {/* CTA Bar inside hero image */}
         <div className="absolute bottom-3 sm:bottom-6 left-3 sm:left-6 right-3 sm:right-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -479,9 +480,9 @@ export default function RecipeDetailClient({
       </div>
 
       {/* Split-Screen Layout: Left Column Ingredients + Right Column Instructions */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
         {/* Kolom Kiri: Kotak Inventori Bahan & Scaler (Sticky on desktop) */}
-        <aside className="lg:col-span-5 lg:sticky lg:top-24 space-y-6 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-6 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]">
+        <aside className="lg:col-span-5 lg:sticky lg:top-24 space-y-6 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-6 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]">
           <div>
             <div className="flex items-center justify-between">
               <h3 className="font-display font-black text-xl text-[#2C1E16] dark:text-[#F6EFE2] flex items-center gap-2">
@@ -507,7 +508,7 @@ export default function RecipeDetailClient({
           />
 
           {/* Interactive RPG Crafting Slots */}
-          <div className="space-y-2.5 pt-1 max-h-125 overflow-y-auto pr-1">
+          <div className="space-y-2.5 pt-1 max-h-[31.25rem] overflow-y-auto pr-1">
             {recipe.ingredients.map((ing, idx) => {
               const scaledDetail = scaleQuantity(ing.detail, multiplier);
               const isPrepared = preparedIngredients.has(idx);
@@ -531,7 +532,7 @@ export default function RecipeDetailClient({
                           : 'bg-white dark:bg-[#2C1E16] border-[#5C3A21]/50 text-transparent'
                       }`}
                     >
-                      <Check className="w-3.5 h-3.5 stroke-3" />
+                      <Check className="w-3.5 h-3.5 stroke-[3]" />
                     </div>
 
                     <div className="min-w-0 flex-1">
@@ -599,9 +600,9 @@ export default function RecipeDetailClient({
         </aside>
 
         {/* Kolom Kanan: Instructions Quest, Video, Variations, Reviews */}
-        <div className="lg:col-span-7 space-y-10">
+        <div className="lg:col-span-7 space-y-8 sm:space-y-10">
           {/* Instructions Quest List */}
-          <section className="space-y-5 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-6 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]">
+          <section className="space-y-5 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-6 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]">
             <div className="flex items-center justify-between border-b-2 border-[#5C3A21]/20 pb-3 flex-wrap gap-2">
               <div>
                 <h3 className="font-display font-black text-2xl text-[#2C1E16] dark:text-[#F6EFE2]">
@@ -680,7 +681,7 @@ export default function RecipeDetailClient({
                           }`}
                           title={language === 'en' ? 'Mark step completed' : 'Tandai tahap selesai'}
                         >
-                          <Check className="w-4 h-4 stroke-3" />
+                          <Check className="w-4 h-4 stroke-[3]" />
                         </button>
                       </div>
                     </div>
@@ -695,27 +696,58 @@ export default function RecipeDetailClient({
           </section>
 
           {/* YouTube Video Embed if present */}
-          {recipe.youtubeUrl && (
-            <section className="space-y-3 p-4 sm:p-6 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]">
-              <h3 className="font-display font-bold text-xl text-[#2C1E16] dark:text-[#F6EFE2] flex items-center gap-2">
-                <Play className="w-5 h-5 text-[#B83B2B]" /> {t('Video Tutorial Memasak')}
-              </h3>
-              <div className="aspect-video w-full rounded-xl overflow-hidden border-2 border-[#5C3A21]">
-                <iframe
-                  src={recipe.youtubeUrl}
-                  title={`Video Tutorial ${recipe.title}`}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            </section>
-          )}
+          {recipe.youtubeUrl && (() => {
+            const embedInfo = getYouTubeEmbedInfo(recipe.youtubeUrl);
+            return (
+              <section className="space-y-3 p-4 sm:p-6 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <h3 className="font-display font-bold text-lg sm:text-xl text-[#2C1E16] dark:text-[#F6EFE2] flex items-center gap-2">
+                    <Play className="w-5 h-5 text-[#B83B2B]" /> {t('Video Tutorial Memasak')}
+                  </h3>
+                  {embedInfo && (
+                    <a
+                      href={embedInfo.watchUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-bold text-[#C85A32] hover:underline flex items-center gap-1"
+                    >
+                      <span>{language === 'en' ? 'Open in YouTube' : 'Buka di YouTube'}</span>
+                      <ChevronLeft className="w-3.5 h-3.5 rotate-180" />
+                    </a>
+                  )}
+                </div>
+                <div className="aspect-video w-full rounded-xl overflow-hidden border-2 border-[#5C3A21] bg-black">
+                  {embedInfo ? (
+                    <iframe
+                      src={embedInfo.embedUrl}
+                      title={`Video Tutorial ${recipe.title}`}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center text-white/80 space-y-2">
+                      <Play className="w-10 h-10 text-[#C85A32]" />
+                      <p className="text-xs">{recipe.youtubeUrl}</p>
+                      <a
+                        href={recipe.youtubeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-1.5 rounded-lg bg-[#C85A32] text-white text-xs font-bold"
+                      >
+                        {language === 'en' ? 'Watch on YouTube' : 'Tonton di YouTube'}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </section>
+            );
+          })()}
 
           {/* Variations & Secret Kitchen Tips */}
           {recipe.variations && recipe.variations.length > 0 && (
-            <section className="space-y-4 p-4 sm:p-6 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]">
-              <h3 className="font-display font-bold text-xl text-[#2C1E16] dark:text-[#F6EFE2]">
+            <section className="space-y-4 p-4 sm:p-6 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]">
+              <h3 className="font-display font-bold text-lg sm:text-xl text-[#2C1E16] dark:text-[#F6EFE2]">
                 {language === 'en' ? 'Secret Variations & Guild Tips' : 'Variasi & Petuah Dapur'}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -740,7 +772,7 @@ export default function RecipeDetailClient({
           <section className="space-y-6 pt-4 border-t-2 border-[#5C3A21]/30">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h3 className="font-display font-black text-2xl text-[#2C1E16] dark:text-[#F6EFE2]">
+                <h3 className="font-display font-black text-xl sm:text-2xl text-[#2C1E16] dark:text-[#F6EFE2]">
                   {t('Ulasan & Komentar Komunitas')}
                 </h3>
                 <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
@@ -774,7 +806,7 @@ export default function RecipeDetailClient({
             {/* Review & Rating Form */}
             <form
               onSubmit={handleCommentSubmit}
-              className="space-y-4 bg-[#FCF9F2] dark:bg-[#241912] p-4 sm:p-5 rounded-2xl border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]"
+              className="space-y-4 bg-[#FCF9F2] dark:bg-[#241912] p-4 sm:p-5 rounded-2xl border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16]"
             >
               <h4 className="font-bold text-sm text-[#2C1E16] dark:text-[#F6EFE2]">
                 {t('Beri Nilai Resep Ini')}

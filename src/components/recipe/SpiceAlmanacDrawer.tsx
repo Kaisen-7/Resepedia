@@ -66,7 +66,7 @@ export default function SpiceAlmanacDrawer({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="w-full max-w-4xl max-h-[92vh] flex flex-col rounded-2xl bg-[#FCF9F2] dark:bg-[#1C1410] border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] overflow-hidden"
+        className="w-full max-w-4xl max-h-[92vh] flex flex-col rounded-2xl bg-[#FCF9F2] dark:bg-[#1C1410] border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header - Papan Kitab Rempah */}

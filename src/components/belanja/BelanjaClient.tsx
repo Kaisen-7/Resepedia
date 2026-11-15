@@ -193,9 +193,9 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
     totalAllItems > 0 ? Math.round((totalChecked / totalAllItems) * 100) : 0;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-28 md:pb-16 space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[#5C3A21]/20 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[#5C3A21]/20 pb-5 sm:pb-6">
         <div>
           <div className="flex items-center gap-2">
             <span className="w-8 h-8 rounded-xl bg-[#C85A32] text-white flex items-center justify-center border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]">
@@ -215,7 +215,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
         {totalChecked > 0 && (
           <button
             onClick={handleClearChecked}
-            className="self-start sm:self-auto px-4 py-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] hover:bg-[#B83B2B] hover:text-white text-[#B83B2B] border-2 border-[#5C3A21]/40 text-xs font-black shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 transition-colors flex items-center gap-1.5"
+            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] hover:bg-[#B83B2B] hover:text-white text-[#B83B2B] border-2 border-[#5C3A21]/40 text-xs font-black shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 transition-colors flex items-center justify-center gap-1.5"
           >
             <Trash2 className="w-3.5 h-3.5" />
             <span>
@@ -228,7 +228,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
       </div>
 
       {/* Progress & Stalls View Switch */}
-      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-5 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16] space-y-3">
+      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-5 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16] space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2 text-xs">
           <span className="font-bold text-[#2C1E16] dark:text-[#F6EFE2]">
             {language === 'en' ? 'Basket Progress' : 'Kesiapan Belanja'}:{' '}
@@ -253,13 +253,13 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
           <span className="text-[11px] font-bold text-[#5C3A21] dark:text-[#D9C8AA]">
             {language === 'en' ? 'Grouping Mode' : 'Mode Tampilan'}:
           </span>
-          <div className="flex items-center gap-1.5 bg-[#EFE4CE] dark:bg-[#1C1410] p-1 rounded-xl border border-[#5C3A21]/40">
+          <div className="flex items-center gap-1.5 bg-[#EFE4CE] dark:bg-[#1C1410] p-1 rounded-xl border border-[#5C3A21]/40 w-full sm:w-auto">
             <button
               onClick={() => {
                 playClickSound();
                 setViewMode('recipe');
               }}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                 viewMode === 'recipe'
                   ? 'bg-[#C85A32] text-white border border-[#2C1E16] shadow-[1px_1px_0px_#2C1E16]'
                   : 'text-[#5C3A21] dark:text-[#D9C8AA]'
@@ -273,7 +273,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
                 playClickSound();
                 setViewMode('market');
               }}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                 viewMode === 'market'
                   ? 'bg-[#C85A32] text-white border border-[#2C1E16] shadow-[1px_1px_0px_#2C1E16]'
                   : 'text-[#5C3A21] dark:text-[#D9C8AA]'
@@ -289,7 +289,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
       {/* Add Custom Ingredient Form */}
       <form
         onSubmit={handleAddCustom}
-        className="flex flex-col sm:flex-row items-center gap-2 p-3 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-2 border-[#5C3A21]/40 shadow-[3px_3px_0px_#2C1E16]"
+        className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-3 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-2 border-[#5C3A21]/40 shadow-[3px_3px_0px_#2C1E16]"
       >
         <input
           type="text"
@@ -300,7 +300,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
               ? 'Add extra item (e.g. eggs, frying oil)...'
               : 'Tambah bahan tambahan (misal: telur, minyak goreng)...'
           }
-          className="flex-1 w-full bg-transparent px-3 py-1.5 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none"
+          className="flex-1 w-full bg-[#EFE4CE]/50 dark:bg-[#1C1410] px-3 py-2 rounded-xl text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 border border-[#5C3A21]/30 focus:outline-none focus:border-[#C85A32]"
         />
         <input
           type="text"
@@ -309,12 +309,12 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
           placeholder={
             language === 'en' ? 'Amount (e.g. 1 kg)' : 'Jumlah (misal: 1 kg)'
           }
-          className="w-full sm:w-36 bg-transparent px-3 py-1.5 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none border-t sm:border-t-0 sm:border-l border-[#5C3A21]/20"
+          className="w-full sm:w-36 bg-[#EFE4CE]/50 dark:bg-[#1C1410] px-3 py-2 rounded-xl text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 border border-[#5C3A21]/30 focus:outline-none focus:border-[#C85A32]"
         />
         <button
           type="submit"
           disabled={!customName.trim()}
-          className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#C85A32] text-white text-xs font-bold hover:bg-[#A64422] disabled:opacity-40 border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center justify-center gap-1 shrink-0"
+          className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#C85A32] text-white text-xs font-bold hover:bg-[#A64422] disabled:opacity-40 border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5 flex items-center justify-center gap-1 shrink-0"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>{t('Tambah')}</span>
@@ -323,29 +323,29 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
 
       {/* Grouped Shopping Lists */}
       {totalAllItems > 0 ? (
-        <div className="space-y-6">
+        <div className="space-y-5 sm:space-y-6">
           {activeGroups.map((group, gIdx) => (
             <div
               key={gIdx}
-              className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16] overflow-hidden"
+              className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16] overflow-hidden"
             >
-              <div className="p-4 bg-[#EFE4CE] dark:bg-[#2C1E16] border-b-2 border-[#5C3A21]/40 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-display font-black text-sm sm:text-base text-[#2C1E16] dark:text-[#F6EFE2]">
+              <div className="p-3.5 sm:p-4 bg-[#EFE4CE] dark:bg-[#2C1E16] border-b-2 border-[#5C3A21]/40 flex items-center justify-between">
+                <div className="flex items-center gap-2 min-w-0">
+                  <h3 className="font-display font-black text-xs sm:text-base text-[#2C1E16] dark:text-[#F6EFE2] truncate">
                     {group.title}
                   </h3>
                   {group.isComplete && (
-                    <span className="px-2 py-0.5 rounded-md bg-[#4A7C59] text-white text-[10px] font-black border border-[#2C1E16]">
+                    <span className="px-2 py-0.5 rounded-md bg-[#4A7C59] text-white text-[10px] font-black border border-[#2C1E16] shrink-0">
                       ✓ {language === 'en' ? 'Complete' : 'Lengkap'}
                     </span>
                   )}
                 </div>
-                <span className="font-mono text-xs font-bold text-[#8C6239]">
+                <span className="font-mono text-xs font-bold text-[#8C6239] shrink-0 ml-2">
                   {group.checked}/{group.total}
                 </span>
               </div>
 
-              <div className="p-3 sm:p-4 divide-y divide-[#5C3A21]/15">
+              <div className="p-2 sm:p-4 divide-y divide-[#5C3A21]/15">
                 {group.list.map((item) => (
                   <div
                     key={item.id}
@@ -355,6 +355,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                       <button
                         type="button"
+                        aria-label="Tandai bahan"
                         className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 ${
                           item.checked
                             ? 'bg-[#4A7C59] border-[#2C1E16] text-white'
@@ -364,7 +365,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
                         <CheckCircle2 className="w-3.5 h-3.5" />
                       </button>
 
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <span
                           className={`text-xs sm:text-sm font-bold block truncate ${
                             item.checked
@@ -375,7 +376,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
                           {item.name}
                         </span>
                         {item.detail && (
-                          <span className="text-[11px] font-mono text-[#C85A32] block">
+                          <span className="text-[11px] font-mono text-[#C85A32] block truncate">
                             {item.detail}
                           </span>
                         )}
@@ -388,10 +389,11 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
                         e.stopPropagation();
                         handleDeleteItem(item.id);
                       }}
-                      className="p-1 text-[#8C6239] hover:text-[#B83B2B] transition-colors"
+                      className="p-1.5 text-[#8C6239] hover:text-[#B83B2B] transition-colors shrink-0"
                       title={language === 'en' ? 'Delete' : 'Hapus'}
+                      aria-label="Hapus bahan"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -400,11 +402,11 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 px-4 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-dashed border-[#5C3A21]/40 space-y-3">
+        <div className="text-center py-16 sm:py-20 px-4 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-[3px] border-dashed border-[#5C3A21]/40 space-y-3">
           <div className="w-12 h-12 rounded-xl bg-[#EFE4CE] text-[#C85A32] flex items-center justify-center mx-auto border border-[#5C3A21]/30">
             <ShoppingBag className="w-6 h-6" />
           </div>
-          <h3 className="font-display font-bold text-base text-[#2C1E16] dark:text-[#F6EFE2]">
+          <h3 className="font-display font-bold text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2]">
             {language === 'en' ? 'Market basket is empty' : 'Bakul belanja Anda masih kosong'}
           </h3>
           <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA] max-w-sm mx-auto leading-relaxed">

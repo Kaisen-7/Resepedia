@@ -134,7 +134,7 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
     : null;
 
   return (
-    <div className="fixed inset-0 z-9999 bg-[#1C1410] text-[#F6EFE2] flex flex-col justify-between p-4 sm:p-8 select-none border-4 border-[#5C3A21]">
+    <div className="fixed inset-0 z-[9999] bg-[#1C1410] text-[#F6EFE2] flex flex-col justify-between p-4 sm:p-8 select-none border-4 border-[#5C3A21] overflow-y-auto">
       {/* Top Header - Perapian Dapur */}
       <div className="flex items-center justify-between border-b-2 border-[#5C3A21]/50 pb-3 sm:pb-4 gap-2">
         <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">

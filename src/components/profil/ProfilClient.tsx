@@ -202,9 +202,9 @@ export default function ProfilClient({
   const displayedSavedCount = savedRecipeIds ? savedRecipeIds.length : savedCount;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-28 md:pb-16 space-y-6 sm:space-y-8">
       {/* Profile Header & Guild License Card */}
-      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-5 sm:p-8 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6 text-center sm:text-left">
+      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-5 sm:p-8 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5 sm:gap-6 text-center sm:text-left">
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5">
           {user?.photoURL ? (
             <img
@@ -219,7 +219,7 @@ export default function ProfilClient({
           )}
 
           <div className="space-y-1.5">
-            <div className="flex items-center justify-center sm:justify-start gap-2">
+            <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
               <h1 className="font-display font-black text-xl sm:text-2xl text-[#2C1E16] dark:text-[#F6EFE2]">
                 {user?.displayName || t('Pengguna Tamu')}
               </h1>
@@ -272,14 +272,14 @@ export default function ProfilClient({
 
       {/* Chef Mastery & Experience Card */}
       {mastery && (
-        <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-5 sm:p-6 border-3 border-[#D99B26] shadow-[5px_5px_0px_#2C1E16] space-y-3">
+        <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-6 border-[3px] border-[#D99B26] shadow-[5px_5px_0px_#2C1E16] space-y-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-[#D99B26] text-[#2C1E16] flex items-center justify-center border border-[#2C1E16] font-black">
                 ★
               </div>
               <div>
-                <h3 className="font-display font-black text-base text-[#2C1E16] dark:text-[#F6EFE2]">
+                <h3 className="font-display font-black text-sm sm:text-base text-[#2C1E16] dark:text-[#F6EFE2]">
                   {language === 'en' ? 'Culinary Grimoire & Mastery' : 'Buku Kemahiran Koki Nusantara'}
                 </h3>
                 <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
@@ -291,10 +291,10 @@ export default function ProfilClient({
             </div>
 
             <div className="text-right">
-              <span className="font-mono font-black text-sm text-[#C85A32]">
+              <span className="font-mono font-black text-xs sm:text-sm text-[#C85A32]">
                 {mastery.xp} XP
               </span>
-              <span className="text-[11px] text-[#8C6239] block">
+              <span className="text-[10px] sm:text-[11px] text-[#8C6239] block">
                 {language === 'en'
                   ? `Next Level at ${mastery.nextLevelXp} XP`
                   : `Level Berikutnya: ${mastery.nextLevelXp} XP`}
@@ -313,19 +313,19 @@ export default function ProfilClient({
       )}
 
       {/* Stats Summary Counters (4 RPG Counters) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
         <Link
           href="/koleksi"
           onClick={() => playClickSound()}
-          className="bg-[#FCF9F2] dark:bg-[#241912] p-4 rounded-2xl border-2 border-[#5C3A21] dark:border-[#8C6239] text-center shadow-[3px_3px_0px_#2C1E16] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform group"
+          className="bg-[#FCF9F2] dark:bg-[#241912] p-3 sm:p-4 rounded-2xl border-2 border-[#5C3A21] dark:border-[#8C6239] text-center shadow-[3px_3px_0px_#2C1E16] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform group"
         >
-          <div className="w-9 h-9 rounded-xl bg-[#C85A32]/15 text-[#C85A32] flex items-center justify-center mx-auto mb-2 border border-[#C85A32]/40">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#C85A32]/15 text-[#C85A32] flex items-center justify-center mx-auto mb-1.5 sm:mb-2 border border-[#C85A32]/40">
             <Bookmark className="w-4 h-4" />
           </div>
-          <span className="font-mono font-black text-xl text-[#2C1E16] dark:text-[#F6EFE2] block">
+          <span className="font-mono font-black text-lg sm:text-xl text-[#2C1E16] dark:text-[#F6EFE2] block">
             {displayedSavedCount}
           </span>
-          <span className="text-[11px] font-bold text-[#5C3A21] dark:text-[#D9C8AA]">
+          <span className="text-[10px] sm:text-[11px] font-bold text-[#5C3A21] dark:text-[#D9C8AA] line-clamp-1">
             {t('Resep Disimpan')}
           </span>
         </Link>
@@ -333,15 +333,15 @@ export default function ProfilClient({
         <Link
           href="/belanja"
           onClick={() => playClickSound()}
-          className="bg-[#FCF9F2] dark:bg-[#241912] p-4 rounded-2xl border-2 border-[#5C3A21] dark:border-[#8C6239] text-center shadow-[3px_3px_0px_#2C1E16] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform group"
+          className="bg-[#FCF9F2] dark:bg-[#241912] p-3 sm:p-4 rounded-2xl border-2 border-[#5C3A21] dark:border-[#8C6239] text-center shadow-[3px_3px_0px_#2C1E16] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform group"
         >
-          <div className="w-9 h-9 rounded-xl bg-[#4A7C59]/15 text-[#4A7C59] flex items-center justify-center mx-auto mb-2 border border-[#4A7C59]/40">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#4A7C59]/15 text-[#4A7C59] flex items-center justify-center mx-auto mb-1.5 sm:mb-2 border border-[#4A7C59]/40">
             <ShoppingBag className="w-4 h-4" />
           </div>
-          <span className="font-mono font-black text-xl text-[#2C1E16] dark:text-[#F6EFE2] block">
+          <span className="font-mono font-black text-lg sm:text-xl text-[#2C1E16] dark:text-[#F6EFE2] block">
             {localShoppingCount}
           </span>
-          <span className="text-[11px] font-bold text-[#5C3A21] dark:text-[#D9C8AA]">
+          <span className="text-[10px] sm:text-[11px] font-bold text-[#5C3A21] dark:text-[#D9C8AA] line-clamp-1">
             {t('Bahan Belanja')}
           </span>
         </Link>
@@ -349,37 +349,37 @@ export default function ProfilClient({
         <Link
           href="/koleksi"
           onClick={() => playClickSound()}
-          className="bg-[#FCF9F2] dark:bg-[#241912] p-4 rounded-2xl border-2 border-[#5C3A21] dark:border-[#8C6239] text-center shadow-[3px_3px_0px_#2C1E16] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform group"
+          className="bg-[#FCF9F2] dark:bg-[#241912] p-3 sm:p-4 rounded-2xl border-2 border-[#5C3A21] dark:border-[#8C6239] text-center shadow-[3px_3px_0px_#2C1E16] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform group"
         >
-          <div className="w-9 h-9 rounded-xl bg-[#D99B26]/15 text-[#D99B26] flex items-center justify-center mx-auto mb-2 border border-[#D99B26]/40">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D99B26]/15 text-[#D99B26] flex items-center justify-center mx-auto mb-1.5 sm:mb-2 border border-[#D99B26]/40">
             <ChefHat className="w-4 h-4" />
           </div>
-          <span className="font-mono font-black text-xl text-[#2C1E16] dark:text-[#F6EFE2] block">
+          <span className="font-mono font-black text-lg sm:text-xl text-[#2C1E16] dark:text-[#F6EFE2] block">
             {localMyRecipesCount}
           </span>
-          <span className="text-[11px] font-bold text-[#5C3A21] dark:text-[#D9C8AA]">
+          <span className="text-[10px] sm:text-[11px] font-bold text-[#5C3A21] dark:text-[#D9C8AA] line-clamp-1">
             {t('Resep Saya')}
           </span>
         </Link>
 
-        <div className="bg-[#FCF9F2] dark:bg-[#241912] p-4 rounded-2xl border-2 border-[#5C3A21] dark:border-[#8C6239] text-center shadow-[3px_3px_0px_#2C1E16]">
-          <div className="w-9 h-9 rounded-xl bg-[#4A7C59]/15 text-[#4A7C59] flex items-center justify-center mx-auto mb-2 border border-[#4A7C59]/40">
+        <div className="bg-[#FCF9F2] dark:bg-[#241912] p-3 sm:p-4 rounded-2xl border-2 border-[#5C3A21] dark:border-[#8C6239] text-center shadow-[3px_3px_0px_#2C1E16]">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#4A7C59]/15 text-[#4A7C59] flex items-center justify-center mx-auto mb-1.5 sm:mb-2 border border-[#4A7C59]/40">
             <CheckCircle2 className="w-4 h-4" />
           </div>
-          <span className="font-mono font-black text-xl text-[#2C1E16] dark:text-[#F6EFE2] block">
+          <span className="font-mono font-black text-lg sm:text-xl text-[#2C1E16] dark:text-[#F6EFE2] block">
             {mastery?.cookedRecipeIds.length || 0}
           </span>
-          <span className="text-[11px] font-bold text-[#5C3A21] dark:text-[#D9C8AA]">
+          <span className="text-[10px] sm:text-[11px] font-bold text-[#5C3A21] dark:text-[#D9C8AA] line-clamp-1">
             {language === 'en' ? 'Quests Mastered' : 'Dikuasai'}
           </span>
         </div>
       </div>
 
       {/* Quick Action: Recipe Management */}
-      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-5 sm:p-7 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] space-y-4">
+      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-7 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="font-display font-black text-lg text-[#2C1E16] dark:text-[#F6EFE2] flex items-center gap-2">
+            <h3 className="font-display font-black text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2] flex items-center gap-2">
               <ChefHat className="w-5 h-5 text-[#C85A32]" /> {t('Kelola Resep Masakan Anda')}
             </h3>
             <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA] mt-0.5">
@@ -406,18 +406,18 @@ export default function ProfilClient({
       </div>
 
       {/* Preferences Section */}
-      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-5 sm:p-7 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] space-y-6">
-        <h3 className="font-display font-black text-lg text-[#2C1E16] dark:text-[#F6EFE2] pb-3 border-b-2 border-[#5C3A21]/20 flex items-center gap-2">
+      <div className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-7 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] space-y-6">
+        <h3 className="font-display font-black text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2] pb-3 border-b-2 border-[#5C3A21]/20 flex items-center gap-2">
           <Settings className="w-5 h-5 text-[#C85A32]" /> {t('Pengaturan & Preferensi')}
         </h3>
 
         {/* Dark Mode Switch */}
         <div className="flex items-center justify-between gap-4">
           <div>
-            <span className="font-bold text-sm text-[#2C1E16] dark:text-[#F6EFE2] block">
+            <span className="font-bold text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] block">
               {t('Tampilan Gelap (Dark Mode)')}
             </span>
-            <span className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+            <span className="text-[11px] sm:text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
               {t('Menyesuaikan pencahayaan layar agar nyaman saat memasak di dapur')}
             </span>
           </div>
@@ -445,10 +445,10 @@ export default function ProfilClient({
         {/* Procedural Sound Effects Toggle */}
         <div className="flex items-center justify-between gap-4 pt-4 border-t border-[#5C3A21]/20">
           <div>
-            <span className="font-bold text-sm text-[#2C1E16] dark:text-[#F6EFE2] block">
+            <span className="font-bold text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] block">
               {language === 'en' ? 'Procedural Sound Effects' : 'Efek Suara Taktil (Web Audio SFX)'}
             </span>
-            <span className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+            <span className="text-[11px] sm:text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
               {language === 'en'
                 ? 'Woodblock taps, page turns, and victory fanfares without external audio downloads'
                 : 'Suara ketukan kayu lembut, gesekan perkamen, dan fanfare gamelan pentatonik'}
@@ -478,17 +478,17 @@ export default function ProfilClient({
         {/* Language Selection */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-[#5C3A21]/20">
           <div>
-            <span className="font-bold text-sm text-[#2C1E16] dark:text-[#F6EFE2] block">
+            <span className="font-bold text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] block">
               {t('Bahasa Antarmuka')}
             </span>
-            <span className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+            <span className="text-[11px] sm:text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
               {t('Pilih bahasa yang digunakan di aplikasi')}
             </span>
           </div>
           <div className="flex items-center justify-center gap-1.5 bg-[#EFE4CE] dark:bg-[#1C1410] p-1.5 rounded-xl border border-[#5C3A21]/40 w-full sm:w-auto">
             <button
               onClick={() => handleLanguageChange('id')}
-              className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-center ${
+              className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs font-bold transition-all text-center ${
                 language === 'id'
                   ? 'bg-[#C85A32] text-white border border-[#2C1E16] shadow-[1px_1px_0px_#2C1E16]'
                   : 'text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#2C1E16]'
@@ -498,7 +498,7 @@ export default function ProfilClient({
             </button>
             <button
               onClick={() => handleLanguageChange('en')}
-              className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-center ${
+              className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs font-bold transition-all text-center ${
                 language === 'en'
                   ? 'bg-[#C85A32] text-white border border-[#2C1E16] shadow-[1px_1px_0px_#2C1E16]'
                   : 'text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#2C1E16]'
@@ -512,10 +512,10 @@ export default function ProfilClient({
         {/* Dietary Preferences Chips */}
         <div className="space-y-3 pt-4 border-t border-[#5C3A21]/20">
           <div>
-            <span className="font-bold text-sm text-[#2C1E16] dark:text-[#F6EFE2] block">
+            <span className="font-bold text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] block">
               {t('Preferensi Diet & Pantangan')}
             </span>
-            <span className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+            <span className="text-[11px] sm:text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
               {t('Resepedia akan memprioritaskan resep yang sesuai dengan gaya makan Anda')}
             </span>
           </div>
@@ -524,7 +524,7 @@ export default function ProfilClient({
               <button
                 key={opt}
                 onClick={() => handleDietChange(opt)}
-                className={`px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                className={`px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all border active:translate-y-0.5 ${
                   selectedDiet === opt
                     ? 'bg-[#4A7C59] text-white border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
                     : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] border-[#5C3A21]/30 hover:border-[#5C3A21]'

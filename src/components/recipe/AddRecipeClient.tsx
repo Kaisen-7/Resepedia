@@ -21,6 +21,7 @@ import { uploadRecipeImage } from '@/lib/firebase/service';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { playClickSound } from '@/lib/utils/sound-effects';
 
 export default function AddRecipeClient() {
   const router = useRouter();
@@ -56,16 +57,19 @@ export default function AddRecipeClient() {
   ]);
 
   const handleAddIngredient = () => {
+    playClickSound();
     setIngredients((prev) => [...prev, { name: '', detail: '', role: '' }]);
   };
 
   const handleRemoveIngredient = (idx: number) => {
+    playClickSound();
     if (ingredients.length > 1) {
       setIngredients((prev) => prev.filter((_, i) => i !== idx));
     }
   };
 
   const handleAddInstruction = () => {
+    playClickSound();
     setInstructions((prev) => [
       ...prev,
       { title: `Langkah ${prev.length + 1}`, text: '' },
@@ -73,6 +77,7 @@ export default function AddRecipeClient() {
   };
 
   const handleRemoveInstruction = (idx: number) => {
+    playClickSound();
     if (instructions.length > 1) {
       setInstructions((prev) => prev.filter((_, i) => i !== idx));
     }
@@ -151,58 +156,64 @@ export default function AddRecipeClient() {
 
   if (!user) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-4">
-        <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
-          <ChefHat className="w-8 h-8" />
+      <div className="max-w-xl mx-auto px-4 py-16 sm:py-24 text-center space-y-4">
+        <div className="bg-[#FCF9F2] dark:bg-[#241912] p-8 sm:p-10 rounded-2xl border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-[#C85A32] text-white flex items-center justify-center mx-auto border-2 border-[#2C1E16] shadow-[3px_3px_0px_#2C1E16]">
+            <ChefHat className="w-8 h-8" />
+          </div>
+          <h2 className="font-display font-black text-2xl text-[#2C1E16] dark:text-[#F6EFE2]">
+            {language === 'en' ? 'Sign In to Publish Recipes' : 'Masuk untuk Menulis Resep'}
+          </h2>
+          <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] leading-relaxed">
+            {language === 'en'
+              ? 'You need to sign in first to publish and manage your recipes on Resepedia.'
+              : 'Anda perlu masuk terlebih dahulu untuk mempublikasikan resep masakan Anda di Resepedia.'}
+          </p>
+          <button
+            onClick={() => {
+              playClickSound();
+              signInWithGoogle();
+            }}
+            className="px-6 py-3 rounded-xl bg-[#C85A32] text-white font-black text-xs hover:bg-[#A64422] border-2 border-[#2C1E16] shadow-[3px_3px_0px_#2C1E16] active:translate-y-0.5"
+          >
+            {t('Masuk dengan Google')}
+          </button>
         </div>
-        <h2 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-100">
-          {language === 'en' ? 'Sign In to Publish Recipes' : 'Masuk untuk Menulis Resep'}
-        </h2>
-        <p className="text-xs sm:text-sm text-zinc-500 leading-relaxed">
-          {language === 'en'
-            ? 'You need to sign in first to publish and manage your recipes on Resepedia.'
-            : 'Anda perlu masuk terlebih dahulu untuk mempublikasikan resep masakan Anda di Resepedia.'}
-        </p>
-        <button
-          onClick={() => signInWithGoogle()}
-          className="px-6 py-3 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary-container shadow-md shadow-primary/20"
-        >
-          {t('Masuk dengan Google')}
-        </button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-28 md:pb-16 space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
         <Link
           href="/eksplorasi"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-500 hover:text-primary transition-colors mb-3"
+          onClick={() => playClickSound()}
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#C85A32] transition-colors mb-3"
         >
           <ChevronLeft className="w-4 h-4" /> {t('Batal & Kembali')}
         </Link>
-        <h1 className="font-display font-black text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
+        <h1 className="font-display font-black text-2xl sm:text-4xl text-[#2C1E16] dark:text-[#F6EFE2]">
           {language === 'en' ? 'Write New Archipelago Recipe' : 'Tulis Resep Nusantara Baru'}
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-500 mt-1">
+        <p className="text-xs sm:text-sm text-[#5C3A21] dark:text-[#D9C8AA] mt-1">
           {language === 'en'
             ? 'Share your authentic heritage recipes with thousands of food lovers.'
             : 'Bagikan warisan rasa tradisional masakan Anda agar dapat dinikmati ribuan pecinta kuliner lainnya.'}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
         {/* Informasi Utama */}
-        <div className="bg-white dark:bg-zinc-900 p-4 sm:p-8 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-5">
-          <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100 pb-2 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="bg-[#FCF9F2] dark:bg-[#241912] p-4 sm:p-7 rounded-2xl border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] space-y-5">
+          <h3 className="font-display font-black text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2] pb-2 border-b-2 border-[#5C3A21]/20">
             1. Informasi Resep
           </h3>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
-              Judul Resep <span className="text-red-500">*</span>
+            <label className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA]">
+              Judul Resep <span className="text-[#C85A32]">*</span>
             </label>
             <input
               type="text"
@@ -210,13 +221,13 @@ export default function AddRecipeClient() {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Contoh: Rendang Daging Sapi Khas Minang Autentik"
               required
-              className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none focus:border-[#C85A32]"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
-              Deskripsi Singkat <span className="text-red-500">*</span>
+            <label className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA]">
+              Deskripsi Singkat <span className="text-[#C85A32]">*</span>
             </label>
             <textarea
               value={description}
@@ -224,18 +235,18 @@ export default function AddRecipeClient() {
               placeholder="Ceritakan keistimewaan rasa, aroma, atau sejarah singkat hidangan ini..."
               rows={3}
               required
-              className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none focus:border-[#C85A32]"
             />
           </div>
 
           {/* Region, Category, Difficulty Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Wilayah Asal</label>
+              <label className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA]">Wilayah Asal</label>
               <select
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
-                className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm font-bold text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               >
                 <option value="Sumatra">Sumatra</option>
                 <option value="Jawa">Jawa</option>
@@ -247,11 +258,11 @@ export default function AddRecipeClient() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Kategori Hidangan</label>
+              <label className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA]">Kategori Hidangan</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as any)}
-                className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm font-bold text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               >
                 <option value="Main Course">Hidangan Utama (Main Course)</option>
                 <option value="Appetizer">Hidangan Pembuka / Camilan</option>
@@ -261,71 +272,71 @@ export default function AddRecipeClient() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Tingkat Kesulitan</label>
+              <label className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA]">Tingkat Kesulitan</label>
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value as any)}
-                className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm font-bold text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               >
-                <option value="Easy">Mudah (Easy)</option>
-                <option value="Medium">Sedang (Medium)</option>
-                <option value="Hard">Mahir (Hard)</option>
+                <option value="Easy">★ Rank C (Pemula / Easy)</option>
+                <option value="Medium">★★ Rank B (Terampil / Medium)</option>
+                <option value="Hard">★★★ Rank A (Mahakarya / Hard)</option>
               </select>
             </div>
           </div>
 
           {/* Time, Servings, Spicy row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Waktu Persiapan</label>
+              <label className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA]">Waktu Persiapan</label>
               <input
                 type="text"
                 value={prepTime}
                 onChange={(e) => setPrepTime(e.target.value)}
                 placeholder="15 Mnt"
-                className="w-full px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Waktu Memasak</label>
+              <label className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA]">Waktu Memasak</label>
               <input
                 type="text"
                 value={cookTime}
                 onChange={(e) => setCookTime(e.target.value)}
                 placeholder="45 Mnt"
-                className="w-full px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Porsi Saji</label>
+              <label className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA]">Porsi Saji</label>
               <input
                 type="text"
                 value={servings}
                 onChange={(e) => setServings(e.target.value)}
                 placeholder="4 Porsi"
-                className="w-full px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
               />
             </div>
             <div className="space-y-1.5 flex flex-col justify-end">
-              <label className="flex items-center gap-2 p-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 cursor-pointer">
+              <label className="flex items-center gap-2 p-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={spicy}
                   onChange={(e) => setSpicy(e.target.checked)}
-                  className="rounded text-primary focus:ring-primary"
+                  className="rounded text-[#C85A32] focus:ring-[#C85A32]"
                 />
-                <span className="text-xs font-bold flex items-center gap-1 text-zinc-800 dark:text-zinc-200">
-                  <Flame className="w-3.5 h-3.5 text-red-500" /> Pedas
+                <span className="text-xs font-bold flex items-center gap-1 text-[#2C1E16] dark:text-[#F6EFE2]">
+                  <Flame className="w-3.5 h-3.5 text-[#B83B2B]" /> Pedas
                 </span>
               </label>
             </div>
           </div>
 
           {/* Media: Image & YouTube */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-2">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                Unggah Foto Resep / URL Gambar
+              <label className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA]">
+                Foto Resep (Upload atau URL Gambar)
               </label>
               <div className="flex gap-2">
                 <input
@@ -333,11 +344,11 @@ export default function AddRecipeClient() {
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
                   placeholder="https://images.unsplash.com/..."
-                  className="flex-1 px-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none"
+                  className="flex-1 px-3.5 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
                 />
-                <label className="px-3.5 py-2.5 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 text-zinc-700 dark:text-zinc-300 cursor-pointer text-xs font-bold flex items-center gap-1">
+                <label className="px-3.5 py-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] hover:bg-[#E2D1B0] text-[#5C3A21] dark:text-[#D9C8AA] cursor-pointer text-xs font-bold flex items-center gap-1 border-2 border-[#5C3A21]/40 shrink-0">
                   <Upload className="w-4 h-4" />
-                  <span>{isUploading ? 'Memproses...' : 'Upload Foto'}</span>
+                  <span>{isUploading ? '...' : 'Upload'}</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -347,7 +358,7 @@ export default function AddRecipeClient() {
                 </label>
               </div>
               {imageUrl && (
-                <div className="relative mt-2 aspect-video max-h-36 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800">
+                <div className="relative mt-2 aspect-video max-h-36 rounded-xl overflow-hidden border-2 border-[#5C3A21] bg-black">
                   <img
                     src={imageUrl}
                     alt="Preview Resep"
@@ -356,7 +367,7 @@ export default function AddRecipeClient() {
                   <button
                     type="button"
                     onClick={() => setImageUrl('')}
-                    className="absolute top-2 right-2 px-2 py-1 text-[10px] font-bold bg-black/70 hover:bg-black text-white rounded-lg backdrop-blur-sm"
+                    className="absolute top-2 right-2 px-2 py-1 text-[10px] font-bold bg-[#B83B2B] text-white rounded-lg"
                   >
                     Hapus Foto
                   </button>
@@ -365,17 +376,17 @@ export default function AddRecipeClient() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+              <label className="text-xs font-bold text-[#5C3A21] dark:text-[#D9C8AA]">
                 Tautan Video YouTube (Opsional)
               </label>
               <div className="relative">
-                <Youtube className="w-4 h-4 text-red-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Youtube className="w-4 h-4 text-[#B83B2B] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
                   placeholder="https://www.youtube.com/watch?v=..."
-                  className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none"
+                  className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#EFE4CE]/50 dark:bg-[#1C1410] border-2 border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
                 />
               </div>
             </div>
@@ -383,18 +394,20 @@ export default function AddRecipeClient() {
         </div>
 
         {/* Daftar Bahan Masakan */}
-        <div className="bg-white dark:bg-zinc-900 p-4 sm:p-8 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="bg-[#FCF9F2] dark:bg-[#241912] p-4 sm:p-7 rounded-2xl border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b-2 border-[#5C3A21]/20">
             <div>
-              <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
+              <h3 className="font-display font-black text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2]">
                 2. Komposisi Bahan
               </h3>
-              <p className="text-xs text-zinc-500">Tuliskan takaran yang jelas agar mudah disesuaikan porsinya</p>
+              <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+                Tuliskan takaran yang jelas agar mudah disesuaikan porsinya
+              </p>
             </div>
             <button
               type="button"
               onClick={handleAddIngredient}
-              className="px-3 py-1.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white text-xs font-bold flex items-center gap-1 transition-colors"
+              className="px-3 py-1.5 rounded-xl bg-[#4A7C59] text-white hover:bg-[#365C41] text-xs font-bold flex items-center gap-1 border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5"
             >
               <Plus className="w-3.5 h-3.5" /> Tambah Bahan
             </button>
@@ -404,7 +417,7 @@ export default function AddRecipeClient() {
             {ingredients.map((ing, idx) => (
               <div
                 key={idx}
-                className="bg-zinc-50 dark:bg-zinc-800/60 p-3 sm:p-0 rounded-2xl sm:rounded-none border sm:border-0 border-zinc-200/70 dark:border-zinc-700/70 space-y-2 sm:space-y-0 sm:flex sm:items-center sm:gap-2"
+                className="bg-[#EFE4CE]/60 dark:bg-[#1C1410] p-3 sm:p-2 rounded-xl border-2 border-[#5C3A21]/30 space-y-2 sm:space-y-0 sm:flex sm:items-center sm:gap-2"
               >
                 <div className="flex items-center gap-2 sm:flex-1">
                   <input
@@ -416,13 +429,13 @@ export default function AddRecipeClient() {
                       setIngredients(next);
                     }}
                     placeholder="Nama Bahan (misal: Daging Sapi)"
-                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-white sm:bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-[#2C1E16] border border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
                   />
                   <button
                     type="button"
                     onClick={() => handleRemoveIngredient(idx)}
                     disabled={ingredients.length <= 1}
-                    className="sm:hidden p-2 text-zinc-400 hover:text-red-500 disabled:opacity-30 rounded-lg shrink-0"
+                    className="sm:hidden p-2 text-[#8C6239] hover:text-[#B83B2B] disabled:opacity-30 rounded-lg shrink-0"
                     title="Hapus baris"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -438,7 +451,7 @@ export default function AddRecipeClient() {
                       setIngredients(next);
                     }}
                     placeholder="Takaran (500 gr)"
-                    className="w-full sm:w-36 px-3.5 py-2.5 rounded-xl bg-white sm:bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+                    className="w-full sm:w-36 px-3 py-2 rounded-xl bg-white dark:bg-[#2C1E16] border border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32] font-mono"
                   />
                   <input
                     type="text"
@@ -449,14 +462,14 @@ export default function AddRecipeClient() {
                       setIngredients(next);
                     }}
                     placeholder="Peran/Tips (opsional)"
-                    className="w-full sm:flex-1 px-3.5 py-2.5 rounded-xl bg-white sm:bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="w-full sm:flex-1 px-3 py-2 rounded-xl bg-white dark:bg-[#2C1E16] border border-[#5C3A21]/40 text-xs sm:text-sm text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={() => handleRemoveIngredient(idx)}
                   disabled={ingredients.length <= 1}
-                  className="hidden sm:block p-2.5 text-zinc-400 hover:text-red-500 disabled:opacity-30 rounded-xl shrink-0"
+                  className="hidden sm:block p-2 text-[#8C6239] hover:text-[#B83B2B] disabled:opacity-30 rounded-xl shrink-0"
                   title="Hapus baris"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -467,20 +480,20 @@ export default function AddRecipeClient() {
         </div>
 
         {/* Langkah Instruksi Memasak */}
-        <div className="bg-white dark:bg-zinc-900 p-4 sm:p-8 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="bg-[#FCF9F2] dark:bg-[#241912] p-4 sm:p-7 rounded-2xl border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[5px_5px_0px_#2C1E16] space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b-2 border-[#5C3A21]/20">
             <div>
-              <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
+              <h3 className="font-display font-black text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2]">
                 3. Langkah Memasak (Instruksi)
               </h3>
-              <p className="text-xs text-zinc-500">
-                Langkah ini akan dibacakan oleh suara asisten pada mode bebas genggam
+              <p className="text-xs text-[#5C3A21] dark:text-[#D9C8AA]">
+                Langkah ini akan dibacakan oleh suara pada mode perapian dapur
               </p>
             </div>
             <button
               type="button"
               onClick={handleAddInstruction}
-              className="px-3 py-1.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white text-xs font-bold flex items-center gap-1 transition-colors"
+              className="px-3 py-1.5 rounded-xl bg-[#4A7C59] text-white hover:bg-[#365C41] text-xs font-bold flex items-center gap-1 border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5"
             >
               <Plus className="w-3.5 h-3.5" /> Tambah Langkah
             </button>
@@ -490,19 +503,19 @@ export default function AddRecipeClient() {
             {instructions.map((inst, idx) => (
               <div
                 key={idx}
-                className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/70 dark:border-zinc-700/70 space-y-2"
+                className="p-3.5 sm:p-4 rounded-xl bg-[#EFE4CE]/60 dark:bg-[#1C1410] border-2 border-[#5C3A21]/30 space-y-2"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-primary flex items-center gap-1.5">
-                    <span className="w-5 h-5 rounded-md bg-primary text-white text-[10px] flex items-center justify-center font-black">
+                  <span className="text-xs font-bold text-[#C85A32] flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-md bg-[#C85A32] text-white text-[10px] flex items-center justify-center font-black">
                       {idx + 1}
                     </span>
-                    Judul Langkah
+                    Tahapan Resep
                   </span>
                   <button
                     type="button"
                     onClick={() => handleRemoveInstruction(idx)}
-                    className="p-1 text-zinc-400 hover:text-red-500 rounded-lg"
+                    className="p-1 text-[#8C6239] hover:text-[#B83B2B] rounded-lg"
                     title="Hapus langkah"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -517,7 +530,7 @@ export default function AddRecipeClient() {
                     setInstructions(next);
                   }}
                   placeholder="Judul langkah (misal: Menumis Bumbu Halus)"
-                  className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs font-bold text-zinc-900 dark:text-zinc-100 focus:outline-none"
+                  className="w-full px-3 py-2 rounded-xl bg-white dark:bg-[#2C1E16] border border-[#5C3A21]/40 text-xs font-bold text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
                 />
                 <textarea
                   value={inst.text}
@@ -528,7 +541,7 @@ export default function AddRecipeClient() {
                   }}
                   placeholder="Jelaskan detail tindakan secara berurutan. Cantumkan menit bila memerlukan waktu tertentu (misal: tumis selama 5 menit)..."
                   rows={2}
-                  className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none"
+                  className="w-full px-3 py-2 rounded-xl bg-white dark:bg-[#2C1E16] border border-[#5C3A21]/40 text-xs text-[#2C1E16] dark:text-[#F6EFE2] focus:outline-none focus:border-[#C85A32]"
                 />
               </div>
             ))}
@@ -536,17 +549,19 @@ export default function AddRecipeClient() {
         </div>
 
         {/* Submit Button */}
-        <div className="flex items-center justify-between sm:justify-end gap-3 pt-4">
+        <div className="flex items-center justify-between sm:justify-end gap-3 pt-2">
           <Link
             href="/eksplorasi"
-            className="flex-1 sm:flex-initial text-center px-6 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs hover:bg-zinc-200"
+            onClick={() => playClickSound()}
+            className="flex-1 sm:flex-initial text-center px-6 py-3 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] font-bold text-xs hover:bg-[#E2D1B0] border-2 border-[#5C3A21]/40 shadow-[2px_2px_0px_#2C1E16] active:translate-y-0.5"
           >
             Batal
           </Link>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 sm:flex-initial justify-center px-6 sm:px-8 py-3 rounded-2xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-xl shadow-primary/25 disabled:opacity-50 transition-transform active:scale-95 flex items-center gap-2"
+            onClick={() => playClickSound()}
+            className="flex-1 sm:flex-initial justify-center px-6 sm:px-8 py-3 rounded-xl bg-[#C85A32] hover:bg-[#A64422] text-white font-black text-xs sm:text-sm border-2 border-[#2C1E16] shadow-[3px_3px_0px_#2C1E16] disabled:opacity-50 transition-transform active:translate-y-0.5 flex items-center gap-2"
           >
             <ChefHat className="w-4 h-4" />
             <span>{isSubmitting ? 'Menerbitkan...' : 'Terbitkan Resep'}</span>

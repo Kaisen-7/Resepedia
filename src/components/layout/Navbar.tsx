@@ -128,13 +128,13 @@ export default function Navbar() {
             <Link
               href="/"
               onClick={() => playClickSound()}
-              className="flex items-center gap-2.5 group shrink-0"
+              className="flex items-center gap-2 group shrink-0"
             >
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#C85A32] flex items-center justify-center text-white border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] transition-transform group-hover:scale-105">
                 <ChefHat className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
-                <span className="font-display font-black text-lg sm:text-2xl tracking-tight text-[#2C1E16] dark:text-[#F6EFE2]">
+                <span className="font-display font-black text-base sm:text-2xl tracking-tight text-[#2C1E16] dark:text-[#F6EFE2]">
                   Resepedia
                 </span>
                 <span className="hidden sm:block text-[10px] uppercase font-bold tracking-widest text-[#C85A32] dark:text-[#E26E45] -mt-1">
@@ -152,7 +152,7 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => playClickSound()}
-                    className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    className={`px-3.5 lg:px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
                       isActive
                         ? 'bg-[#C85A32] text-white border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
                         : 'text-[#5C3A21] dark:text-[#D9C8AA] hover:text-[#2C1E16] hover:bg-[#E2D1B0] dark:hover:bg-[#422B1D]'
@@ -165,15 +165,16 @@ export default function Navbar() {
             </nav>
 
             {/* Right Action Icons */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {/* Search Trigger */}
               <button
                 onClick={() => {
                   playClickSound();
                   setIsSearchOpen(true);
                 }}
-                className="p-2 sm:px-3 sm:py-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] text-xs font-bold border-2 border-[#5C3A21]/40 dark:border-[#8C6239]/50 hover:border-[#5C3A21] transition-colors shrink-0 flex items-center"
-                title="Cari Resep"
+                className="w-8 h-8 sm:w-auto sm:h-auto p-1.5 sm:px-3 sm:py-2 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] text-xs font-bold border-2 border-[#5C3A21]/40 dark:border-[#8C6239]/50 hover:border-[#5C3A21] transition-colors shrink-0 flex items-center justify-center"
+                title={language === 'en' ? 'Search scrolls' : 'Cari Resep'}
+                aria-label="Cari Resep"
               >
                 <Search className="w-4 h-4 text-[#8C6239]" />
                 <span className="hidden lg:inline text-[#8C6239] ml-1.5">
@@ -190,8 +191,9 @@ export default function Navbar() {
                   playClickSound();
                   setIsAlmanacOpen(true);
                 }}
-                className="flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-2 rounded-xl bg-[#4A7C59] text-white hover:bg-[#365C41] text-xs font-bold border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] transition-transform active:translate-y-0.5 shrink-0"
+                className="w-8 h-8 sm:w-auto sm:h-auto flex items-center justify-center gap-1.5 p-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#4A7C59] text-white hover:bg-[#365C41] text-xs font-bold border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] transition-transform active:translate-y-0.5 shrink-0"
                 title={language === 'en' ? 'Open Spice Almanac' : 'Buka Kitab Rempah & Substitusi'}
+                aria-label="Kitab Rempah"
               >
                 <BookOpen className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                 <span className="hidden sm:inline">
@@ -203,17 +205,18 @@ export default function Navbar() {
               <Link
                 href="/resep/tambah"
                 onClick={() => playClickSound()}
-                className="flex items-center gap-1 p-2 sm:px-3.5 sm:py-2 rounded-xl bg-[#C85A32] text-white hover:bg-[#A64422] text-xs font-bold border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] transition-transform active:translate-y-0.5 shrink-0"
-                title="Tulis Resep Masakan"
+                className="w-8 h-8 sm:w-auto sm:h-auto flex items-center justify-center gap-1 p-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#C85A32] text-white hover:bg-[#A64422] text-xs font-bold border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] transition-transform active:translate-y-0.5 shrink-0"
+                title={t('Tulis Resep')}
+                aria-label={t('Tulis Resep')}
               >
-                <Plus className="w-4 h-4 sm:w-3.5 sm:h-3.5 stroke-3" />
+                <Plus className="w-4 h-4 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
                 <span className="hidden sm:inline">{t('Tulis Resep')}</span>
               </Link>
 
-              {/* Sound Effects Toggle (Cozy RPG SFX) */}
+              {/* Sound Effects Toggle (Hidden on mobile to save space, visible from sm up) */}
               <button
                 onClick={toggleSound}
-                className="p-2 sm:p-2.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] hover:bg-[#E2D1B0] dark:hover:bg-[#422B1D] border-2 border-[#5C3A21]/30 transition-colors shrink-0"
+                className="hidden sm:flex p-2 sm:p-2.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] hover:bg-[#E2D1B0] dark:hover:bg-[#422B1D] border-2 border-[#5C3A21]/30 transition-colors shrink-0"
                 title={soundActive ? 'Matikan Suara SFX' : 'Nyalakan Suara SFX'}
                 aria-label="Toggle Sound Effects"
               >
@@ -227,7 +230,7 @@ export default function Navbar() {
               {/* Dark Mode Toggle */}
               <button
                 onClick={toggleDarkMode}
-                className="p-2 sm:p-2.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] hover:bg-[#E2D1B0] dark:hover:bg-[#422B1D] border-2 border-[#5C3A21]/30 transition-colors shrink-0"
+                className="w-8 h-8 sm:w-auto sm:h-auto flex items-center justify-center p-1.5 sm:p-2.5 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] hover:bg-[#E2D1B0] dark:hover:bg-[#422B1D] border-2 border-[#5C3A21]/30 transition-colors shrink-0"
                 title="Ganti Suasana (Siang / Malam)"
                 aria-label="Toggle Dark Mode"
               >
@@ -244,16 +247,17 @@ export default function Navbar() {
                 onClick={() => playClickSound()}
                 className="flex items-center gap-1.5 p-1 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] border-2 border-[#5C3A21]/40 hover:border-[#C85A32] transition-colors shrink-0"
                 title={mastery ? `${mastery.title} (Level ${mastery.level})` : 'Profil Pengguna'}
+                aria-label="Profil Pengguna"
               >
                 {user?.photoURL ? (
                   <img
                     src={user.photoURL}
                     alt={user.displayName || 'Profile'}
-                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-cover border border-[#2C1E16]"
+                    className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg object-cover border border-[#2C1E16]"
                   />
                 ) : (
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#E2D1B0] dark:bg-[#422B1D] flex items-center justify-center text-[#5C3A21] dark:text-[#E2D1B0]">
-                    <User className="w-4 h-4" />
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-[#E2D1B0] dark:bg-[#422B1D] flex items-center justify-center text-[#5C3A21] dark:text-[#E2D1B0]">
+                    <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
                 )}
                 {mastery && (
@@ -274,7 +278,7 @@ export default function Navbar() {
         {/* Global Command / Search Modal */}
         {isSearchOpen && (
           <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/60 backdrop-blur-sm">
-            <div className="w-full max-w-xl bg-[#FCF9F2] dark:bg-[#1C1410] rounded-2xl p-4 shadow-[6px_6px_0px_#2C1E16] border-3 border-[#5C3A21] dark:border-[#8C6239]">
+            <div className="w-full max-w-xl bg-[#FCF9F2] dark:bg-[#1C1410] rounded-2xl p-4 shadow-[6px_6px_0px_#2C1E16] border-[3px] border-[#5C3A21] dark:border-[#8C6239]">
               <form
                 onSubmit={handleSearchSubmit}
                 className="flex items-center gap-3 border-b-2 border-[#5C3A21]/20 dark:border-[#8C6239]/40 pb-3"

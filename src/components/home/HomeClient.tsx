@@ -152,7 +152,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
   }, [allCombinedRecipes, searchQuery, selectedRegion, selectedCategory, selectedIngredients]);
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-16">
+    <div className="space-y-10 sm:space-y-16 pb-28 md:pb-16">
       {/* Hero Section - Papan Kedai Nusantara */}
       <section className="relative pt-6 sm:pt-12 pb-8 sm:pb-12 bg-linear-to-b from-[#EFE4CE]/60 via-[#F6EFE2] to-[#F6EFE2] dark:from-[#241912] dark:to-[#1C1410] border-b-2 border-[#5C3A21]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -164,19 +164,19 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
             </div>
 
             {/* Headline */}
-            <h1 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-[#2C1E16] dark:text-[#F6EFE2] tracking-tight leading-[1.15]">
+            <h1 className="font-display font-black text-2xl sm:text-5xl lg:text-6xl text-[#2C1E16] dark:text-[#F6EFE2] tracking-tight leading-[1.18] sm:leading-[1.15]">
               {greeting.title}
             </h1>
 
-            <p className="text-sm sm:text-base text-[#5C3A21] dark:text-[#D9C8AA] max-w-xl mx-auto leading-relaxed">
+            <p className="text-xs sm:text-base text-[#5C3A21] dark:text-[#D9C8AA] max-w-xl mx-auto leading-relaxed">
               {t(
                 'Jelajahi warisan resep autentik dari 6 kepulauan besar Indonesia. Dilengkapi takaran porsi terukur dan panduan langkah demi langkah.'
               )}
             </p>
 
             {/* Practical Search Bar */}
-            <div className="pt-2 max-w-2xl mx-auto">
-              <div className="relative flex items-center bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-1.5 sm:p-2 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16]">
+            <div className="pt-2 max-w-2xl mx-auto space-y-2.5">
+              <div className="relative flex items-center bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-1.5 sm:p-2 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16]">
                 <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#8C6239] ml-2.5 sm:ml-3 shrink-0" />
                 <input
                   type="text"
@@ -184,7 +184,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={
                     language === 'en'
-                      ? 'Search recipes, spices, or regions (Chicken, Rendang, Coconut)...'
+                      ? 'Search recipes, spices, or regions...'
                       : 'Cari masakan atau bahan (Ayam, Rendang, Santan)...'
                   }
                   className="w-full bg-transparent px-2.5 sm:px-3 py-2 text-xs sm:text-base text-[#2C1E16] dark:text-[#F6EFE2] placeholder-[#8C6239]/60 focus:outline-none"
@@ -207,17 +207,28 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                 </button>
               </div>
 
+              {/* Mobile Quick Shortcut to Kitab Rempah */}
+              <div className="flex sm:hidden items-center justify-center gap-2">
+                <button
+                  onClick={() => openAlmanac(searchQuery)}
+                  className="w-full py-2 px-3 rounded-xl bg-[#4A7C59] text-white text-xs font-bold border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16] flex items-center justify-center gap-1.5 active:translate-y-0.5"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>{language === 'en' ? 'Open Spice Almanac & Substitutes' : 'Buka Kitab Rempah & Substitusi'}</span>
+                </button>
+              </div>
+
               {/* Chef Mastery Status Banner if user has played */}
               {mastery && mastery.cookedRecipeIds.length > 0 && (
-                <div className="mt-4 p-3 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] border-2 border-[#D99B26] shadow-[2px_2px_0px_#2C1E16] flex items-center justify-between text-xs font-bold">
+                <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-xl bg-[#EFE4CE] dark:bg-[#2C1E16] border-2 border-[#D99B26] shadow-[2px_2px_0px_#2C1E16] flex items-center justify-between text-xs font-bold">
                   <div className="flex items-center gap-2">
-                    <Award className="w-4 h-4 text-[#D99B26]" />
-                    <span className="text-[#2C1E16] dark:text-[#F6EFE2]">
+                    <Award className="w-4 h-4 text-[#D99B26] shrink-0" />
+                    <span className="text-[#2C1E16] dark:text-[#F6EFE2] truncate">
                       {mastery.title} (Level {mastery.level})
                     </span>
                   </div>
-                  <span className="text-[#4A7C59] font-mono">
-                    {mastery.cookedRecipeIds.length} {language === 'en' ? 'Mastered Quests' : 'Hidangan Dikuasai'} (+{mastery.xp} XP)
+                  <span className="text-[#4A7C59] font-mono shrink-0 ml-2">
+                    {mastery.cookedRecipeIds.length} {language === 'en' ? 'Mastered' : 'Dikuasai'} (+{mastery.xp} XP)
                   </span>
                 </div>
               )}
@@ -227,9 +238,9 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
       </section>
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-12">
         {/* Ingredient Pantry Filter */}
-        <section className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-6 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16] space-y-3">
+        <section className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-4 sm:p-6 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[4px_4px_0px_#2C1E16] space-y-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div>
               <h3 className="font-display font-black text-base sm:text-lg text-[#2C1E16] dark:text-[#F6EFE2]">
@@ -261,13 +272,13 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                 <button
                   key={ing}
                   onClick={() => toggleIngredient(ing)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border-2 flex items-center gap-1.5 active:translate-y-0.5 ${
+                  className={`px-3 py-2 rounded-xl text-xs font-bold transition-all border-2 flex items-center gap-1.5 active:translate-y-0.5 ${
                     isSelected
                       ? 'bg-[#C85A32] text-white border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
                       : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] border-[#5C3A21]/30 hover:border-[#5C3A21]'
                   }`}
                 >
-                  {isSelected && <Check className="w-3.5 h-3.5 stroke-3" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                   <span>{ing}</span>
                 </button>
               );
@@ -310,7 +321,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                     playClickSound();
                     setSelectedRegion(reg.name);
                   }}
-                  className={`p-3 rounded-xl border-2 text-left transition-all active:translate-y-0.5 ${
+                  className={`p-3 rounded-xl border-2 text-left transition-all active:translate-y-0.5 last:col-span-2 sm:last:col-span-1 ${
                     isSelected
                       ? 'bg-[#C85A32] text-white border-[#2C1E16] shadow-[3px_3px_0px_#2C1E16]'
                       : 'bg-[#FCF9F2] dark:bg-[#241912] border-[#5C3A21]/40 text-[#2C1E16] dark:text-[#F6EFE2] hover:border-[#5C3A21]'
@@ -335,7 +346,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
         {/* Category Tabs & Recipe Grid */}
         <section className="space-y-6">
           <div className="flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 w-full sm:w-auto">
               {categories.map((cat) => {
                 const isSelected = selectedCategory === cat.id;
                 return (
@@ -345,7 +356,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                       playClickSound();
                       setSelectedCategory(cat.id);
                     }}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border-2 active:translate-y-0.5 ${
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border-2 active:translate-y-0.5 shrink-0 ${
                       isSelected
                         ? 'bg-[#4A7C59] text-white border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]'
                         : 'bg-[#EFE4CE] dark:bg-[#2C1E16] text-[#5C3A21] dark:text-[#D9C8AA] border-[#5C3A21]/30 hover:border-[#5C3A21]'
@@ -363,7 +374,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
           </div>
 
           {filteredRecipes.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
               {filteredRecipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
@@ -373,7 +384,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 px-4 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-3 border-dashed border-[#5C3A21]/40 space-y-3">
+            <div className="text-center py-16 px-4 bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl border-[3px] border-dashed border-[#5C3A21]/40 space-y-3">
               <div className="w-12 h-12 rounded-xl bg-[#EFE4CE] text-[#C85A32] flex items-center justify-center mx-auto border border-[#5C3A21]/30">
                 <Search className="w-6 h-6" />
               </div>
@@ -402,13 +413,13 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
         </section>
 
         {/* Kitab Rempah Nusantara Showcase Banner (Replaces AI Slop Banner) */}
-        <section className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-6 sm:p-10 border-3 border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <section className="bg-[#FCF9F2] dark:bg-[#241912] rounded-2xl p-5 sm:p-10 border-[3px] border-[#5C3A21] dark:border-[#8C6239] shadow-[6px_6px_0px_#2C1E16] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-[#4A7C59]/15 text-[#4A7C59] dark:text-[#88C59A] border border-[#4A7C59]/30 text-xs font-black">
               <BookOpen className="w-3.5 h-3.5" />
               <span>{language === 'en' ? 'Archipelago Spice Almanac' : 'Kitab Rempah & Rahasia Bumbu'}</span>
             </div>
-            <h3 className="font-display font-black text-2xl sm:text-3xl text-[#2C1E16] dark:text-[#F6EFE2] leading-tight">
+            <h3 className="font-display font-black text-xl sm:text-3xl text-[#2C1E16] dark:text-[#F6EFE2] leading-tight">
               {language === 'en'
                 ? 'Missing an Ingredient or Need Accurate Substitutes?'
                 : 'Bingung Takaran Bumbu atau Kehabisan Bahan?'}

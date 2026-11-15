@@ -9,102 +9,112 @@ export default function Footer() {
   const { t, language } = useLanguage();
 
   return (
-    <footer className="mt-20 border-t border-zinc-200/80 dark:border-zinc-800/80 bg-surface-container-low dark:bg-zinc-950 pb-24 md:pb-12 pt-14 text-on-surface-variant">
+    <footer className="mt-20 border-t-2 border-[#5C3A21]/20 dark:border-[#8C6239]/30 bg-[#FCF9F2] dark:bg-[#1C1410] pb-28 md:pb-14 pt-12 sm:pt-16 text-[#5C3A21] dark:text-[#D9C8AA]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           {/* Brand & Mission */}
-          <div className="space-y-4 md:col-span-2">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-2xl bg-primary flex items-center justify-center text-white shadow-md shadow-primary/20">
+          <div className="space-y-4 sm:col-span-2">
+            <Link href="/" className="inline-flex items-center gap-2.5">
+              <div className="w-10 h-10 rounded-xl bg-[#C85A32] flex items-center justify-center text-white border-2 border-[#2C1E16] shadow-[2px_2px_0px_#2C1E16]">
                 <ChefHat className="w-5 h-5" />
               </div>
-              <span className="font-display font-black text-2xl tracking-tight text-on-surface">
-                Resepedia
-              </span>
+              <div>
+                <span className="font-display font-black text-2xl tracking-tight text-[#2C1E16] dark:text-[#F6EFE2] block leading-none">
+                  Resepedia
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#C85A32] dark:text-[#E26E45]">
+                  {language === 'en' ? 'Archipelago Tavern & Grimoire' : 'Kedai & Kitab Kuliner Nusantara'}
+                </span>
+              </div>
             </Link>
-            <p className="text-sm leading-relaxed max-w-md text-zinc-600 dark:text-zinc-400">
+            <p className="text-xs sm:text-sm leading-relaxed max-w-md text-[#5C3A21] dark:text-[#D9C8AA]">
               {language === 'en'
-                ? 'Authentic Indonesian culinary recipe encyclopedia, equipped with an interactive AI kitchen assistant, hands-free cooking mode, and portion scaler.'
-                : 'Ensiklopedi resep masakan Nusantara autentik, dilengkapi asisten konsultasi dapur interaktif, mode memasak bebas genggam, dan kalkulator takaran porsi.'}
+                ? 'Authentic Indonesian culinary recipe grimoire, equipped with traditional Spice Almanac, hearth hands-free cooking mode, and portion scaler.'
+                : 'Ensiklopedi resep masakan Nusantara autentik, dilengkapi Kitab Rahasia Rempah & Substitusi, mode perapian bebas genggam, dan takaran porsi terukur.'}
             </p>
-            <div className="flex items-center gap-2 text-xs font-semibold text-primary">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#4A7C59] dark:text-[#88C59A]">
               <ChefHat className="w-4 h-4" />
               <span>
                 {language === 'en'
-                  ? 'Powered by Gemini AI Kitchen Assistant'
-                  : 'Didukung Asisten Dapur Cerdas Gemini'}
+                  ? 'Curated by archipelago culinary guild & home cooks'
+                  : 'Dikelola oleh serikat koki rumahan & penjaga warisan nusantara'}
               </span>
             </div>
           </div>
 
           {/* Navigasi Kuliner */}
           <div className="space-y-3">
-            <h4 className="text-xs font-black uppercase tracking-wider text-on-surface">
-              {language === 'en' ? 'Explore Regions' : 'Jelajah Wilayah'}
+            <h4 className="text-xs font-black uppercase tracking-wider text-[#2C1E16] dark:text-[#F6EFE2] border-b border-[#5C3A21]/20 pb-1">
+              {language === 'en' ? 'Archipelago Regions' : 'Kepulauan Citarasa'}
             </h4>
             <ul className="space-y-2 text-xs font-semibold">
               <li>
-                <Link href="/eksplorasi?region=Sumatra" className="hover:text-primary transition-colors">
+                <Link href="/eksplorasi?region=Sumatra" className="hover:text-[#C85A32] transition-colors">
                   Sumatra (Rendang, Gulai)
                 </Link>
               </li>
               <li>
-                <Link href="/eksplorasi?region=Jawa" className="hover:text-primary transition-colors">
+                <Link href="/eksplorasi?region=Jawa" className="hover:text-[#C85A32] transition-colors">
                   Jawa (Gudeg, Rawon, Soto)
                 </Link>
               </li>
               <li>
-                <Link href="/eksplorasi?region=Bali" className="hover:text-primary transition-colors">
+                <Link href="/eksplorasi?region=Bali" className="hover:text-[#C85A32] transition-colors">
                   Bali & Nusa Tenggara
                 </Link>
               </li>
               <li>
-                <Link href="/eksplorasi?region=Sulawesi" className="hover:text-primary transition-colors">
-                  Sulawesi (Coto, Konro)
+                <Link href="/eksplorasi?region=Sulawesi" className="hover:text-[#C85A32] transition-colors">
+                  Sulawesi (Coto, Woku, Konro)
                 </Link>
               </li>
               <li>
-                <Link href="/eksplorasi?region=Kalimantan" className="hover:text-primary transition-colors">
+                <Link href="/eksplorasi?region=Kalimantan" className="hover:text-[#C85A32] transition-colors">
                   Kalimantan & Papua
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Informasi & Kebijakan */}
+          {/* Fitur & Pintasan */}
           <div className="space-y-3">
-            <h4 className="text-xs font-black uppercase tracking-wider text-on-surface">
-              {language === 'en' ? 'About & Help' : 'Tentang & Bantuan'}
+            <h4 className="text-xs font-black uppercase tracking-wider text-[#2C1E16] dark:text-[#F6EFE2] border-b border-[#5C3A21]/20 pb-1">
+              {language === 'en' ? 'Grimoire Features' : 'Fitur & Pintasan'}
             </h4>
             <ul className="space-y-2 text-xs font-semibold">
               <li>
-                <Link href="/tentang" className="hover:text-primary transition-colors">
-                  {language === 'en' ? 'Cultural Heritage Mission' : 'Misi Pelestarian Budaya'}
+                <Link href="/eksplorasi" className="hover:text-[#C85A32] transition-colors">
+                  {language === 'en' ? 'Archipelago Catalog' : 'Eksplorasi Semua Resep'}
                 </Link>
               </li>
               <li>
-                <Link href="/profil" className="hover:text-primary transition-colors">
+                <Link href="/resep/tambah" className="hover:text-[#C85A32] transition-colors">
+                  {t('Tulis Resep')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/belanja" className="hover:text-[#C85A32] transition-colors">
+                  {t('Daftar Belanja')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/koleksi" className="hover:text-[#C85A32] transition-colors">
+                  {t('Koleksi')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/profil" className="hover:text-[#C85A32] transition-colors">
                   {t('Pengaturan & Preferensi')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/resep/tambah" className="hover:text-primary transition-colors">
-                  {t('Tulis Resep Baru')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/belanja" className="hover:text-primary transition-colors">
-                  {t('Daftar Belanja Pasar')}
                 </Link>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-zinc-200/60 dark:border-zinc-800/60 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4">
-          <p>© {new Date().getFullYear()} Resepedia. {language === 'en' ? 'Crafted with love for Indonesian culinary heritage 🇮🇩' : 'Dibuat dengan cinta untuk kuliner Indonesia 🇮🇩'}</p>
-          <p className="flex items-center gap-1.5">
-            {language === 'en' ? 'Curated by home chefs across Indonesia' : 'Dikelola oleh komunitas koki rumahan nusantara'}
+        <div className="mt-10 sm:mt-12 pt-6 border-t border-[#5C3A21]/20 dark:border-[#8C6239]/30 flex flex-col sm:flex-row items-center justify-between text-xs text-[#8C6239] dark:text-[#D1A67B] gap-4 text-center sm:text-left">
+          <p>© {new Date().getFullYear()} Resepedia. {language === 'en' ? 'Crafted with love for Indonesian culinary heritage 🇮🇩' : 'Dibuat dengan cinta untuk pusaka kuliner Nusantara 🇮🇩'}</p>
+          <p className="flex items-center gap-1.5 font-bold">
+            {language === 'en' ? '100% Handcrafted • Offline-First • Zero AI Slop' : '100% Buatan Tangan • Offline-First • Ramah Dapur'}
           </p>
         </div>
       </div>
