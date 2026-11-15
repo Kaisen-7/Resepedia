@@ -8,6 +8,8 @@ import RecipeCard from '@/components/recipe/RecipeCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getMyLocalRecipes } from '@/lib/utils/recipe-storage';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase/client';
 
 interface KoleksiClientProps {
   allRecipes: Recipe[];
@@ -24,6 +26,7 @@ export default function KoleksiClient({
   const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState<'saved' | 'my-recipes'>('saved');
   const [localMyRecipes, setLocalMyRecipes] = useState<Recipe[]>([]);
+  const [cloudAuthoredRecipes, setCloudAuthoredRecipes] = useState<Recipe[]>([]);
 
   const currentUserId = user?.uid || userId;
 
@@ -43,13 +46,27 @@ export default function KoleksiClient({
     return () => window.removeEventListener('my-recipes-updated', loadMy);
   }, [currentUserId]);
 
-  // Combined pool of all available recipes (server fallback + user creations)
+  // Fetch authored recipes from Cloud Firestore when user is logged in
+  useEffect(() => {
+    if (user?.uid) {
+      const q = query(collection(db, 'recipes'), where('authorId', '==', user.uid));
+      getDocs(q)
+        .then((snapshot) => {
+          const list = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Recipe));
+          setCloudAuthoredRecipes(list);
+        })
+        .catch(() => {});
+    }
+  }, [user]);
+
+  // Combined pool of all available recipes (server fallback + user creations + cloud creations)
   const allAvailableRecipes = useMemo(() => {
     const map = new Map<string, Recipe>();
     allRecipes.forEach((r) => map.set(r.id, r));
+    cloudAuthoredRecipes.forEach((r) => map.set(r.id, r));
     localMyRecipes.forEach((r) => map.set(r.id, r));
     return Array.from(map.values());
-  }, [allRecipes, localMyRecipes]);
+  }, [allRecipes, cloudAuthoredRecipes, localMyRecipes]);
 
   // Filter saved recipes
   const savedRecipes = useMemo(() => {
@@ -62,9 +79,10 @@ export default function KoleksiClient({
     const serverAuthored = allRecipes.filter((r) => r.authorId === currentUserId);
     const map = new Map<string, Recipe>();
     serverAuthored.forEach((r) => map.set(r.id, r));
+    cloudAuthoredRecipes.forEach((r) => map.set(r.id, r));
     localMyRecipes.forEach((r) => map.set(r.id, r));
     return Array.from(map.values());
-  }, [allRecipes, localMyRecipes, currentUserId]);
+  }, [allRecipes, cloudAuthoredRecipes, localMyRecipes, currentUserId]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">

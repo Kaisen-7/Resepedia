@@ -44,6 +44,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
     localMyRecipes.forEach((r) => map.set(r.id, r));
     return Array.from(map.values());
   }, [initialRecipes, localMyRecipes]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('All');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -105,54 +106,48 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
     );
   };
 
-  // Filter recipes based on search, region, category, and fridge ingredients
+  // Filter recipes based on search, region, category, and selected ingredients
   const filteredRecipes = useMemo(() => {
     return allCombinedRecipes.filter((recipe) => {
-      // Search query
+      // Search query filter
       if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
-        const titleMatch = recipe.title.toLowerCase().includes(query);
-        const descMatch = recipe.description?.toLowerCase().includes(query);
-        const regionMatch = recipe.region?.toLowerCase().includes(query);
-        const ingMatch = recipe.ingredients.some(
-          (i) => i.name.toLowerCase().includes(query) || i.detail?.toLowerCase().includes(query)
-        );
-        if (!titleMatch && !descMatch && !regionMatch && !ingMatch) return false;
+        const q = searchQuery.toLowerCase().trim();
+        const titleMatch = recipe.title.toLowerCase().includes(q);
+        const descMatch = recipe.description?.toLowerCase().includes(q);
+        const ingMatch = recipe.ingredients.some((i) => i.name.toLowerCase().includes(q));
+        const regionMatch = recipe.region?.toLowerCase().includes(q);
+        if (!titleMatch && !descMatch && !ingMatch && !regionMatch) return false;
       }
 
       // Region filter
-      if (selectedRegion !== 'All' && recipe.region !== selectedRegion) {
-        return false;
-      }
+      if (selectedRegion !== 'All' && recipe.region !== selectedRegion) return false;
 
       // Category filter
-      if (selectedCategory !== 'All' && recipe.category !== selectedCategory) {
-        return false;
-      }
+      if (selectedCategory !== 'All' && recipe.category !== selectedCategory) return false;
 
-      // Fridge ingredients filter
+      // Ingredient pantry filter (ANY match)
       if (selectedIngredients.length > 0) {
-        const recipeIngsText = recipe.ingredients.map((i) => i.name.toLowerCase()).join(' ');
-        const matchesAll = selectedIngredients.every((selected) =>
-          recipeIngsText.includes(selected.toLowerCase())
+        const recipeIngNames = recipe.ingredients.map((i) => i.name.toLowerCase());
+        const hasSelected = selectedIngredients.some((ing) =>
+          recipeIngNames.some((rIng) => rIng.includes(ing.toLowerCase()))
         );
-        if (!matchesAll) return false;
+        if (!hasSelected) return false;
       }
 
       return true;
     });
-  }, [initialRecipes, searchQuery, selectedRegion, selectedCategory, selectedIngredients]);
+  }, [allCombinedRecipes, searchQuery, selectedRegion, selectedCategory, selectedIngredients]);
 
   return (
-    <div className="space-y-10 sm:space-y-14 pb-16">
-      {/* Editorial Hero Section */}
-      <section className="relative overflow-hidden pt-8 pb-12 sm:pt-12 sm:pb-16 bg-surface-container-low/60 dark:bg-zinc-900/40 border-b border-zinc-200/60 dark:border-zinc-800/60">
+    <div className="space-y-12 sm:space-y-16 pb-16">
+      {/* Hero Section */}
+      <section className="relative pt-6 sm:pt-12 pb-8 sm:pb-12 bg-linear-to-b from-surface-container-low/70 via-surface/40 to-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center space-y-4 sm:space-y-5">
             {/* Tagline */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-wide">
               <Utensils className="w-3.5 h-3.5" />
-              <span>Ensiklopedi Kuliner Nusantara</span>
+              <span>{t('Ensiklopedi Kuliner Nusantara')}</span>
             </div>
 
             {/* Headline */}
@@ -161,7 +156,9 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
             </h1>
 
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
-              Jelajahi warisan resep autentik dari 6 kepulauan besar Indonesia. Dilengkapi takaran porsi terukur dan panduan langkah demi langkah.
+              {t(
+                'Jelajahi warisan resep autentik dari 6 kepulauan besar Indonesia. Dilengkapi takaran porsi terukur dan panduan langkah demi langkah.'
+              )}
             </p>
 
             {/* Practical Search Bar */}
@@ -172,7 +169,11 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={language === 'en' ? 'Search dishes or ingredients (Chicken, Coconut)...' : 'Cari masakan atau bahan (Ayam, Rendang, Santan)...'}
+                  placeholder={
+                    language === 'en'
+                      ? 'Search dishes or ingredients (Chicken, Rendang, Coconut)...'
+                      : 'Cari masakan atau bahan (Ayam, Rendang, Santan)...'
+                  }
                   className="w-full bg-transparent px-2.5 sm:px-3 py-2 text-xs sm:text-base text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
                 />
                 {searchQuery && (
@@ -180,22 +181,22 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                     onClick={() => setSearchQuery('')}
                     className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 px-2 font-bold shrink-0"
                   >
-                    Hapus
+                    {language === 'en' ? 'Clear' : 'Hapus'}
                   </button>
                 )}
                 <button
                   onClick={() => openAI()}
                   className="hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-primary/10 hover:text-primary text-zinc-700 dark:text-zinc-300 text-xs font-bold transition-colors shrink-0"
-                  title="Konsultasi bumbu dan ide masak"
+                  title={language === 'en' ? 'Consult Kitchen Assistant' : 'Konsultasi bumbu dan ide masak'}
                 >
                   <ChefHat className="w-3.5 h-3.5" />
-                  <span>Tanya Dapur</span>
+                  <span>{t('Tanya Dapur')}</span>
                 </button>
               </div>
 
               {/* Popular Search Suggestions */}
               <div className="mt-3 flex items-center justify-center gap-2 flex-wrap text-xs text-zinc-500">
-                <span className="font-semibold text-zinc-400">Paling Dicari:</span>
+                <span className="font-semibold text-zinc-400">{t('Paling Dicari:')}</span>
                 {['Rendang Sapi', 'Soto Betawi', 'Rawon Daging', 'Gado-Gado', 'Ayam Betutu'].map(
                   (item) => (
                     <button
@@ -220,13 +221,13 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               <h2 className="font-display font-bold text-lg sm:text-xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                <span>Punya Bahan Apa di Rumah?</span>
+                <span>{t('Punya Bahan Apa di Rumah?')}</span>
                 <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold">
-                  Saring Resep
+                  {t('Saring Resep')}
                 </span>
               </h2>
               <p className="text-xs text-zinc-500 mt-0.5">
-                Pilih persediaan bahan yang ada di dapurmu untuk menemukan hidangan yang cocok.
+                {t('Pilih persediaan bahan yang ada di dapurmu untuk menemukan hidangan yang cocok.')}
               </p>
             </div>
             {selectedIngredients.length > 0 && (
@@ -234,7 +235,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                 onClick={() => setSelectedIngredients([])}
                 className="text-xs font-bold text-primary hover:underline self-start sm:self-auto"
               >
-                Reset Pilihan ({selectedIngredients.length})
+                {t('Reset Pilihan')} ({selectedIngredients.length})
               </button>
             )}
           </div>
@@ -265,17 +266,20 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
           <div className="flex items-center justify-between">
             <div>
               <h2 className="font-display font-bold text-xl sm:text-2xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                <Compass className="w-5 h-5 text-primary" /> Jelajahi Tradisi Daerah
+                <Compass className="w-5 h-5 text-primary" />{' '}
+                {language === 'en' ? 'Explore Regional Traditions' : 'Jelajahi Tradisi Daerah'}
               </h2>
               <p className="text-xs text-zinc-500">
-                Pilih pulau untuk melihat ragam masakan khas rempah setempat
+                {language === 'en'
+                  ? 'Select an island to view authentic local spice-rich dishes'
+                  : 'Pilih pulau untuk melihat ragam masakan khas rempah setempat'}
               </p>
             </div>
             <Link
               href="/eksplorasi"
               className="text-xs font-bold text-primary flex items-center gap-1 hover:underline"
             >
-              Semua Daerah <ArrowRight className="w-3.5 h-3.5" />
+              {t('Semua Daerah')} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
@@ -332,11 +336,23 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
             <div>
               <h3 className="font-display font-black text-xl sm:text-2xl text-zinc-900 dark:text-zinc-100">
                 {selectedRegion === 'All'
-                  ? 'Katalog Resep Nusantara'
+                  ? language === 'en'
+                    ? 'Archipelago Recipe Catalog'
+                    : 'Katalog Resep Nusantara'
+                  : language === 'en'
+                  ? `Dishes from ${selectedRegion}`
                   : `Masakan Khas Wilayah ${selectedRegion}`}
               </h3>
               <p className="text-xs text-zinc-500 mt-0.5">
-                Menampilkan <strong>{filteredRecipes.length}</strong> resep masakan
+                {language === 'en' ? (
+                  <>
+                    Showing <strong>{filteredRecipes.length}</strong> authentic recipes
+                  </>
+                ) : (
+                  <>
+                    Menampilkan <strong>{filteredRecipes.length}</strong> resep masakan
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -357,10 +373,14 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                 <ChefHat className="w-7 h-7" />
               </div>
               <h4 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
-                Tidak ada resep yang sesuai kriteria
+                {language === 'en'
+                  ? 'No recipes match your criteria'
+                  : 'Tidak ada resep yang sesuai kriteria'}
               </h4>
               <p className="text-xs text-zinc-500 max-w-md mx-auto leading-relaxed">
-                Coba kurangi kata kunci pencarian atau sesuaikan pilihan bahan kulkas untuk melihat resep Nusantara lainnya.
+                {language === 'en'
+                  ? 'Try fewer search keywords or adjust pantry ingredients to discover more archipelago recipes.'
+                  : 'Coba kurangi kata kunci pencarian atau sesuaikan pilihan bahan kulkas untuk melihat resep Nusantara lainnya.'}
               </p>
               <button
                 onClick={() => {
@@ -371,7 +391,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
                 }}
                 className="px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors"
               >
-                Reset Semua Filter
+                {language === 'en' ? 'Reset All Filters' : 'Reset Semua Filter'}
               </button>
             </div>
           )}
@@ -382,13 +402,17 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
           <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">
               <ChefHat className="w-3.5 h-3.5" />
-              <span>Konsultasi Dapur Interaktif</span>
+              <span>{language === 'en' ? 'Interactive Kitchen Assistant' : 'Konsultasi Dapur Interaktif'}</span>
             </div>
             <h3 className="font-display font-black text-2xl sm:text-3xl text-zinc-900 dark:text-zinc-100 leading-tight">
-              Bingung Takaran Bumbu atau Bahan Pengganti?
+              {language === 'en'
+                ? 'Need Help with Seasoning Amounts or Substitutes?'
+                : 'Bingung Takaran Bumbu atau Bahan Pengganti?'}
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Tanyakan pada Asisten Dapur Resepedia untuk tips mengolah santan, racikan rempah alternatif jika bahan tidak lengkap, atau saran menu keluarga.
+              {language === 'en'
+                ? 'Ask Resepedia Kitchen Assistant for coconut milk tips, alternative spice blends when ingredients are missing, or family meal recommendations.'
+                : 'Tanyakan pada Asisten Dapur Resepedia untuk tips mengolah santan, racikan rempah alternatif jika bahan tidak lengkap, atau saran menu keluarga.'}
             </p>
           </div>
 
@@ -397,7 +421,7 @@ export default function HomeClient({ initialRecipes, savedRecipeIds }: HomeClien
             className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-md transition-transform active:scale-95 shrink-0 flex items-center justify-center gap-2"
           >
             <ChefHat className="w-4 h-4" />
-            <span>Mulai Tanya Asisten Dapur</span>
+            <span>{language === 'en' ? 'Start Kitchen Chat' : 'Mulai Tanya Asisten Dapur'}</span>
           </button>
         </section>
       </div>

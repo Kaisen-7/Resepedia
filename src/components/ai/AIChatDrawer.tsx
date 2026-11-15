@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Send, X, ChefHat, RefreshCw, MessageSquare } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Send, X, ChefHat, RefreshCw } from 'lucide-react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAI } from '@/contexts/AIContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Message {
   role: 'user' | 'model';
@@ -14,15 +15,31 @@ interface Message {
 
 export default function AIChatDrawer() {
   const { isOpen, closeAI, currentRecipeContext } = useAI();
+  const { language, t } = useLanguage();
+
+  const initialGreeting =
+    language === 'en'
+      ? 'Hello! I am **Resepedia Kitchen Assistant** 👨‍🍳. How can I help you with Archipelago cuisine today? Ask for spice blending tips, ingredient substitutes, or delicious dinner ideas based on what is in your fridge!'
+      : 'Halo! Saya **Asisten Dapur Resepedia** 👨‍🍳. Ada yang ingin Anda konsultasikan seputar resep Nusantara hari ini? Tanyakan tips mengolah rempah, ide bahan pengganti, atau saran menu lezat dari bahan yang ada di kulkas Anda!';
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'model',
-      text: 'Halo! Saya **Asisten Dapur Resepedia** 👨‍🍳. Ada yang ingin Anda konsultasikan seputar resep Nusantara hari ini? Tanyakan tips mengolah rempah, ide bahan pengganti, atau saran menu lezat dari bahan yang ada di kulkas Anda!',
+      text: initialGreeting,
     },
   ]);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMessages([
+      {
+        role: 'model',
+        text: initialGreeting,
+      },
+    ]);
+  }, [language]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -66,10 +83,16 @@ export default function AIChatDrawer() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Terjadi kendala pada server asisten dapur.');
+        throw new Error(
+          errorData.error ||
+            (language === 'en'
+              ? 'An error occurred with the kitchen assistant server.'
+              : 'Terjadi kendala pada server asisten dapur.')
+        );
       }
 
-      if (!response.body) throw new Error('ReadableStream tidak didukung.');
+      if (!response.body)
+        throw new Error(language === 'en' ? 'ReadableStream not supported.' : 'ReadableStream tidak didukung.');
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder('utf-8');
@@ -97,7 +120,10 @@ export default function AIChatDrawer() {
         const lastIdx = updated.length - 1;
         updated[lastIdx] = {
           role: 'model',
-          text: `Maaf, terjadi kendala koneksi: ${err.message || 'Gagal terhubung'}. Silakan coba kembali sesaat lagi.`,
+          text:
+            language === 'en'
+              ? `Sorry, a connection problem occurred: ${err.message || 'Connection failed'}. Please try again shortly.`
+              : `Maaf, terjadi kendala koneksi: ${err.message || 'Gagal terhubung'}. Silakan coba kembali sesaat lagi.`,
         };
         return updated;
       });
@@ -107,10 +133,22 @@ export default function AIChatDrawer() {
   };
 
   const contextualPrompts = currentRecipeContext
+    ? language === 'en'
+      ? [
+          `Substitute spices for ${currentRecipeContext.title}?`,
+          `Tips to keep this dish fresh longer?`,
+          `Matching side dishes recommendations?`,
+        ]
+      : [
+          `Apa alternatif bumbu untuk ${currentRecipeContext.title}?`,
+          `Bagaimana tips agar masakan ini tidak cepat basi?`,
+          `Rekomendasi hidangan pendamping yang cocok?`,
+        ]
+    : language === 'en'
     ? [
-        `Apa alternatif bumbu untuk ${currentRecipeContext.title}?`,
-        `Bagaimana tips agar masakan ini tidak cepat basi?`,
-        `Rekomendasi hidangan pendamping yang cocok?`,
+        'Have chicken, coconut milk, and chili, what to cook?',
+        'How to prevent coconut milk from splitting?',
+        'Flavorful authentic savory soup ideas from East Java',
       ]
     : [
         'Punya ayam, santan, dan cabai, masak apa ya?',
@@ -148,12 +186,14 @@ export default function AIChatDrawer() {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-bold text-base text-zinc-900 dark:text-zinc-100">
-                  Asisten Dapur Resepedia
+                  {language === 'en' ? 'Resepedia Kitchen Assistant' : 'Asisten Dapur Resepedia'}
                 </h3>
               </div>
               <p className="text-xs text-zinc-500 truncate max-w-60">
                 {currentRecipeContext
-                  ? `Membahas: ${currentRecipeContext.title}`
+                  ? `${language === 'en' ? 'Discussing' : 'Membahas'}: ${currentRecipeContext.title}`
+                  : language === 'en'
+                  ? 'Spices & Cooking Guidance'
                   : 'Konsultasi Racikan Rempah & Memasak'}
               </p>
             </div>
@@ -161,7 +201,7 @@ export default function AIChatDrawer() {
           <button
             onClick={closeAI}
             className="p-2 rounded-xl text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-            title="Tutup"
+            title={language === 'en' ? 'Close' : 'Tutup'}
           >
             <X className="w-5 h-5" />
           </button>
@@ -171,7 +211,8 @@ export default function AIChatDrawer() {
         {currentRecipeContext && (
           <div className="px-4 py-2 bg-primary/5 dark:bg-primary/10 border-b border-primary/10 text-xs flex items-center justify-between">
             <span className="text-primary font-medium truncate">
-              Membahas resep: <strong>{currentRecipeContext.title}</strong>
+              {language === 'en' ? 'Discussing recipe:' : 'Membahas resep:'}{' '}
+              <strong>{currentRecipeContext.title}</strong>
             </span>
           </div>
         )}
@@ -205,7 +246,10 @@ export default function AIChatDrawer() {
           ))}
           {isStreaming && (
             <div className="flex items-center gap-2 text-xs font-semibold text-primary animate-pulse pl-11">
-              <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Asisten dapur sedang meracik jawaban...
+              <RefreshCw className="w-3.5 h-3.5 animate-spin" />{' '}
+              {language === 'en'
+                ? 'Kitchen assistant is thinking...'
+                : 'Asisten dapur sedang meracik jawaban...'}
             </div>
           )}
           <div ref={messagesEndRef} />
@@ -240,7 +284,11 @@ export default function AIChatDrawer() {
               onChange={(e) => setInput(e.target.value)}
               placeholder={
                 currentRecipeContext
-                  ? `Tanya bumbu ${currentRecipeContext.title}...`
+                  ? language === 'en'
+                    ? `Ask about ${currentRecipeContext.title}...`
+                    : `Tanya bumbu ${currentRecipeContext.title}...`
+                  : language === 'en'
+                  ? 'Ask for cooking advice, spices, or recipes...'
                   : 'Tanya tips bumbu, cara masak, atau menu...'
               }
               disabled={isStreaming}
@@ -250,7 +298,7 @@ export default function AIChatDrawer() {
               type="submit"
               disabled={!input.trim() || isStreaming}
               className="p-3 bg-primary hover:bg-primary-container disabled:opacity-40 text-white rounded-2xl transition-transform active:scale-95 shadow-sm shrink-0"
-              title="Kirim Pesan"
+              title={language === 'en' ? 'Send Message' : 'Kirim Pesan'}
             >
               <Send className="w-4 h-4" />
             </button>

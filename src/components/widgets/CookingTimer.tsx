@@ -7,16 +7,15 @@ import {
   Pause,
   RotateCcw,
   X,
-  Plus,
-  Minus,
   Minimize2,
   Maximize2,
-  Bell,
   Flame,
 } from 'lucide-react';
 import { useCookingTimer } from '@/contexts/TimerContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function CookingTimer() {
+  const { language } = useLanguage();
   const {
     isOpen,
     isRunning,
@@ -80,7 +79,9 @@ export default function CookingTimer() {
                   <Flame className="w-4 h-4" />
                 </div>
                 <div className="truncate">
-                  <h4 className="text-xs font-black uppercase tracking-wider text-primary">Timer Dapur</h4>
+                  <h4 className="text-xs font-black uppercase tracking-wider text-primary">
+                    {language === 'en' ? 'Kitchen Timer' : 'Timer Dapur'}
+                  </h4>
                   <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-300 truncate">
                     {recipeTitle}
                   </p>
@@ -89,14 +90,14 @@ export default function CookingTimer() {
               <div className="flex items-center gap-1">
                 <button
                   onClick={toggleMinimize}
-                  title="Minimize"
+                  title={language === 'en' ? 'Minimize' : 'Kecilkan'}
                   className="p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg text-zinc-500 transition-colors"
                 >
                   <Minimize2 className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={closeTimer}
-                  title="Tutup"
+                  title={language === 'en' ? 'Close' : 'Tutup'}
                   className="p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg text-zinc-500 transition-colors"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -134,7 +135,17 @@ export default function CookingTimer() {
                   {timeFormatted}
                 </span>
                 <span className="text-[11px] font-bold text-zinc-400 mt-0.5">
-                  {isCompleted ? 'WAKTU HABIS!' : isRunning ? 'SEDANG MEMASAK' : 'JEDA'}
+                  {isCompleted
+                    ? language === 'en'
+                      ? "TIME'S UP!"
+                      : 'WAKTU HABIS!'
+                    : isRunning
+                    ? language === 'en'
+                      ? 'COOKING'
+                      : 'SEDANG MEMASAK'
+                    : language === 'en'
+                    ? 'PAUSED'
+                    : 'JEDA'}
                 </span>
               </div>
             </div>
@@ -165,7 +176,7 @@ export default function CookingTimer() {
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={resetTimer}
-                title="Reset"
+                title={language === 'en' ? 'Reset' : 'Atur Ulang'}
                 className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
               >
                 <RotateCcw className="w-5 h-5" />
@@ -180,11 +191,11 @@ export default function CookingTimer() {
               >
                 {isRunning ? (
                   <>
-                    <Pause className="w-4 h-4 fill-white" /> Jeda
+                    <Pause className="w-4 h-4 fill-white" /> {language === 'en' ? 'Pause' : 'Jeda'}
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4 fill-white" /> Lanjut
+                    <Play className="w-4 h-4 fill-white" /> {language === 'en' ? 'Resume' : 'Lanjut'}
                   </>
                 )}
               </button>

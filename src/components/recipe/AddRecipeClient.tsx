@@ -20,11 +20,13 @@ import { extractYouTubeVideoId } from '@/lib/utils/youtube';
 import { uploadRecipeImage } from '@/lib/firebase/service';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AddRecipeClient() {
   const router = useRouter();
   const { user, signInWithGoogle } = useAuth();
   const toast = useToast();
+  const { t, language } = useLanguage();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -154,16 +156,18 @@ export default function AddRecipeClient() {
           <ChefHat className="w-8 h-8" />
         </div>
         <h2 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-100">
-          Masuk untuk Menulis Resep
+          {language === 'en' ? 'Sign In to Publish Recipes' : 'Masuk untuk Menulis Resep'}
         </h2>
         <p className="text-xs sm:text-sm text-zinc-500 leading-relaxed">
-          Anda perlu masuk terlebih dahulu untuk mempublikasikan resep masakan Anda di Resepedia.
+          {language === 'en'
+            ? 'You need to sign in first to publish and manage your recipes on Resepedia.'
+            : 'Anda perlu masuk terlebih dahulu untuk mempublikasikan resep masakan Anda di Resepedia.'}
         </p>
         <button
           onClick={() => signInWithGoogle()}
           className="px-6 py-3 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary-container shadow-md shadow-primary/20"
         >
-          Masuk dengan Google
+          {t('Masuk dengan Google')}
         </button>
       </div>
     );
@@ -177,13 +181,15 @@ export default function AddRecipeClient() {
           href="/eksplorasi"
           className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-500 hover:text-primary transition-colors mb-3"
         >
-          <ChevronLeft className="w-4 h-4" /> Batal & Kembali
+          <ChevronLeft className="w-4 h-4" /> {t('Batal & Kembali')}
         </Link>
         <h1 className="font-display font-black text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
-          Tulis Resep Nusantara Baru
+          {language === 'en' ? 'Write New Archipelago Recipe' : 'Tulis Resep Nusantara Baru'}
         </h1>
         <p className="text-xs sm:text-sm text-zinc-500 mt-1">
-          Bagikan warisan rasa tradisional masakan Anda agar dapat dinikmati ribuan pecinta kuliner lainnya.
+          {language === 'en'
+            ? 'Share your authentic heritage recipes with thousands of food lovers.'
+            : 'Bagikan warisan rasa tradisional masakan Anda agar dapat dinikmati ribuan pecinta kuliner lainnya.'}
         </p>
       </div>
 

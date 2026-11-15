@@ -15,10 +15,13 @@ import {
   Edit3,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { useToast } from '@/contexts/ToastContext';
-import { getShoppingCount } from '@/lib/utils/shopping-storage';
+import { getShoppingCount, saveLocalShoppingItems } from '@/lib/utils/shopping-storage';
 import { getMyLocalRecipesCount } from '@/lib/utils/recipe-storage';
+import { subscribeShoppingItems } from '@/lib/firebase/service';
+import { db } from '@/lib/firebase/client';
+import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 
 interface ProfilClientProps {
   savedCount: number;
@@ -31,7 +34,7 @@ export default function ProfilClient({
   shoppingCount,
   myRecipesCount,
 }: ProfilClientProps) {
-  const { user, signInWithGoogle, logout, savedRecipeIds } = useAuth();
+  const { user, signInWithGoogle, logout, savedRecipeIds, userData } = useAuth();
   const { language, setLanguage, t } = useLanguage();
   const toast = useToast();
 
@@ -40,7 +43,7 @@ export default function ProfilClient({
   const [localShoppingCount, setLocalShoppingCount] = useState(shoppingCount);
   const [localMyRecipesCount, setLocalMyRecipesCount] = useState(myRecipesCount);
 
-  // Sync counters with local/cloud state
+  // Sync counters and user preferences with local/cloud state
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
     setDarkMode(isDark);
@@ -51,9 +54,11 @@ export default function ProfilClient({
         const parsed = JSON.parse(saved);
         if (parsed.selectedDiet) setSelectedDiet(parsed.selectedDiet);
       } catch {}
+    } else if (userData?.preferences?.dietary) {
+      setSelectedDiet(userData.preferences.dietary);
     }
 
-    // Initialize shopping count
+    // Initialize shopping count from local storage
     const initialShopping = getShoppingCount(user?.uid);
     setLocalShoppingCount(initialShopping > 0 ? initialShopping : shoppingCount);
 
@@ -61,6 +66,7 @@ export default function ProfilClient({
     const localMy = getMyLocalRecipesCount(user?.uid);
     setLocalMyRecipesCount(Math.max(localMy, myRecipesCount));
 
+    // Listen to local storage events
     const handleShoppingUpdated = () => {
       setLocalShoppingCount(getShoppingCount(user?.uid));
     };
@@ -72,11 +78,34 @@ export default function ProfilClient({
     window.addEventListener('shopping-list-updated', handleShoppingUpdated);
     window.addEventListener('my-recipes-updated', handleMyRecipesUpdated);
 
+    // Real-time Firestore sync for shopping list and authored recipes when logged in
+    let unsubscribeShopping: (() => void) | null = null;
+    if (user?.uid) {
+      unsubscribeShopping = subscribeShoppingItems(user.uid, (cloudItems) => {
+        setLocalShoppingCount(cloudItems.length);
+        saveLocalShoppingItems(cloudItems, user.uid);
+      });
+
+      // Query authored recipes count from Cloud Firestore
+      const recipesQuery = query(
+        collection(db, 'recipes'),
+        where('authorId', '==', user.uid)
+      );
+      getDocs(recipesQuery)
+        .then((snapshot) => {
+          const cloudCount = snapshot.docs.length;
+          const currentLocal = getMyLocalRecipesCount(user.uid);
+          setLocalMyRecipesCount(Math.max(cloudCount, currentLocal));
+        })
+        .catch(() => {});
+    }
+
     return () => {
       window.removeEventListener('shopping-list-updated', handleShoppingUpdated);
       window.removeEventListener('my-recipes-updated', handleMyRecipesUpdated);
+      if (unsubscribeShopping) unsubscribeShopping();
     };
-  }, [user, shoppingCount, myRecipesCount]);
+  }, [user, userData, shoppingCount, myRecipesCount]);
 
   const handleToggleDark = () => {
     const next = !darkMode;
@@ -90,6 +119,13 @@ export default function ProfilClient({
     const parsed = saved ? JSON.parse(saved) : {};
     parsed.darkMode = next;
     localStorage.setItem('culinary_prefs', JSON.stringify(parsed));
+
+    if (user?.uid) {
+      try {
+        updateDoc(doc(db, 'users', user.uid), { 'preferences.darkMode': next }).catch(() => {});
+      } catch {}
+    }
+
     toast.info(
       next
         ? language === 'en'
@@ -101,12 +137,29 @@ export default function ProfilClient({
     );
   };
 
+  const handleLanguageChange = (newLang: Language) => {
+    if (newLang === language) return;
+    setLanguage(newLang);
+    toast.success(
+      newLang === 'en'
+        ? 'Language switched to English'
+        : 'Bahasa antarmuka diubah ke Bahasa Indonesia'
+    );
+  };
+
   const handleDietChange = (diet: string) => {
     setSelectedDiet(diet);
     const saved = localStorage.getItem('culinary_prefs');
     const parsed = saved ? JSON.parse(saved) : {};
     parsed.selectedDiet = diet;
     localStorage.setItem('culinary_prefs', JSON.stringify(parsed));
+
+    if (user?.uid) {
+      try {
+        updateDoc(doc(db, 'users', user.uid), { 'preferences.dietary': diet }).catch(() => {});
+      } catch {}
+    }
+
     toast.success(
       language === 'en'
         ? `Dietary preference set to: ${diet}`
@@ -115,7 +168,6 @@ export default function ProfilClient({
   };
 
   const dietOptions = ['None', 'Halal', 'Vegetarian', 'Vegan', 'Gluten Free'];
-
   const displayedSavedCount = savedRecipeIds ? savedRecipeIds.length : savedCount;
 
   return (
@@ -290,7 +342,7 @@ export default function ProfilClient({
           </div>
           <div className="flex items-center justify-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-2xl w-full sm:w-auto">
             <button
-              onClick={() => setLanguage('id')}
+              onClick={() => handleLanguageChange('id')}
               className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all text-center ${
                 language === 'id'
                   ? 'bg-primary text-white shadow-sm'
@@ -300,7 +352,7 @@ export default function ProfilClient({
               ID (Indonesia)
             </button>
             <button
-              onClick={() => setLanguage('en')}
+              onClick={() => handleLanguageChange('en')}
               className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all text-center ${
                 language === 'en'
                   ? 'bg-primary text-white shadow-sm'

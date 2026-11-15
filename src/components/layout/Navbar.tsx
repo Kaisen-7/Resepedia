@@ -95,7 +95,7 @@ export default function Navbar() {
                 Resepedia
               </span>
               <span className="hidden sm:block text-[10px] uppercase font-bold tracking-widest text-primary -mt-1">
-                Katalog Nusantara
+                {t('Katalog Nusantara')}
               </span>
             </div>
           </Link>
@@ -196,7 +196,7 @@ export default function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari masakan, bahan (ayam, santan, tahu), atau daerah..."
+                placeholder={t('Cari masakan, bahan (ayam, santan, tahu), atau daerah...')}
                 autoFocus
                 className="flex-1 bg-transparent text-sm sm:text-base text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
               />
@@ -209,8 +209,8 @@ export default function Navbar() {
               </button>
             </form>
             <div className="mt-3 flex items-center justify-between text-xs text-zinc-400 px-1">
-              <span>Tekan <strong>Enter</strong> untuk mencari</span>
-              <span>Katalog Resepedia</span>
+              <span>{t('Tekan Enter untuk mencari')}</span>
+              <span>{t('Katalog Resepedia')}</span>
             </div>
           </div>
         </div>

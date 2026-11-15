@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Clock, Star, Flame, Bookmark, ArrowUpRight, Edit3 } from 'lucide-react';
 import { Recipe } from '@/types';
@@ -24,7 +24,12 @@ export default function RecipeCard({
   const { user, isRecipeSaved, toggleBookmark } = useAuth();
   const { t, language } = useLanguage();
 
-  const saved = isRecipeSaved(recipe.id) || isSaved;
+  const isSavedInAuth = isRecipeSaved(recipe.id);
+  const [localSaved, setLocalSaved] = useState(isSavedInAuth || isSaved);
+
+  useEffect(() => {
+    setLocalSaved(isRecipeSaved(recipe.id));
+  }, [isRecipeSaved, recipe.id]);
 
   const handleBookmark = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -34,6 +39,7 @@ export default function RecipeCard({
     setIsSaving(true);
     try {
       const isNowSaved = await toggleBookmark(recipe.id);
+      setLocalSaved(isNowSaved);
       toast.success(
         isNowSaved
           ? language === 'en'
@@ -56,6 +62,13 @@ export default function RecipeCard({
     if (diff === 'Medium')
       return 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border-amber-200/60 dark:border-amber-800/60';
     return 'bg-red-50 text-red-800 dark:bg-red-950/70 dark:text-red-300 border-red-200/60 dark:border-red-800/60';
+  };
+
+  const getDifficultyLabel = (diff: string) => {
+    if (diff === 'Easy') return t('Mudah');
+    if (diff === 'Medium') return t('Sedang');
+    if (diff === 'Hard') return t('Sulit');
+    return diff;
   };
 
   const recipeUrl = `/resep/${recipe.slug || recipe.id}`;
@@ -112,13 +125,21 @@ export default function RecipeCard({
             onClick={handleBookmark}
             disabled={isSaving}
             className={`p-2.5 rounded-full transition-all shadow-sm ${
-              saved
+              localSaved
                 ? 'bg-primary text-white shadow-primary/30'
                 : 'bg-white/90 dark:bg-zinc-900/90 text-zinc-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-800 hover:text-primary'
             }`}
-            title={saved ? (language === 'en' ? 'Remove from saved' : 'Hapus dari simpanan') : (language === 'en' ? 'Save recipe' : 'Simpan resep')}
+            title={
+              localSaved
+                ? language === 'en'
+                  ? 'Remove from saved'
+                  : 'Hapus dari simpanan'
+                : language === 'en'
+                ? 'Save recipe'
+                : 'Simpan resep'
+            }
           >
-            <Bookmark className={`w-4 h-4 ${saved ? 'fill-white' : ''}`} />
+            <Bookmark className={`w-4 h-4 ${localSaved ? 'fill-white' : ''}`} />
           </button>
         </div>
 
@@ -129,7 +150,7 @@ export default function RecipeCard({
               recipe.difficulty
             )}`}
           >
-            {recipe.difficulty}
+            {getDifficultyLabel(recipe.difficulty)}
           </span>
         </div>
       </div>

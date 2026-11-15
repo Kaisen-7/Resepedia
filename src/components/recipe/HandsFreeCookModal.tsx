@@ -1,20 +1,20 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 import {
-  X,
   Volume2,
   VolumeX,
   ChevronLeft,
   ChevronRight,
-  RotateCcw,
-  Flame,
+  X,
   Clock,
+  RotateCcw,
   Eye,
+  Flame,
 } from 'lucide-react';
-import { Instruction, Recipe } from '@/types';
-import { useCookingTimer } from '@/contexts/TimerContext';
+import { Recipe } from '@/types';
+import { useTimer as useCookingTimer } from '@/contexts/TimerContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface HandsFreeCookModalProps {
   recipe: Recipe;
@@ -22,6 +22,7 @@ interface HandsFreeCookModalProps {
 }
 
 export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookModalProps) {
+  const { language } = useLanguage();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -60,9 +61,10 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
     if (isMuted || !('speechSynthesis' in window) || !currentStep) return;
 
     window.speechSynthesis.cancel();
-    const textToSpeak = `Langkah ${currentStepIndex + 1}. ${currentStep.title || ''}. ${currentStep.text}`;
+    const prefix = language === 'en' ? `Step ${currentStepIndex + 1}` : `Langkah ${currentStepIndex + 1}`;
+    const textToSpeak = `${prefix}. ${currentStep.title || ''}. ${currentStep.text}`;
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utterance.lang = 'id-ID';
+    utterance.lang = language === 'en' ? 'en-US' : 'id-ID';
     utterance.rate = 0.95;
 
     utterance.onstart = () => setIsSpeaking(true);
@@ -118,20 +120,33 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {wakeLockActive && (
             <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold">
-              <Eye className="w-3.5 h-3.5" /> Layar Tetap Menyala
+              <Eye className="w-3.5 h-3.5" />{' '}
+              {language === 'en' ? 'Screen Kept Awake' : 'Layar Tetap Menyala'}
             </span>
           )}
           <button
             onClick={() => setIsMuted(!isMuted)}
             className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white"
-            title={isMuted ? 'Nyalakan Suara' : 'Bisukan Suara'}
+            title={
+              isMuted
+                ? language === 'en'
+                  ? 'Unmute Voice'
+                  : 'Nyalakan Suara'
+                : language === 'en'
+                ? 'Mute Voice'
+                : 'Bisukan Suara'
+            }
           >
-            {isMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+            {isMuted ? (
+              <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" />
+            ) : (
+              <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            )}
           </button>
           <button
             onClick={onClose}
             className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white"
-            title="Keluar"
+            title={language === 'en' ? 'Close' : 'Keluar'}
           >
             <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
@@ -141,7 +156,11 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
       {/* Main Step Display (Large Kitchen Typography) */}
       <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto w-full my-6 text-center px-4">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-primary text-xs font-black uppercase tracking-wider mb-6">
-          <span>Langkah {currentStepIndex + 1} dari {instructions.length}</span>
+          <span>
+            {language === 'en'
+              ? `Step ${currentStepIndex + 1} of ${instructions.length}`
+              : `Langkah ${currentStepIndex + 1} dari ${instructions.length}`}
+          </span>
         </div>
 
         {currentStep?.title && (
@@ -159,10 +178,18 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
         {detectedMinutes && (
           <div className="mt-8">
             <button
-              onClick={() => startTimer(detectedMinutes, `${recipe.title} (Langkah ${currentStepIndex + 1})`)}
+              onClick={() =>
+                startTimer(
+                  detectedMinutes,
+                  `${recipe.title} (${language === 'en' ? 'Step' : 'Langkah'} ${currentStepIndex + 1})`
+                )
+              }
               className="px-5 py-2.5 rounded-full bg-primary/20 border border-primary/40 text-primary hover:bg-primary hover:text-white font-bold text-sm flex items-center gap-2 transition-all shadow-lg active:scale-95"
             >
-              <Clock className="w-4 h-4" /> Mulai Timer {detectedMinutes} Menit
+              <Clock className="w-4 h-4" />{' '}
+              {language === 'en'
+                ? `Start ${detectedMinutes} Min Timer`
+                : `Mulai Timer ${detectedMinutes} Menit`}
             </button>
           </div>
         )}
@@ -187,7 +214,7 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
           <button
             onClick={speakCurrentStep}
             className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white shrink-0"
-            title="Ulangi Suara"
+            title={language === 'en' ? 'Replay Voice' : 'Ulangi Suara'}
           >
             <RotateCcw className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
@@ -196,14 +223,16 @@ export default function HandsFreeCookModal({ recipe, onClose }: HandsFreeCookMod
             disabled={currentStepIndex === 0}
             className="flex-1 sm:flex-initial px-3 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:text-white disabled:opacity-30 font-bold flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-base transition-colors"
           >
-            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" /> Sebelumnya
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />{' '}
+            {language === 'en' ? 'Previous' : 'Sebelumnya'}
           </button>
           <button
             onClick={handleNext}
             disabled={currentStepIndex === instructions.length - 1}
             className="flex-1 sm:flex-initial px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-primary hover:bg-primary-container text-white disabled:opacity-30 font-bold flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-base shadow-xl shadow-primary/25 transition-transform active:scale-95"
           >
-            Berikutnya <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+            {language === 'en' ? 'Next' : 'Berikutnya'}{' '}
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>

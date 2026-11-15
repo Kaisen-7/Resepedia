@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Users, Minus, Plus } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface PortionScalerProps {
   multiplier: number;
@@ -14,6 +15,7 @@ export default function PortionScaler({
   onMultiplierChange,
   baseServings = '4 Porsi',
 }: PortionScalerProps) {
+  const { t, language } = useLanguage();
   const baseNum = parseInt(baseServings.replace(/[^0-9]/g, '')) || 4;
   const currentServings = Math.round(baseNum * multiplier);
 
@@ -37,10 +39,10 @@ export default function PortionScaler({
         </div>
         <div>
           <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 block">
-            Porsi Masakan
+            {t('Porsi Masakan')}
           </span>
           <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-            {currentServings} Porsi ({multiplier}x takaran)
+            {currentServings} {language === 'en' ? 'Servings' : 'Porsi'} ({multiplier}x {t('takaran')})
           </span>
         </div>
       </div>
@@ -50,7 +52,7 @@ export default function PortionScaler({
           onClick={handleDecrease}
           disabled={multiplier <= 0.5}
           className="w-7 h-7 rounded-lg bg-zinc-200/70 dark:bg-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-200 disabled:opacity-40 hover:bg-zinc-300 transition-colors"
-          title="Kurangi porsi"
+          title={t('Kurangi porsi')}
         >
           <Minus className="w-3.5 h-3.5" />
         </button>
@@ -61,7 +63,7 @@ export default function PortionScaler({
           onClick={handleIncrease}
           disabled={multiplier >= 5}
           className="w-7 h-7 rounded-lg bg-zinc-200/70 dark:bg-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-200 disabled:opacity-40 hover:bg-zinc-300 transition-colors"
-          title="Tambah porsi"
+          title={t('Tambah porsi')}
         >
           <Plus className="w-3.5 h-3.5" />
         </button>

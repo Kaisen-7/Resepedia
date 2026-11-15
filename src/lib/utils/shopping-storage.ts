@@ -20,7 +20,8 @@ export function getLocalShoppingItems(userId?: string | null): ShoppingItem[] {
   const raw = localStorage.getItem(primaryKey);
   if (raw) {
     try {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     } catch {}
   }
   // If user just logged in and has guest items, fallback to guest items
@@ -43,7 +44,9 @@ export function saveLocalShoppingItems(items: ShoppingItem[], userId?: string | 
   if (typeof window === 'undefined') return;
   const key = getKey(userId);
   localStorage.setItem(key, JSON.stringify(items));
-  window.dispatchEvent(new CustomEvent('shopping-list-updated', { detail: { count: items.length } }));
+  window.dispatchEvent(
+    new CustomEvent('shopping-list-updated', { detail: { count: items.length } })
+  );
 }
 
 export function getShoppingCount(userId?: string | null): number {
@@ -140,4 +143,35 @@ export async function clearCheckedShoppingItems(
       console.warn('[Resepedia] Could not clear checked shopping items from Firestore:', err);
     }
   }
+}
+
+/**
+ * Migrates guest shopping items to user account in localStorage & Firestore
+ */
+export async function migrateGuestShoppingToUser(userId: string): Promise<ShoppingItem[]> {
+  if (typeof window === 'undefined' || !userId) return [];
+  const guestItems = getLocalShoppingItems(null);
+  const userItems = getLocalShoppingItems(userId);
+
+  const map = new Map<string, ShoppingItem>();
+  guestItems.forEach((item) => map.set(item.id, item));
+  userItems.forEach((item) => map.set(item.id, item));
+  const merged = Array.from(map.values());
+
+  if (merged.length > 0) {
+    saveLocalShoppingItems(merged, userId);
+    localStorage.removeItem(GUEST_KEY);
+
+    // Sync to Firestore
+    try {
+      for (const item of merged) {
+        const docRef = doc(db, 'users', userId, 'shopping_items', item.id);
+        await setDoc(docRef, item, { merge: true }).catch(() => {});
+      }
+    } catch (e) {
+      console.warn('[Resepedia] Error syncing migrated shopping items to Firestore:', e);
+    }
+  }
+
+  return merged;
 }

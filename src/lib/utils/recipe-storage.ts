@@ -11,9 +11,33 @@ export function getMyLocalRecipes(userId?: string | null): Recipe[] {
   const raw = localStorage.getItem(key);
   if (raw) {
     try {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     } catch {}
   }
+
+  // Fallback to guest / legacy recipes if user is logged in
+  if (userId) {
+    const guestRaw = localStorage.getItem(GUEST_RECIPES_KEY) || localStorage.getItem('my_recipes');
+    if (guestRaw) {
+      try {
+        const parsed = JSON.parse(guestRaw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          localStorage.setItem(key, JSON.stringify(parsed));
+          return parsed;
+        }
+      } catch {}
+    }
+  }
+
+  const legacy = localStorage.getItem('my_recipes');
+  if (legacy) {
+    try {
+      const parsed = JSON.parse(legacy);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    } catch {}
+  }
+
   return [];
 }
 
@@ -28,7 +52,7 @@ export function saveMyLocalRecipe(recipe: Recipe, userId?: string | null): void 
   if (userId) {
     try {
       const docRef = doc(db, 'recipes', recipe.id);
-      setDoc(docRef, recipe as RecipeDocument, { merge: true }).catch(() => {});
+      setDoc(docRef, { ...recipe, authorId: userId } as RecipeDocument, { merge: true }).catch(() => {});
     } catch {}
   }
 
@@ -63,9 +87,32 @@ export function getLocalSavedRecipeIds(userId?: string | null): string[] {
   if (raw) {
     try {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     } catch {}
   }
+
+  // Fallback to guest or legacy bookmarks if logged in
+  if (userId) {
+    const guestRaw = localStorage.getItem(GUEST_SAVED_KEY) || localStorage.getItem('saved_recipes');
+    if (guestRaw) {
+      try {
+        const parsed = JSON.parse(guestRaw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          localStorage.setItem(key, JSON.stringify(parsed));
+          return parsed;
+        }
+      } catch {}
+    }
+  }
+
+  const legacy = localStorage.getItem('saved_recipes');
+  if (legacy) {
+    try {
+      const parsed = JSON.parse(legacy);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    } catch {}
+  }
+
   return [];
 }
 
@@ -74,4 +121,47 @@ export function saveLocalSavedRecipeIds(ids: string[], userId?: string | null): 
   const key = userId ? `saved_recipes_${userId}` : GUEST_SAVED_KEY;
   localStorage.setItem(key, JSON.stringify(ids));
   window.dispatchEvent(new CustomEvent('bookmarks-updated', { detail: { savedRecipeIds: ids } }));
+}
+
+/**
+ * Migrates guest bookmarks and recipes to the logged-in user profile.
+ */
+export function migrateGuestDataToUser(userId: string): {
+  migratedBookmarks: string[];
+  migratedRecipes: Recipe[];
+} {
+  if (typeof window === 'undefined' || !userId) {
+    return { migratedBookmarks: [], migratedRecipes: [] };
+  }
+
+  // 1. Migrate Bookmarks
+  const guestSaved = getLocalSavedRecipeIds(null);
+  const userSaved = getLocalSavedRecipeIds(userId);
+  const mergedSaved = Array.from(new Set([...userSaved, ...guestSaved]));
+  if (mergedSaved.length > 0) {
+    localStorage.setItem(`saved_recipes_${userId}`, JSON.stringify(mergedSaved));
+    localStorage.removeItem(GUEST_SAVED_KEY);
+    localStorage.removeItem('saved_recipes');
+    window.dispatchEvent(
+      new CustomEvent('bookmarks-updated', { detail: { savedRecipeIds: mergedSaved } })
+    );
+  }
+
+  // 2. Migrate Recipes
+  const guestRecipes = getMyLocalRecipes(null);
+  const userRecipes = getMyLocalRecipes(userId);
+  const recipeMap = new Map<string, Recipe>();
+  guestRecipes.forEach((r) => recipeMap.set(r.id, { ...r, authorId: userId }));
+  userRecipes.forEach((r) => recipeMap.set(r.id, r));
+  const mergedRecipes = Array.from(recipeMap.values());
+  if (mergedRecipes.length > 0) {
+    localStorage.setItem(`my_recipes_${userId}`, JSON.stringify(mergedRecipes));
+    localStorage.removeItem(GUEST_RECIPES_KEY);
+    localStorage.removeItem('my_recipes');
+    window.dispatchEvent(
+      new CustomEvent('my-recipes-updated', { detail: { count: mergedRecipes.length } })
+    );
+  }
+
+  return { migratedBookmarks: mergedSaved, migratedRecipes: mergedRecipes };
 }

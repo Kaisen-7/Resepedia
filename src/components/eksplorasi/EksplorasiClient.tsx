@@ -2,9 +2,10 @@
 
 import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Search, SlidersHorizontal, Flame, Compass, FilterX } from 'lucide-react';
+import { Search, Flame, Compass, FilterX } from 'lucide-react';
 import { Recipe } from '@/types';
 import RecipeCard from '@/components/recipe/RecipeCard';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface EksplorasiClientProps {
   initialRecipes: Recipe[];
@@ -15,6 +16,7 @@ export default function EksplorasiClient({
   initialRecipes,
   savedRecipeIds,
 }: EksplorasiClientProps) {
+  const { t, language } = useLanguage();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
   const initialRegion = searchParams.get('region') || 'All';
@@ -29,6 +31,29 @@ export default function EksplorasiClient({
   const regions = ['All', 'Sumatra', 'Jawa', 'Bali', 'Sulawesi', 'Kalimantan', 'Papua'];
   const categories = ['All', 'Appetizer', 'Main Course', 'Dessert', 'Drink'];
   const difficulties = ['All', 'Easy', 'Medium', 'Hard'];
+
+  const getRegionLabel = (reg: string) => {
+    if (reg === 'All') return language === 'en' ? 'All' : 'Semua';
+    if (reg === 'Jawa') return language === 'en' ? 'Java' : 'Jawa';
+    return reg;
+  };
+
+  const getCategoryLabel = (cat: string) => {
+    if (cat === 'All') return language === 'en' ? 'All Categories' : 'Semua Kategori';
+    if (cat === 'Main Course') return t('Makanan Utama');
+    if (cat === 'Appetizer') return t('Camilan & Pembuka');
+    if (cat === 'Dessert') return t('Hidangan Penutup');
+    if (cat === 'Drink') return t('Minuman Tradisional');
+    return cat;
+  };
+
+  const getDifficultyLabel = (diff: string) => {
+    if (diff === 'All') return language === 'en' ? 'All Difficulties' : 'Semua Tingkat';
+    if (diff === 'Easy') return t('Mudah');
+    if (diff === 'Medium') return t('Sedang');
+    if (diff === 'Hard') return t('Sulit');
+    return diff;
+  };
 
   const filteredRecipes = useMemo(() => {
     let result = initialRecipes.filter((recipe) => {
@@ -78,10 +103,12 @@ export default function EksplorasiClient({
       {/* Header Title */}
       <div className="space-y-2">
         <h1 className="font-display font-black text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-          <Compass className="w-8 h-8 text-primary" /> Eksplorasi Kuliner Nusantara
+          <Compass className="w-8 h-8 text-primary" /> {t('Eksplorasi Kuliner Nusantara')}
         </h1>
         <p className="text-sm text-zinc-500 max-w-2xl">
-          Telusuri ratusan resep masakan autentik Indonesia dengan filter komprehensif berdasarkan wilayah, bahan, tingkat kesulitan, dan kategori hidangan.
+          {t(
+            'Telusuri ratusan resep masakan autentik Indonesia dengan filter komprehensif berdasarkan wilayah, bahan, tingkat kesulitan, dan kategori hidangan.'
+          )}
         </p>
       </div>
 
@@ -94,7 +121,11 @@ export default function EksplorasiClient({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Cari berdasarkan nama resep, bumbu, atau bahan..."
+            placeholder={
+              language === 'en'
+                ? 'Search by recipe name, seasoning, or ingredients...'
+                : 'Cari berdasarkan nama resep, bumbu, atau bahan...'
+            }
             className="w-full pl-12 pr-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
@@ -103,7 +134,9 @@ export default function EksplorasiClient({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
           {/* Region Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar w-full sm:w-auto">
-            <span className="text-xs font-bold text-zinc-400 mr-1 shrink-0">Pulau:</span>
+            <span className="text-xs font-bold text-zinc-400 mr-1 shrink-0">
+              {language === 'en' ? 'Region:' : 'Pulau:'}
+            </span>
             {regions.map((reg) => (
               <button
                 key={reg}
@@ -114,7 +147,7 @@ export default function EksplorasiClient({
                     : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200'
                 }`}
               >
-                {reg === 'All' ? 'Semua' : reg}
+                {getRegionLabel(reg)}
               </button>
             ))}
           </div>
@@ -129,13 +162,13 @@ export default function EksplorasiClient({
                   : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-transparent hover:border-red-400'
               }`}
             >
-              <Flame className="w-3.5 h-3.5" /> Pedas Saja
+              <Flame className="w-3.5 h-3.5" /> {language === 'en' ? 'Spicy Only' : 'Pedas Saja'}
             </button>
 
             <button
               onClick={handleResetFilters}
               className="p-1.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-lg"
-              title="Reset Filter"
+              title={language === 'en' ? 'Reset Filters' : 'Reset Filter'}
             >
               <FilterX className="w-4 h-4" />
             </button>
@@ -147,7 +180,7 @@ export default function EksplorasiClient({
           <div className="flex flex-wrap items-center gap-3">
             {/* Category dropdown */}
             <div className="flex items-center gap-1.5">
-              <span className="text-zinc-400 font-medium">Kategori:</span>
+              <span className="text-zinc-400 font-medium">{t('Kategori')}:</span>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -155,7 +188,7 @@ export default function EksplorasiClient({
               >
                 {categories.map((c) => (
                   <option key={c} value={c}>
-                    {c === 'All' ? 'Semua Kategori' : c}
+                    {getCategoryLabel(c)}
                   </option>
                 ))}
               </select>
@@ -163,7 +196,7 @@ export default function EksplorasiClient({
 
             {/* Difficulty dropdown */}
             <div className="flex items-center gap-1.5">
-              <span className="text-zinc-400 font-medium">Tingkat:</span>
+              <span className="text-zinc-400 font-medium">{t('Tingkat Kesulitan')}:</span>
               <select
                 value={selectedDifficulty}
                 onChange={(e) => setSelectedDifficulty(e.target.value)}
@@ -171,7 +204,7 @@ export default function EksplorasiClient({
               >
                 {difficulties.map((d) => (
                   <option key={d} value={d}>
-                    {d === 'All' ? 'Semua Tingkat' : d}
+                    {getDifficultyLabel(d)}
                   </option>
                 ))}
               </select>
@@ -180,14 +213,14 @@ export default function EksplorasiClient({
 
           {/* Sort By */}
           <div className="flex items-center gap-1.5">
-            <span className="text-zinc-400 font-medium">Urutan:</span>
+            <span className="text-zinc-400 font-medium">{t('Urutkan:')}</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
               className="bg-zinc-100 dark:bg-zinc-800 rounded-xl px-2.5 py-1 font-bold text-zinc-800 dark:text-zinc-200 border-none focus:outline-none"
             >
-              <option value="newest">Terbaru</option>
-              <option value="rating">Rating Tertinggi</option>
+              <option value="newest">{t('Terbaru')}</option>
+              <option value="rating">{t('Rating Tertinggi')}</option>
             </select>
           </div>
         </div>
@@ -196,7 +229,15 @@ export default function EksplorasiClient({
       {/* Results Count & Grid */}
       <div className="space-y-4">
         <p className="text-xs font-semibold text-zinc-500">
-          Menampilkan <strong>{filteredRecipes.length}</strong> resep masakan
+          {language === 'en' ? (
+            <>
+              Showing <strong>{filteredRecipes.length}</strong> recipes
+            </>
+          ) : (
+            <>
+              Menampilkan <strong>{filteredRecipes.length}</strong> resep masakan
+            </>
+          )}
         </p>
 
         {filteredRecipes.length > 0 ? (
@@ -212,16 +253,20 @@ export default function EksplorasiClient({
         ) : (
           <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 p-8 space-y-3">
             <h4 className="font-display font-bold text-lg text-zinc-800 dark:text-zinc-200">
-              Tidak ada resep yang memenuhi kriteria
+              {language === 'en'
+                ? 'No recipes match your criteria'
+                : 'Tidak ada resep yang memenuhi kriteria'}
             </h4>
             <p className="text-xs text-zinc-500">
-              Coba kurangi filter atau gunakan kata kunci pencarian yang lebih umum.
+              {language === 'en'
+                ? 'Try clearing some filters or search for more common ingredients.'
+                : 'Coba kurangi filter atau gunakan kata kunci pencarian yang lebih umum.'}
             </p>
             <button
               onClick={handleResetFilters}
               className="px-4 py-2 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary-container"
             >
-              Bersihkan Filter
+              {language === 'en' ? 'Clear Filters' : 'Bersihkan Filter'}
             </button>
           </div>
         )}

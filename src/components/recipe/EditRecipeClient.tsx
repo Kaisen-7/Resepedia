@@ -23,6 +23,7 @@ import { extractYouTubeVideoId } from '@/lib/utils/youtube';
 import { uploadRecipeImage } from '@/lib/firebase/service';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface EditRecipeClientProps {
   recipe: Recipe;
@@ -32,6 +33,7 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
   const router = useRouter();
   const { user } = useAuth();
   const toast = useToast();
+  const { t, language } = useLanguage();
 
   const [title, setTitle] = useState(recipe.title || '');
   const [description, setDescription] = useState(recipe.description || '');
@@ -210,13 +212,15 @@ export default function EditRecipeClient({ recipe }: EditRecipeClientProps) {
             href={backUrl}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-500 hover:text-primary transition-colors mb-2"
           >
-            <ChevronLeft className="w-4 h-4" /> Batal & Kembali ke Resep
+            <ChevronLeft className="w-4 h-4" /> {language === 'en' ? 'Cancel & Return to Recipe' : 'Batal & Kembali ke Resep'}
           </Link>
           <h1 className="font-display font-black text-2xl sm:text-3xl text-zinc-900 dark:text-zinc-100">
-            Edit Resep Masakan
+            {language === 'en' ? 'Edit Recipe' : 'Edit Resep Masakan'}
           </h1>
           <p className="text-xs text-zinc-500 mt-1">
-            Perbarui takaran bahan, langkah memasak, atau foto hidangan Anda.
+            {language === 'en'
+              ? 'Update ingredients, instructions, cooking time, or dish details.'
+              : 'Perbarui bahan, panduan langkah, waktu masak, atau detail hidangan ini.'}
           </p>
         </div>
 

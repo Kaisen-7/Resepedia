@@ -173,3 +173,5 @@ export function useCookingTimer() {
   }
   return context;
 }
+
+export const useTimer = useCookingTimer;

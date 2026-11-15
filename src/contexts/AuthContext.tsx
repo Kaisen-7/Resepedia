@@ -1,19 +1,21 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import {
   User as FirebaseUser,
   signInWithPopup,
   signOut,
   onAuthStateChanged,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { auth, googleProvider, db } from '@/lib/firebase/client';
 import { UserDocument } from '@/types/recipe.types';
 import {
   getLocalSavedRecipeIds,
   saveLocalSavedRecipeIds,
+  migrateGuestDataToUser,
 } from '@/lib/utils/recipe-storage';
+import { migrateGuestShoppingToUser } from '@/lib/utils/shopping-storage';
 import { toggleSaveRecipeAction } from '@/actions/bookmark.actions';
 
 interface AuthContextType {
@@ -35,6 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userData, setUserData] = useState<UserDocument | null>(null);
   const [savedRecipeIds, setSavedRecipeIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const hasMigratedRef = useRef<string | null>(null);
 
   // Initialize saved recipes from local storage
   useEffect(() => {
@@ -64,6 +67,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(firebaseUser);
 
       if (firebaseUser) {
+        // 1. Migrate guest data (bookmarks, creations, shopping items) upon login
+        if (hasMigratedRef.current !== firebaseUser.uid) {
+          hasMigratedRef.current = firebaseUser.uid;
+          migrateGuestDataToUser(firebaseUser.uid);
+          migrateGuestShoppingToUser(firebaseUser.uid).catch(() => {});
+        }
+
         // Load initial local saved recipes for this user
         const localSaved = getLocalSavedRecipeIds(firebaseUser.uid);
         if (localSaved.length > 0) {
@@ -79,19 +89,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (snapshot.exists()) {
               const data = snapshot.data() as UserDocument;
               setUserData(data);
-              const cloudSaved: string[] = data.savedRecipeIds || [];
-              // Merge local and cloud saved IDs
-              const merged = Array.from(new Set([...cloudSaved, ...localSaved]));
+              const cloudSaved: string[] = Array.isArray(data.savedRecipeIds) ? data.savedRecipeIds : [];
+              const currentLocal = getLocalSavedRecipeIds(firebaseUser.uid);
+              const merged = Array.from(new Set([...cloudSaved, ...currentLocal]));
+
               setSavedRecipeIds(merged);
               saveLocalSavedRecipeIds(merged, firebaseUser.uid);
+
+              // If local had extra items not yet in Firestore, sync them back up
+              if (merged.length > cloudSaved.length) {
+                setDoc(userRef, { savedRecipeIds: merged }, { merge: true }).catch(() => {});
+              }
             } else {
-              // First time login: create user document
+              // First time login: create user document with merged bookmarks
+              const currentLocal = getLocalSavedRecipeIds(firebaseUser.uid);
               const newUserData: UserDocument = {
                 id: firebaseUser.uid,
                 displayName: firebaseUser.displayName || 'Chef Resepedia',
                 email: firebaseUser.email || '',
                 avatarUrl: firebaseUser.photoURL || null,
-                savedRecipeIds: localSaved,
+                savedRecipeIds: currentLocal,
                 preferences: {
                   darkMode: false,
                   language: 'id',
@@ -101,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               };
               await setDoc(userRef, newUserData).catch(() => {});
               setUserData(newUserData);
-              setSavedRecipeIds(localSaved);
+              setSavedRecipeIds(currentLocal);
             }
           },
           (err) => {

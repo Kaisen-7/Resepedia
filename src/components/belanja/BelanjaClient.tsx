@@ -15,6 +15,7 @@ import {
 import { ShoppingItem } from '@/types';
 import {
   getLocalShoppingItems,
+  saveLocalShoppingItems,
   addShoppingItem,
   toggleCheckShoppingItem,
   deleteShoppingItem,
@@ -57,6 +58,7 @@ export default function BelanjaClient({ initialItems }: BelanjaClientProps) {
       unsubscribeFirestore = subscribeShoppingItems(user.uid, (cloudItems) => {
         if (cloudItems && cloudItems.length > 0) {
           setItems(cloudItems);
+          saveLocalShoppingItems(cloudItems, user.uid);
         }
       });
     } else {
